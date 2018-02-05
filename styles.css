@@ -1,0 +1,50 @@
+/*
+General element formats
+*/
+
+body {
+
+	font-family: Verdana;
+	background-color: #FFFDF9;
+	color: #BB3322;
+
+}
+header {
+	
+	font-size: 50px;
+	font-family: Roboto;
+	font-weight: bold;
+	font-style: italic;
+	color: #FFFDF9;
+	padding: 20px;
+	
+}
+
+/*
+Specific element formats
+*/
+
+#mainPanel {
+	
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	
+}
+
+#content {
+	
+	position: absolute;
+	width: 40%;
+	left: 36%;
+	top: 38%;
+	padding: 2%;
+	
+}
+
+#graph {
+	
+	width: 100%;
+	height: 100%;
+	
+}

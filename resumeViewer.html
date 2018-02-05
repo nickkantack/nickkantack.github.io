@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>SpaceEngine</title>
+
+<!--Scripts brilliant people made-->
+<script src="jquery.js"></script>
+<!--End of scripts brillaint people made-->
+
+<!--Scripts I made-->
+<script src="VectorSpace.js"></script>
+<script src="Block.js"></script>
+<script src="Surface.js"></script>
+<script src="Thing.js"></script>
+<script src="Letters.js"></script>
+<script src="Graphics.js"></script>
+<script src="Alterations.js"></script>
+<script src="NavBarButtons.js"></script>
+
+<!--
+The scripts above which I designed are part of a 3D enviornment suite. Together, they facilitate an easy, lightweight
+protocol for displaying objects in space with effects like shading, perspective, and overlay that create
+a convincing 3 dimensional environment.
+-->
+
+<link rel="stylesheet" type="text/css" href="styles.css">
+<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto">
+</head>
+<body>
+<div id="pdfDiv" width="100%" style="height: 100vh;"> <!--This div holds everything-->
+	<object data="resume.pdf" type="application/pdf" width="100%" height="100%">
+    <p>PDF plugin load was not successful. <a href="resume.pdf">Click here to
+    download my resume.</a></p>
+</object>
+</div>
+</body>
+<!--LOCAL FUNCTIONS-->
+<script>
+//--------------------------------------------------------------------------
+//Events for startup go in here
+$(document).ready(function(){
+
+	fitCanvas(); //This includes the initial canvas paint
+
+});
+//--------------------------------------------------------------------------
+
+$(window).resize(function() {
+
+	fitCanvas();
+
+});
+
+//--------------------------------------------------------------------------
+function fitCanvas(){	//We want to expand the canvas to fill the entire background of the page.
+	var c = document.getElementById("mainPanel");
+	c.height = window.innerHeight;
+	alert(c.height);
+}
+//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------
+
+</script>
+</html>
