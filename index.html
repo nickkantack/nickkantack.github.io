@@ -69,9 +69,9 @@ a convincing 3 dimensional environment.
 	//For scrolling 3D effects, we need a record of the latest scroll position
 	var lastScrollTop = 0;
 	
-	/*
-	FILLING THE 3D ENVIRONMENT
-	*/
+	//--------------------------------------------------------------------------
+	//FILLING THE 3D ENVIRONMENT
+	//--------------------------------------------------------------------------
 	
 	//Things in the foreground
 		//Top sign (where the page title is)
@@ -80,53 +80,59 @@ a convincing 3 dimensional environment.
 		things.push(createThing(generateBlockSurfaces(vertices, "#BB3322"), "topSign"));	//Any thing we make should be added to the list of things so it is painted on the canvas. We also
 																							//give the thing a name so that we can easily reference it and pull it from the list later.
 		
-		//Top navigation button
-		origin = [-2.5, 3, 0.15];
-		vertices = generateBlockVertices(origin, 1, 2, 0.5);
-		things.push(createThing(generateBlockSurfaces(vertices, "#BB3322"), "topButton"));
+			//--------------------------------------------------------------------------
+			//NAVIGATION BAR BUTTONS AND TEXT
+			//--------------------------------------------------------------------------
 		
-		//Create text for topNavigationButton
-		origin = [-3.4, 3, 0.3];
-		size = 50;
-		textBlock = {text: "Resume", color: "#FFFFFF", origin: origin, fontStyle: "italic small-caps bold", fontSize: size, fontFamily: "Verdana"};
-		textBlocks.push(textBlock);
+			//Top navigation button
+			origin = [-2.5, 3, 0.15];
+			vertices = generateBlockVertices(origin, 1, 2, 0.5);
+			things.push(createThing(generateBlockSurfaces(vertices, "#BB3322"), "topButton"));
+			
+			//Create text for topNavigationButton
+			origin = [-3.4, 3, 0.3];
+			size = 50;
+			textBlock = {text: "Resume", color: "#FFFFFF", origin: origin, fontStyle: "italic small-caps bold", fontSize: size, fontFamily: "Verdana"};
+			textBlocks.push(textBlock);
+			
+			//Create top button alteration for button hover animation - an alteration is a recorded transformation that is to take place when we mouse over the thing associated with that alteration.
+			var alterationTranslationDirection = [0, 1, 0];
+			var localAlteration = createAlteration("topButton", alterationTranslationDirection, 0.5, origin, origin, 0, 250, 10, 0); //Try to keep steps / time (ms) <= 0.4. 40fps is plenty. Go easy on the client.
+			alterations.push(localAlteration);
+			
+			//Middle navigation button
+			origin = [-2.5, 3, -0.45];
+			vertices = generateBlockVertices(origin, 1, 2, 0.5);
+			things.push(createThing(generateBlockSurfaces(vertices, "#BB3322"), "middleButton"));
+			
+			//Create text for topNavigationButton
+			origin = [-3.4, 3, -0.4];
+			size = 50;
+			textBlock = {text: "Projects", color: "#FFFFFF", origin: origin, fontStyle: "italic small-caps bold", fontSize: size, fontFamily: "Verdana"};
+			textBlocks.push(textBlock);
+			
+			//Create middle button alteration for button hover animation
+			var alterationTranslationDirection = [0, 1, 0];
+			localAlteration = createAlteration("middleButton", alterationTranslationDirection, 0.5, origin, origin, 0, 250, 10, 0);
+			alterations.push(localAlteration);
+			
+			//Button navigation button
+			origin = [-2.5, 3, -1.05];
+			vertices = generateBlockVertices(origin, 1, 2, 0.5);
+			things.push(createThing(generateBlockSurfaces(vertices, "#BB3322"), "bottomButton"));
+			
+			//Create text for topNavigationButton
+			origin = [-3.4, 3, -1.1];
+			size = 50;
+			textBlock = {text: "Contact", color: "#FFFFFF", origin: origin, fontStyle: "italic small-caps bold", fontSize: size, fontFamily: "Verdana"};
+			textBlocks.push(textBlock);
 		
-		//Create top button alteration for button hover animation - an alteration is a recorded transformation that is to take place when we mouse over the thing associated with that alteration.
-		var alterationTranslationDirection = [0, 1, 0];
-		var localAlteration = createAlteration("topButton", alterationTranslationDirection, 0.5, origin, origin, 0, 250, 10, 0); //Try to keep steps / time (ms) <= 0.4. 40fps is plenty. Go easy on the client.
-		alterations.push(localAlteration);
-		
-		//Middle navigation button
-		origin = [-2.5, 3, -0.45];
-		vertices = generateBlockVertices(origin, 1, 2, 0.5);
-		things.push(createThing(generateBlockSurfaces(vertices, "#BB3322"), "middleButton"));
-		
-		//Create text for topNavigationButton
-		origin = [-3.4, 3, -0.4];
-		size = 50;
-		textBlock = {text: "Projects", color: "#FFFFFF", origin: origin, fontStyle: "italic small-caps bold", fontSize: size, fontFamily: "Verdana"};
-		textBlocks.push(textBlock);
-		
-		//Create middle button alteration for button hover animation
-		var alterationTranslationDirection = [0, 1, 0];
-		localAlteration = createAlteration("middleButton", alterationTranslationDirection, 0.5, origin, origin, 0, 250, 10, 0);
-		alterations.push(localAlteration);
-		
-		//Button navigation button
-		origin = [-2.5, 3, -1.05];
-		vertices = generateBlockVertices(origin, 1, 2, 0.5);
-		things.push(createThing(generateBlockSurfaces(vertices, "#BB3322"), "bottomButton"));
-		
-		//Create text for topNavigationButton
-		origin = [-3.4, 3, -1.1];
-		size = 50;
-		textBlock = {text: "Contact", color: "#FFFFFF", origin: origin, fontStyle: "italic small-caps bold", fontSize: size, fontFamily: "Verdana"};
-		textBlocks.push(textBlock);
-	
-		//Create bottom button alteration for button hover animation
-		var alterationTranslationDirection = [0, 1, 0];
-		localAlteration = createAlteration("bottomButton", alterationTranslationDirection, 0.5, origin, origin, 0, 250, 10, 0);
-		alterations.push(localAlteration);
+			//Create bottom button alteration for button hover animation
+			var alterationTranslationDirection = [0, 1, 0];
+			localAlteration = createAlteration("bottomButton", alterationTranslationDirection, 0.5, origin, origin, 0, 250, 10, 0);
+			alterations.push(localAlteration);
+			
+			//--------------------------------------------------------------------------
 		
 		//Create text for topSign
 		origin = [-3, 3, 1.25];
@@ -134,47 +140,15 @@ a convincing 3 dimensional environment.
 		var textBlock = {text: "Nick Kantack", color: "#FFFFFF", origin: origin, fontStyle: "italic small-caps bold", fontSize: size, fontFamily: "Verdana"};
 		textBlocks.push(textBlock);
 		
-		//Surrounding wall
-		/*
-		origin = [-5, 3, -2];
-		vertices = generateBlockVertices(origin, 1, 3, 3);
-		things.push(createThing(generateBlockSurfaces(vertices, "#BB3322"), "wall1"));
-		
-		origin = [-4.7, 3, 1.1];
-		vertices = generateBlockVertices(origin, 1, 3, 3);
-		things.push(createThing(generateBlockSurfaces(vertices, "#BB3322"), "wall2"));
-		
-		origin = [-4.7, 3, -5.1];
-		vertices = generateBlockVertices(origin, 6, 0.5, 3);
-		things.push(createThing(generateBlockSurfaces(vertices, "#BB3322"), "wall3"));
-		
-		origin = [2, 2, -5.1];
-		vertices = generateBlockVertices(origin, 1, 3, 2.5);
-		things.push(createThing(generateBlockSurfaces(vertices, "#BB3322"), "wall4"));
-		
-		origin = [2.5, 0.8, -3.1];
-		vertices = generateBlockVertices(origin, 1.5, 1, 1.5);
-		things.push(createThing(generateBlockSurfaces(vertices, "#BB3322"), "wall5"));
-		*/
-
-	//Things in the background
-	
 //--------------------------------------------------------------------------
 //Events for startup go in here
 $(document).ready(function(){
-
 	lastScrollTop = $(window).scrollTop();
 	fitCanvas(); //This includes the initial canvas paint
-
 });
 //--------------------------------------------------------------------------
-
-$(window).resize(function() {
-
-	fitCanvas();
-
-});
-
+//Fix the canvas if the user resizes the window
+$(window).resize(function() {fitCanvas();});
 //--------------------------------------------------------------------------
 function fitCanvas(){	//We want to expand the canvas to fill the entire background of the page.
 	var c = document.getElementById("graph");
@@ -200,10 +174,11 @@ function fitCanvas(){	//We want to expand the canvas to fill the entire backgrou
 $(window).scroll(function(){
 
 	var direction = [0, 0, 1];
+	//Transform things accordingly
 	for (var i = 0; i < things.length; i++){
 		things[i] = translateThing(things[i], direction, ($(window).scrollTop() - lastScrollTop) / 1000);
 	}
-	//Add transformation for text
+	//Transform text accordingly
 	for (var i = 0; i < textBlocks.length; i++){
 		textBlocks[i].origin = add(textBlocks[i].origin, scale(direction, ($(window).scrollTop() - lastScrollTop) / 1000));
 	}
@@ -214,16 +189,12 @@ $(window).scroll(function(){
 //--------------------------------------------------------------------------
 //Handle clicks (on this page, clicks nagivate to other pages)
 $(document).mousedown(function(){
-
-	if (alterations[0].hover){	//Resume button
-		window.location.replace("./resume.html");
-	}
-	if (alterations[1].hover){	//Projects button
-		window.location.replace("./projects.html");
-	}
-	if (alterations[2].hover){	//Contact button
-		window.location.replace("./contact.html");
-	}
+	//Resume button
+	if (alterations[0].hover){window.location.replace("./resume.html");}	
+	//Projects button
+	if (alterations[1].hover){window.location.replace("./projects.html");}
+	//Contact button
+	if (alterations[2].hover){window.location.replace("./contact.html");}
 });
 //--------------------------------------------------------------------------
 

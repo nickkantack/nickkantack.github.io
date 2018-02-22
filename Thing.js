@@ -68,6 +68,33 @@ function thingIndex(name){	//Returns the index of the thing in the array things 
 	return -1;
 }
 //--------------------------------------------------------------------------
+function mouseIsOverThing(thing, event){
+	//Returns the boolean result corresponding to whether the mouse is currently hovering over the front face of the input thing
+	//WARNING: This function presumes the input thing is a block and that it has not been rotated since it was created.
+	
+	var mousePos = [event.pageX, event.pageY, 0];
+	var observer = [0, yob, 0];
+	
+	//Grab the front face of the appropriate thing. This structure presumes that the thing is a rectangular prism and that we have not rotated it.
+	var frontface = [];
+	frontface[0] = getXYProjection(thing.surfaces[0].vertices[1], yob, XFOVangle, YFOVangle);
+	frontface[1] = getXYProjection(thing.surfaces[0].vertices[2], yob, XFOVangle, YFOVangle);
+	frontface[2] = getXYProjection(thing.surfaces[1].vertices[2], yob, XFOVangle, YFOVangle);
+	frontface[3] = getXYProjection(thing.surfaces[1].vertices[3], yob, XFOVangle, YFOVangle);
+	for (var j = 0; j < frontface.length; j++){
+		frontface[j].push(0);	//Set a z component of 0 for every frontface "vertex"
+	}
+	
+	//Turn frontface percentages into pixel values
+	for (var j = 0; j < frontface.length; j++){
+		frontface[j][0] *= $('#graph').width();
+		frontface[j][1] *= $('#graph').height();
+	}
+	if (pointPenetratesSurfaceVertices(mousePos, frontface)){//Then we are hovering
+		return true;
+	}
+	return false;
+}
 //--------------------------------------------------------------------------
 //--------------------------------------------------------------------------
 //--------------------------------------------------------------------------

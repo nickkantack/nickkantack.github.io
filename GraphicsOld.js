@@ -55,13 +55,12 @@ function repaint(backgroundCol = "#FFFDF9"){
 	*/
 
 	//DUMP
-	if (typeof things !== 'undefined'){
-		for (var i = 0; i < things.length; i++){
-			for (var j = 0; j < things[i].surfaces.length; j++){
-				allSurfaces.push(things[i].surfaces[j]);
-			}
+	for (var i = 0; i < things.length; i++){
+		for (var j = 0; j < things[i].surfaces.length; j++){
+			allSurfaces.push(things[i].surfaces[j]);
 		}
 	}
+	
 	//DEPTH - SORT
 	/*
 	
@@ -107,27 +106,21 @@ function repaint(backgroundCol = "#FFFDF9"){
 	}
 
 	//Paint textBlocks (for now, a textBlock is presumed to belong in front of any potential object
-	if (typeof textBlocks !== 'undefined'){
-		for (var i = 0; i < textBlocks.length; i++){	
-			ctx.font = textBlocks[i].fontStyle + " " + parseInt(textBlocks[i].fontSize) + "px " + textBlocks[i].fontFamily;
-			ctx.fillStyle = textBlocks[i].color;
-			var coordinates = getXYProjection(textBlocks[i].origin, yob, XFOVangle, YFOVangle);
-			ctx.fillText(textBlocks[i].text, coordinates[0] * c.width, coordinates[1] * c.height);
-		}
+	for (var i = 0; i < textBlocks.length; i++){	
+		ctx.font = textBlocks[i].fontStyle + " " + parseInt(textBlocks[i].fontSize) + "px " + textBlocks[i].fontFamily;
+		ctx.fillStyle = textBlocks[i].color;
+		var coordinates = getXYProjection(textBlocks[i].origin, yob, XFOVangle, YFOVangle);
+		ctx.fillText(textBlocks[i].text, coordinates[0] * c.width, coordinates[1] * c.height);
 	}
 	
 	//Paint field vectors
-	if (typeof floatingVectors !== 'undefined'){
-		for (var i = 0; i < floatingVectors.length; i++){
-			paintFloatingVector(floatingVectors[i], c, ctx);
-		}
+	for (var i = 0; i < floatingVectors.length; i++){
+		paintFloatingVector(floatingVectors[i], c, ctx);
 	}
 	
 	//paint coil vectors
-	if (typeof coilVectors !== 'undefined'){
-		for (var i = 0; i < coilVectors.length; i++){
-			paintFloatingVector(coilVectors[i], c, ctx);
-		}
+	for (var i = 0; i < coilVectors.length; i++){
+		paintFloatingVector(coilVectors[i], c, ctx);
 	}
 	
 }

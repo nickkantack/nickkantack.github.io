@@ -101,8 +101,15 @@ function rotate3D(vector2Rotate, rotationAxisPoint, rotationAxisDirection, rotat
 	){alert("Input vectors are not all 3 dimensional. All input vectors must be 3 dimensional.");return null;}
 	var v = sub(vector2Rotate, rotationAxisPoint);
 	var P = sub(v, projAonB(v, rotationAxisDirection));
-	var v2 = add(scale(P, Math.cos(rotationAngle)), scale(CP(rotationAxisDirection, P), Math.sin(rotationAngle) * mag(P) / mag(CP(rotationAxisDirection, P))));
-	return add(projAonB(v, rotationAxisDirection), add(v2, rotationAxisPoint));
+	if (mag(P) == 0){
+		return vector2Rotate;
+	}
+	else{
+		var v2 = add(scale(P, Math.cos(rotationAngle)), scale(CP(rotationAxisDirection, P), Math.sin(rotationAngle) * mag(P) / mag(CP(rotationAxisDirection, P))));
+		//alert('vector2Rotate: ' + vector2Rotate + '\nrotationAxisPoint: ' + rotationAxisPoint + '\nrotationAxisDirection: ' + rotationAxisDirection + '\nv is '+v +
+		//'\nP: '+P+'\nv2: '+v2+'\nfinal result:'+add(projAonB(v, rotationAxisDirection), add(v2, rotationAxisPoint)));
+		return add(projAonB(v, rotationAxisDirection), add(v2, rotationAxisPoint));
+	}
 }
 //--------------------------------------------------------------------------
 function translateVector(vector, componentIndex, increment){//Returns the vector with the component at componentIndex incremented by increment. Dimension must be greater than 1.

@@ -12,7 +12,24 @@ function biotSavartIntegrand(differentialWireLocation, differentialWireDirection
 	
 	differntialWireDirection should have a scale corresponding to the desired length of the approximate differential.
 	*/
-	return scale(CP(differentialWireDirection, sub(testPoint, differentialWireLocation)), permeability / 4 / Math.PI * currentMagnitude / Math.pow(mag(distance(differentialWireLocation, testPoint)), 3));
+	if (areSame(testPoint, differentialWireLocation)){return [0, 0, 0];}
+	/*
+	alert(
+	'differentialWireLocation: ' + differentialWireLocation +
+	'\ndifferentialWireDirection: ' + differentialWireDirection +
+	'\ncurrentMagnitude: ' + currentMagnitude +
+	'\ntestPoint: ' + testPoint + 
+	'\npermeability: ' + permeability +
+	'\n and result: ' + scale(CP(differentialWireDirection, sub(testPoint, differentialWireLocation)), permeability / 4 / Math.PI * currentMagnitude / Math.pow(mag(distance(differentialWireLocation, testPoint)), 3)) +
+	'\nCross Product: ' + CP(differentialWireDirection, sub(testPoint, differentialWireLocation)) +
+	'\nScale factor: ' + permeability / 4 / Math.PI * currentMagnitude / Math.pow(mag(distance(differentialWireLocation, testPoint)), 3) +
+	'\ndistance: ' + distance(differentialWireLocation, testPoint)
+	
+	
+	);
+	*/
+	
+	return scale(CP(differentialWireDirection, sub(testPoint, differentialWireLocation)), permeability / 4 / Math.PI * currentMagnitude / Math.pow(distance(differentialWireLocation, testPoint), 3));
 }
 //--------------------------------------------------------------------------
 //--------------------------------------------------------------------------
