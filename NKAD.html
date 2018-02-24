@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!--SCRIPTS-->
+	<script src='jquery.js'></script>
+	<script src='Guide.js'></script>
+	<script src='VectorSpace.js'></script>
+	<script src='Block.js'></script>
+	<script src='Thing.js'></script>
+	<script src='Surface.js'></script>
+<!--STYLES-->
+	<style>
+		#graph {
+			position: absolute;
+			left: 300px;
+			border: 2px solid #FF0000;
+			}
+		#leftControls {
+			position: absolute;
+			width: 290px;
+		}
+		#rightControls {
+			position:absolute;
+			width: 290px;
+		}
+		div {border: 1px solid #000000;}
+		td {padding: 0;}
+		tr {padding: 0;}
+		input{font-size: 15px;}
+		p {
+			font-family: Verdana;
+			font-size: 15px;
+			margin: 0;
+		}
+		panelTitle {font-size: 20px; font-family: Verdana; width: 100%; text-align: center;}
+		button {font-family: Verdana;}
+	</style>
+</head>
+<body>
+	<div id='leftControls'>
+		<!--MOUSE MODE TOGGLE PANEL-->
+		<div id='mousemodes'>
+			<center>
+				<panelTitle>Set Mouse Mode</panelTitle>
+			</center>
+			<table style='width: 100%';>
+				<tr><td style="width: 33%"><button id='mousemodePAINT' style='width: 100%'>PAINT</button></td>
+					<td style="width: 33%"><button id='mousemodeCARRY' style='width: 100%'>CARRY</button></td>
+					<td style="width: 33%"><button id='mousemodeOBSERVE' style='width: 100%'>OBSERVE</button></td>
+				</tr>
+			</table>
+		</div>
+		<div id='clearDrawing'>
+			<button id='removeHandDrawings' style='width: 100%'>REMOVE ALL HAND DRAWINGS</button>
+		</div>
+		<!--TRANSLATION CONTROL PANEL-->
+		<div id='translation'>
+			<center>
+				<panelTitle>Translate Active Guides</panelTitle>
+			</center>
+			<table>
+				<tr><td style='width: 50%;'><p>Increment</p></td><td style='width: 50%;'><input id='translationIncrement' style='width: 95%'></input></td></tr>
+				<tr>
+					<td style='width: 50%'><button id='plusX' style='width: 100%;'>+X</button></td>
+					<td style='width: 50%'><button id='minusX' style='width: 100%;'>-X</button></td>
+				</tr>
+				<tr>
+					<td style='width: 50%'><button id='plusY' style='width: 100%;'>+Y</button></td>
+					<td style='width: 50%'><button id='minusY' style='width: 100%;'>-Y</button></td>
+				</tr>
+				<tr><td style='width: 50%'><button id='plusZ' style='width: 100%;'>+Z</button></td>
+					<td style='width: 50%'><button id='minusZ' style='width: 100%;'>-Z</button></td>
+				</tr>
+			</table>
+		</div>
+		<!--ROTATION CONTROL PANEL-->
+		<div id='rotation'>
+			<center><panelTitle>Rotate Active Guides</panelTitle></center>
+			<table>
+				<tr><td style='width: 50%;'><p>Increment (degrees)</p></td><td style='width: 50%;'><input id='rotationIncrement' style='width: 80%'></input></td></tr>
+				<tr><td style='width: 33%;'><p>Dimension</p></td><td style='width: 33%;'><p>Point</p></td><td style='width: 33%;'><p>Direction</p></td></tr>
+				<tr><td style='width: 33%;'><p>X</p></td><td style='width: 33%;'><input id='rotationPointX' style='width: 80%'></input></td><td style='width: 33%;'><input id='rotationDirectionX' style='width: 80%'></input></td></tr>
+				<tr><td style='width: 33%;'><p>Y</p></td><td style='width: 33%;'><input id='rotationPointY' style='width: 80%'></input></td><td style='width: 33%;'><input id='rotationDirectionY' style='width: 80%'></input></td></tr>
+				<tr><td style='width: 33%;'><p>Z</p></td><td style='width: 33%;'><input id='rotationPointZ' style='width: 80%'></input></td><td style='width: 33%;'><input id='rotationDirectionZ' style='width: 80%'></input></td></tr>
+				<tr><td style='width: 100%;' colspan='3'><button id='rotate' style='width: 100%;'>Rotate</button></td></tr>
+			</table>
+		</div>
+		<!--SCALE GUIDE-->
+		<div id='scalePanel'>
+			<center><panelTitle>Scale Guide</panelTitle></center>
+			<table>
+				<tr><td style='width: 50%;'><p>Set reference size</p></td><td style='width: 50%'><input id='scaleFactor' style='width: 90%' value='1'></input></td></tr>
+				<tr><td colspan='2' style='width: 100%'><button id='scale' style='width: 100%;'>SET SIZE</button></td></tr>
+			</table>
+		</div>
+	</div>
+	<div id='rightControls'>
+	<!--GUIDE IMPORT-->
+		<div id='guideImport'>
+			<center><panelTitle>Import Guide to Model</panelTitle></center>
+			<table>
+				<tr><td style='width: 50%;'><p>Type</p></td><td style='width: 50%;'><input id='inputType' style='width: 80%;' value='circle'></input></td></tr>
+				<tr><td style='width: 50%;'><p>Name</p></td><td style='width: 50%;'><input id='inputName' style='width: 80%;' value='1'></input></td></tr>
+				<tr><td style='width: 50%;'><p>Reference Size</p></td>  <td style='width: 50%;'><input id='inputReferenceSize' style='width: 50%;' value='1'></input></td></tr>
+				<tr><td style='width: 50%;'><p>X</p></td>  <td style='width: 50%;'><input id='inputX' value='1' style='width: 50%;'></input></td></tr>
+				<tr><td style='width: 50%;'><p>Y</p></td>  <td style='width: 50%;'><input id='inputY' value='1' style='width: 50%;'></input></td></tr>
+				<tr><td style='width: 50%;'><p>Z</p></td>  <td style='width: 50%;'><input id='inputZ' value='1' style='width: 50%;'></input></td></tr>
+			</table>
+			<button id='addGuide' style='width: 100%;'>ADD GUIDE</button>
+		</div>
+	<!--MODEL BOM-->
+		<div id='bomPanel' style='height: 25%;'>
+			<center><panelTitle>Model BOM</panelTitle></center>
+			<div id='scroll' style='overflow: scroll; height: 90%;'>
+				<table id='bomTable'>
+				</table>
+			</div>
+		</div>
+		<!--SAVE AND LOAD-->
+		<div id='saveAndLoad' style='margin-top: 10px'>
+		<center><panelTitle>Save/Load Guides</panelTitle></center>
+			<table>
+				<tr><td style='width: 50%'><p>Filename</p></td><td style='width: 50%;'><input id='filename' style='width: 95%'></input></td></tr>
+				<tr><td style='width: 50%'><button id='load' style='width: 95%'>LOAD</button></td><td style='width: 50%;'><button id='save' style='width: 95%'>SAVE</button></td></tr>
+			</table>
+			<input id="upload" type=file   accept="text/txt" name="files[]" size=30>
+			<br>
+			<br>
+			<p style='width: 90%'>Clicking save will download a text file which stores the environment objects. If it doesn't download, you can copy the text area below and paste it into a text file to load.</p>
+			<textarea id='output' style='width: 90%;'></textarea>
+		</div>
+	</div>
+	<canvas id="graph"></canvas>
+<!--SCRIPTS-->
+	<script>
+	//---------------------------------------------------------------------------------------------------
+	//ENVIRONMENT VARIABLES
+	//---------------------------------------------------------------------------------------------------
+	var yob = 10;
+	var XFOVangle = Math.PI / 4;
+	var YFOVangle = Math.PI / 4;
+	//---------------------------------------------------------------------------------------------------
+	//DOCUMENT SETUP
+	//---------------------------------------------------------------------------------------------------
+	var c = document.getElementById("graph");
+	var ctx = c.getContext("2d");
+	//---------------------------------------------------------------------------------------------------
+	$(document).ready(function(){
+		fitCanvas();
+		//Disable correct mousemode buttons
+		$('#mousemodePAINT').prop('disabled', true);
+	});
+	//---------------------------------------------------------------------------------------------------
+	$(window).resize(function(){
+		fitCanvas();
+	});
+	//---------------------------------------------------------------------------------------------------
+	function fitCanvas(){
+		c.width  = window.innerWidth;
+		c.height = window.innerHeight;
+		c.width  = c.offsetWidth - 600;
+		c.height = c.offsetHeight;
+		$('#leftControls').height(c.height);
+		var leftMargin = c.width + 300;
+		$('#rightControls').css({'margin-left':leftMargin});
+		$('#rightControls').css({'height':c.height});
+		//Adjust FOV angles for screen aspect ratio
+		XFOVangle = YFOVangle * parseFloat(c.width) / parseFloat(c.height);
+		repaint();
+	}
+	//---------------------------------------------------------------------------------------------------
+	//MOUSE CONTROLS (REQUIRES A CANVAS NAMED 'graph')
+	//---------------------------------------------------------------------------------------------------
+	var oldMousePos = [];
+	var mouseDown = false;
+	//---------------------------------------------------------------------------------------------------
+	$(document).mousemove(function(e){
+		if (mouseDown && !$('#graph').is(':hover')){ //Then we have gone off canvas
+			mouseDown = false;
+		}
+		if (mouseDown){ //This is a drag
+			switch(mouseMode){ //This is a drag while painting (and due to code above, we know that we are on the canvas)
+				case 0:
+					if (oldMousePos.length > 1){
+						ctx.beginPath();
+						ctx.moveTo(oldMousePos[0], oldMousePos[1]);
+						ctx.lineTo(e.offsetX, e.offsetY);
+						ctx.stroke();
+					}
+				break;
+				case 1:
+				break;
+				case 2:
+					//Perform rotations consistent with mouse spin.
+					if (isNaN(parseFloat($('#rotationPointX').val()))){$('#rotationPointX').val('0');}
+					if (isNaN(parseFloat($('#rotationPointY').val()))){$('#rotationPointY').val('0');}
+					if (isNaN(parseFloat($('#rotationPointZ').val()))){$('#rotationPointZ').val('0');}
+					//Y
+					var origin = [parseFloat($('#rotationPointX').val()), parseFloat($('#rotationPointY').val()), parseFloat($('#rotationPointZ').val())];
+					var direction = [1, 0, 0];
+					for (var i = 0; i < guides.length; i++){
+						if (guides[i].type == 'circle'){
+							guides[i] = Guide.rotate(guides[i], origin, direction, -(e.offsetY - oldMousePos[1]) / 100);
+						}
+						if (guides[i].type == 'cube'){
+							
+							var newOrigin = [];
+							for (var j = 0; j < guides[i].origin.length; j++){
+								newOrigin[j] = rotate3D(guides[i].origin[j], origin, direction, -(e.offsetY - oldMousePos[1]) / 100);
+							}
+							guides[i] = Guide.create(guides[i].name, guides[i].type, newOrigin, guides[i].referenceSize, guides[i].color);
+						}
+					}
+					//X
+					direction = [0, 0, 1];
+					for (var i = 0; i < guides.length; i++){
+						if (guides[i].type == 'circle'){
+							guides[i] = Guide.rotate(guides[i], origin, direction, -(e.offsetX - oldMousePos[0]) / 100);
+						}
+						if (guides[i].type == 'cube'){
+							var newOrigin = [];
+							for (var j = 0; j < guides[i].origin.length; j++){
+								newOrigin[j] = rotate3D(guides[i].origin[j], origin, direction, -(e.offsetX - oldMousePos[0]) / 100);
+							}
+							guides[i] = Guide.create(guides[i].name, guides[i].type, newOrigin, guides[i].referenceSize, guides[i].color);
+						}
+					}
+					repaint();
+				break;
+			}
+		}
+		oldMousePos = [e.offsetX, e.offsetY];
+	});
+	//---------------------------------------------------------------------------------------------------
+	$(document).mousedown(function(){if (!mouseDown && $('#graph').is(':hover')){mouseDown = true;}});
+	//---------------------------------------------------------------------------------------------------
+	$(document).mouseup(function(){if (mouseDown){mouseDown = false;}});
+	//---------------------------------------------------------------------------------------------------
+	//BUTTON CONTROLS
+	//---------------------------------------------------------------------------------------------------
+	var mouseMode = 0; //0 - paintbrush, 1 - carryingObject, 2 - observer (spin environment)
+	//---------------------------------------------------------------------------------------------------
+	$('#mousemodePAINT').click(function(){
+		$('#mousemodePAINT').prop('disabled', true);
+		$('#mousemodeCARRY').prop('disabled', false);
+		$('#mousemodeOBSERVE').prop('disabled', false);
+		mouseMode = 0;
+	});
+	$('#mousemodeCARRY').click(function(){
+		$('#mousemodePAINT').prop('disabled', false);
+		$('#mousemodeCARRY').prop('disabled', true);
+		$('#mousemodeOBSERVE').prop('disabled', false);
+		mouseMode = 1;
+	});
+	$('#mousemodeOBSERVE').click(function(){
+		$('#mousemodePAINT').prop('disabled', false);
+		$('#mousemodeCARRY').prop('disabled', false);
+		$('#mousemodeOBSERVE').prop('disabled', true);
+		mouseMode = 2;
+	});
+	//---------------------------------------------------------------------------------------------------
+	//BOM OPERATIONS
+	//---------------------------------------------------------------------------------------------------
+	var guides = [];
+	//---------------------------------------------------------------------------------------------------
+	function addGuideToModel(name, type, origin, referenceSize, color){//Adds guide to guides and updates BOM table
+		//Create guide object
+		var localGuide = Guide.create(name, type, origin, referenceSize, color);
+		guides.push(localGuide);
+		//Add row to BOM
+		addRowForGuide(localGuide, document.getElementById('bomTable'));
+		repaint();
+	}
+	//---------------------------------------------------------------------------------------------------
+	function indexOfGuide(name){//Returns the index of the guide in guides with the input name
+		var result =-1;
+		for (var i = 0; i < guides.length; i++){if (guides[i].name == name){result = i;}}
+		return result;
+	}
+	//---------------------------------------------------------------------------------------------------
+	$('#addGuide').click(function(){
+		var name = $('#inputName').val();
+		var type = $('#inputType').val();
+		origin = [parseFloat($('#inputX').val()), parseFloat($('#inputY').val()), parseFloat($('#inputZ').val())];
+		var referenceSize = parseFloat($('#inputReferenceSize').val());
+		if (type == 'cube'){
+			origin = generateBlockVertices(origin, referenceSize, referenceSize, referenceSize);
+		}		
+		var color = '#000000';
+		//Checks before creating a new guide
+		var validParameters = true;
+		//REPLACE THIS LATER WITH A COMBOBOX, YOU SAVAGE.
+		if (type != 'circle' && type != 'cube'){alert('Sorry, only \'circle\' and \'cube\' are currently supported'); validParameters = false;}
+		if (validParameters){
+			addGuideToModel(name, type, origin, referenceSize, color);
+		}
+	});
+	//---------------------------------------------------------------------------------------------------
+	function addRowForGuide(guide, table){
+		var row = table.insertRow();
+		//Add checkbox
+		var cell0 = row.insertCell(0);
+		var checkBox = document.createElement('input');
+		checkBox.id='checkbox' + guide.name;
+		checkBox.type='checkbox';
+		cell0.appendChild(checkBox);
+	
+		var cell1 = row.insertCell(1);
+		cell1.innerHTML = guide.name;
+		//Remove button
+		var cell2 = row.insertCell(2);
+		var button = document.createElement('button');
+		button.innerHTML = 'X';
+		button.addEventListener ("click", function() {
+		//remove the corresponding row from the bom table
+		table.deleteRow(indexOfGuide(guide.name));
+		//remove the corresponding guide from guides
+		guides.splice(indexOfGuide(guide.name), 1);
+		repaint();
+		});
+		cell2.appendChild(button);
+		//Coordinates
+		var cell3 = row.insertCell(3);
+		if (guide.type == 'cube'){cell3.innerHTML = 'X=' + round2TwoDecimals(guide.origin[0][0]);}
+		if (guide.type == 'circle'){cell3.innerHTML = 'X=' + round2TwoDecimals(guide.origin[0]);}
+		var cell4 = row.insertCell(4);
+		if (guide.type == 'cube'){cell4.innerHTML = 'Y=' + round2TwoDecimals(guide.origin[0][1]);}
+		if (guide.type == 'circle'){cell4.innerHTML = 'Y=' + round2TwoDecimals(guide.origin[1]);}
+		var cell5 = row.insertCell(5);
+		if (guide.type == 'cube'){cell5.innerHTML = 'Z=' + round2TwoDecimals(guide.origin[0][2]);}
+		if (guide.type == 'circle'){cell5.innerHTML = 'Z=' + round2TwoDecimals(guide.origin[2]);}
+		var cell6 = row.insertCell(6);
+		cell6.innerHTML = 'R=' + round2TwoDecimals(guide.referenceSize);
+	}
+	//---------------------------------------------------------------------------------------------------
+	function round2TwoDecimals(input){return parseInt(100 * input) / 100;}
+	//---------------------------------------------------------------------------------------------------
+	//GRAPHICS OPERATIONS
+	//---------------------------------------------------------------------------------------------------
+	function repaint(){
+		//setup to paint the canvas
+		var c = document.getElementById("graph");
+		var ctx = c.getContext("2d");
+		//Clear the canvas
+		ctx.fillStyle = "#FFFDF9";
+		ctx.fillRect(0, 0, c.width, c.height);
+		//paint every guide that is composed of surfaces
+		var allSurfaces = [];
+		//DUMP
+		for (var i = 0; i < guides.length; i++){
+			if (guides[i].type == 'cube'){
+				var thing = createThing(generateBlockSurfaces(guides[i].origin, "#BB3322"), i);
+				for (var j = 0; j < thing.surfaces.length; j++){
+					allSurfaces.push(thing.surfaces[j]);
+				}
+			}
+		}
+		//SORT
+		var references = [];	//This array will record our ordered list of surfaces. This is basically our painting schedule
+		for (var i = 0; i < allSurfaces.length; i++){references[i] = i;}	//Initially, our painting schedule will be the same order as the allSurfaces array (this will probably change).
+		for (var i = 0; i < allSurfaces.length; i++){	//This is the beginning of the part of the list we're not sure about. All positions < i are locked in.
+			var grabs = [];	//This array keeps track of how many times we've pulled each surface to the front of the non-locked in part of the list (since the last time we locked in a surface).
+			for (var t = 0; t < allSurfaces.length; t++){grabs[t] = 0;}	//Every surface starts with a clean slate.
+			for (var j = i + 1; j < allSurfaces.length; j++){	//For every surface in the non-locked in part of the list
+				if (aIsInFrontOfB(allSurfaces[references[i]], allSurfaces[references[j]])){/*Good. No change is necessary*/}
+				else{
+					if (grabs[references[j]] == 0){//If this is false, this surface has been moved to this spot in the list before (i.e. we are in a loop and need to break out).
+						grabs[references[j]] = 1;	//Mark that we have now grabbed surface references[j] and put it to the front. If we every do this again for references[j] we will know we are in a loop.
+						var buffer = references[j];	//Swap surface references[i] and references[j]. Note we are swapping them in our schedule (references array) NOT in the allSurfaces array itself. The former is more lightweight.
+						references[j] = references[i];
+						references[i] = buffer;
+						j = i + 1; //We want to start over now that we have a new order to proceed through the surfaces
+					}
+					else{j = allSurfaces.length;}//Break the loop. Due to surface-through-surface intersections there are some equivocal depths and we cannot sort any further
+				}
+			}
+		}
+		//PAINT
+		for (var i = 0; i < allSurfaces.length; i++){
+			paintSurface(ctx, allSurfaces[references[allSurfaces.length - 1 - i]], yob, XFOVangle, YFOVangle);
+		}
+		//paint every guide that is a wireframe
+		for (var i = 0; i < guides.length; i++){
+			Guide.paint(guides[i], c, ctx, yob, XFOVangle, YFOVangle);
+		}
+	}
+	//---------------------------------------------------------------------------------------------------
+	$('#removeHandDrawings').click(repaint);
+	//---------------------------------------------------------------------------------------------------
+	$('#rotate').click(function(){
+		//get parameters
+		if (isNaN(parseFloat($('#rotationPointX').val()))){$('#rotationPointX').val('0');}
+		if (isNaN(parseFloat($('#rotationPointY').val()))){$('#rotationPointY').val('0');}
+		if (isNaN(parseFloat($('#rotationPointZ').val()))){$('#rotationPointZ').val('0');}
+		var axisOrigin = [parseFloat($('#rotationPointX').val()), parseFloat($('#rotationPointY').val()), parseFloat($('#rotationPointZ').val())];
+		var axisDirection = [parseFloat($('#rotationDirectionX').val()), parseFloat($('#rotationDirectionY').val()), parseFloat($('#rotationDirectionZ').val())];
+		for (var i = 0; i < guides.length; i++){
+			if (isNaN(parseFloat($('#rotationIncrement').val()))){$('#rotationIncrement').val('0');}//Default value is 0
+			if($('#checkbox' + guides[i].name).is(':checked')){
+				guides[i] = Guide.rotate(guides[i], axisOrigin, axisDirection, parseFloat($('#rotationIncrement').val()));
+			}
+			//Update coordinates in table
+			var table = document.getElementById('bomTable');
+			if(guides[i].type == 'cube'){table.rows[i].cells[3].innerHTML = 'X=' + round2TwoDecimals(guides[i].origin[0][0]);}
+			if(guides[i].type == 'circle'){table.rows[i].cells[3].innerHTML = 'X=' + round2TwoDecimals(guides[i].origin[0]);}
+			if(guides[i].type == 'cube'){table.rows[i].cells[4].innerHTML = 'Y=' + round2TwoDecimals(guides[i].origin[0][1]);}
+			if(guides[i].type == 'circle'){table.rows[i].cells[4].innerHTML = 'Y=' + round2TwoDecimals(guides[i].origin[1]);}
+			if(guides[i].type == 'cube'){table.rows[i].cells[5].innerHTML = 'Z=' + round2TwoDecimals(guides[i].origin[0][2]);}
+			if(guides[i].type == 'circle'){table.rows[i].cells[5].innerHTML = 'Z=' + round2TwoDecimals(guides[i].origin[2]);}
+			table.rows[i].cells[6].innerHTML = 'R=' + round2TwoDecimals(guides[i].referenceSize);
+		}
+		repaint();
+	});
+	//---------------------------------------------------------------------------------------------------
+	//Listeners for the translation buttons
+	$('#plusX').click(function(){translate('plusX');});
+	$('#minusX').click(function(){translate('minusX');});
+	$('#plusY').click(function(){translate('plusY');});
+	$('#minusY').click(function(){translate('minusY');});
+	$('#plusZ').click(function(){translate('plusZ');});
+	$('#minusZ').click(function(){translate('minusZ');});
+	//---------------------------------------------------------------------------------------------------
+	//Core translation function
+	function translate (translateCode){
+		var direction = [];
+		switch (translateCode){
+			case 'plusX': direction = [1, 0, 0]; break;
+			case 'minusX': direction = [-1, 0, 0]; break;
+			case 'plusY': direction = [0, 1, 0]; break;
+			case 'minusY': direction = [0, -1, 0]; break;
+			case 'plusZ': direction = [0, 0, 1]; break;
+			case 'minusZ': direction = [0, 0, -1]; break;
+		}
+		for (var i = 0; i < guides.length; i++){
+			if (isNaN(parseFloat($('#translationIncrement').val()))){$('#translationIncrement').val('0');}//Default value is 0
+			if($('#checkbox' + guides[i].name).is(':checked')){
+				guides[i] = Guide.translate(guides[i], direction, parseFloat($('#translationIncrement').val()));
+			}
+			//Update coordinates in table
+			var table = document.getElementById('bomTable');
+			if(guides[i].type == 'cube'){table.rows[i].cells[3].innerHTML = 'X=' + round2TwoDecimals(guides[i].origin[0][0]);}
+			if(guides[i].type == 'circle'){table.rows[i].cells[3].innerHTML = 'X=' + round2TwoDecimals(guides[i].origin[0]);}
+			if(guides[i].type == 'cube'){table.rows[i].cells[4].innerHTML = 'Y=' + round2TwoDecimals(guides[i].origin[0][1]);}
+			if(guides[i].type == 'circle'){table.rows[i].cells[4].innerHTML = 'Y=' + round2TwoDecimals(guides[i].origin[1]);}
+			if(guides[i].type == 'cube'){table.rows[i].cells[5].innerHTML = 'Z=' + round2TwoDecimals(guides[i].origin[0][2]);}
+			if(guides[i].type == 'circle'){table.rows[i].cells[5].innerHTML = 'Z=' + round2TwoDecimals(guides[i].origin[2]);}
+			table.rows[i].cells[6].innerHTML = 'R=' + round2TwoDecimals(guides[i].referenceSize);
+		}
+		repaint();
+	}
+	//---------------------------------------------------------------------------------------------------
+	//Scale function
+	$('#scale').click(function(){
+		for (var i = 0; i < guides.length; i++){
+			var oldSize = guides[i].referenceSize;
+			if (isNaN(parseFloat($('#scaleFactor').val()))){$('#scaleFactor').val('1');}//Default value is 1
+			if($('#checkbox' + guides[i].name).is(':checked')){
+				guides[i].referenceSize = $('#scaleFactor').val();
+			}
+			//Update coordinates in table
+			var table = document.getElementById('bomTable');
+			table.rows[i].cells[6].innerHTML = 'R=' + round2TwoDecimals(guides[i].referenceSize);
+			//update vertices if a cube
+			if (guides[i].type == 'cube'){
+				var mainOrigin = guides[i].origin[0];
+				var newVertices = [mainOrigin];
+				for (var j = 1; j < guides[i].origin.length; j++){
+					newVertices[j] = add(mainOrigin, scale(sub(guides[i].origin[j], mainOrigin), guides[i].referenceSize / oldSize));
+				}
+				guides[i] = Guide.create(guides[i].name, guides[i].type, newVertices, guides[i].referenceSize, guides[i].color);
+			}
+		}
+		repaint();
+	});
+	//---------------------------------------------------------------------------------------------------
+	//SAVE AND LOAD FUNCTIONS
+	//---------------------------------------------------------------------------------------------------
+	var guidesToLoad = '';
+	var guidesToSave = '';
+	//---------------------------------------------------------------------------------------------------
+	function handleFileSelect(evt) {
+    var files = evt.target.files; // FileList object
+    // use the 1st file from the list
+    f = files[0];
+    var reader = new FileReader();
+    // Closure to capture the file information.
+    reader.onload = (function(theFile) {
+        return function(e) {
+          guidesToLoad = e.target.result;
+        };
+      })(f);
+      // Read in the image file as a data URL.
+      reader.readAsText(f);
+	}
+	//---------------------------------------------------------------------------------------------------
+	document.getElementById('upload').addEventListener('change', handleFileSelect, false);
+	//---------------------------------------------------------------------------------------------------
+	$('#load').click(function(){
+		guides = [];
+		$('#bomTable').remove(table);
+		var table = document.createElement('table');
+		table.id = 'bomTable';
+		$('#scroll').append(table);
+		var lines = guidesToLoad.split('|');
+		for (var i = 0; i < lines.length; i++){
+			//Create guide and add it to guides
+			var parts = lines[i].split('!:!');
+			var localGuide = Guide.create(parts[0], parts[1], [parseFloat(parts[2]), parseFloat(parts[3]), parseFloat(parts[4])], parseFloat(parts[5]), parseFloat(parts[6]));
+			guides.push(localGuide);
+			//Add row to BOM
+			addRowForGuide(localGuide, table);
+		}
+		repaint();
+	});
+	//---------------------------------------------------------------------------------------------------
+	$('#save').click(function(){
+		var guidesToSave = '';
+		for (var i = 0; i < guides.length; i++){
+			guidesToSave += guides[i].name + '!:!' + guides[i].type + '!:!' + guides[i].origin[0] + '!:!' + guides[i].origin[1] + '!:!' + guides[i].origin[2] + '!:!' + guides[i].referenceSize + '!:!' + guides[i].color + '|';
+		}
+		if (guidesToSave.length > 0){guidesToSave = guidesToSave.substring(0, guidesToSave.length - 1);}
+		$('#output').val(guidesToSave);
+		
+		//Downlaod the filevar uri = "data:application/octet-stream," + encodeURIComponent(content);
+		var uri = "data:application/octet-stream," + encodeURIComponent(guidesToSave);
+		var link = document.createElement("a");
+		link.href = uri;
+		link.download = $('#filename').val() + ".txt";
+		link.click();
+	});
+	</script>
+</body>
+</html>

@@ -20,37 +20,7 @@ function paintSurface(ctx, surface, yob, XFOVangle, YFOVangle){
 
 	var localVertices = copyOf(surface.vertices);
 	
-	//Check if any changes are needed to coordinates based on visibility - make the changes if necessary
-	
-	/*
-	Before painting, check if any of the vertices are behind the observer (y > yob) which
-	is the asymptotic plane. If a vertex is behind this plane, replace its y coordinate
-	with a y coordinate just in front of the asomptotic plane (y = yob - dy).
-	
-	If, after doing the above for all surface points, there are no visible surface points,
-	don't even bother painting the surface.
-	
-	Note: Obviously, create a local, modified set of surface vertices (don't alter the 
-	surface passed to this function).
-	
-	*/
 	var allHidden = true;	//This remains true if all the vertices of the surface are hidden from view.
-	
-	/*
-	If any surface boundary intersects any vision cone plane at a y < yob, then the surface is visible
-	vision cone normal planes are:
-	<-yob, -yob * Math.sin(XFOVangle / 2), 0> --- Left
-	<yob, -yob * Math.sin(XFOVangle / 2), 0> --- Right
-	<0, -yob * Math.sin(YFOVangle / 2), -yob> --- Top
-	<0, -yob * Math.sin(YFOVangle / 2), yob> --- Bottom
-	
-	and points are
-	<yob * Math.sin(XFOVangle / 2), 0, 0> --- Left
-	<-yob * Math.sin(XFOVangle / 2), 0, 0> --- Right
-	<0, 0, yob * Math.sin(YFOVangle / 2)> --- Top
-	<0, 0, -yob * Math.sin(YFOVangle / 2)> --- Bottom
-	
-	*/
 	
 	//Check if any vertices are in view
 	for (var i = 0; i < surface.vertices.length; i++){
@@ -65,32 +35,31 @@ function paintSurface(ctx, surface, yob, XFOVangle, YFOVangle){
 	}
 	
 	//Check if any surface boundaries intersect the vision cone
+	var observer = [0, yob, 0];
 	if(allHidden){
 		for (var i = 0; i < 4; i++){
-		var normal = [];
-		var planePoint = [];
-		switch(i){
-			case 0:
-				normal = [-yob, -yob * Math.sin(XFOVangle / 2), 0];
-				planePoint = [yob * Math.sin(XFOVangle / 2), 0, 0];
-			break;
-			case 1:
-				normal = [yob, -yob * Math.sin(XFOVangle / 2), 0];
-				planePoint = [-yob * Math.sin(XFOVangle / 2), 0, 0];
-			break;
-			case 2:
-				normal = [0, -yob * Math.sin(YFOVangle / 2), -yob];
-				planePoint = [0, 0, yob * Math.sin(YFOVangle / 2)];
-			break;
-			case 3:
-				normal = [0, -yob * Math.sin(YFOVangle / 2), yob];
-				planePoint = [0, 0, -yob * Math.sin(YFOVangle / 2)];
-			break;
-		}
-		for (var j = 0; j < surface.vertices.length - 1; j++){
-			if (pointIsInOrNearVisionCone(linePlaneIntersection(surface.vertices[j], sub(surface.vertices[j + 1], surface.vertices[j]), normal, planePoint), yob, XFOVangle, YFOVangle)){allHidden = false;}
-		}
-		if (pointIsInOrNearVisionCone(linePlaneIntersection(surface.vertices[3], sub(surface.vertices[0], surface.vertices[3]), normal, planePoint), yob, XFOVangle, YFOVangle)){allHidden = false;}
+			var normal = [];
+			var planePoint = [];
+			switch(i){
+				case 0:
+					normal = [-yob, -yob * Math.sin(XFOVangle / 2), 0];
+					planePoint = [yob * Math.sin(XFOVangle / 2), 0, 0];
+				break;
+				case 1:
+					normal = [yob, -yob * Math.sin(XFOVangle / 2), 0];
+					planePoint = [-yob * Math.sin(XFOVangle / 2), 0, 0];
+				break;
+				case 2:
+					normal = [0, -yob * Math.sin(YFOVangle / 2), -yob];
+					planePoint = [0, 0, yob * Math.sin(YFOVangle / 2)];
+				break;
+				case 3:
+					normal = [0, -yob * Math.sin(YFOVangle / 2), yob];
+					planePoint = [0, 0, -yob * Math.sin(YFOVangle / 2)];
+				break;
+			}
+			var intersection = linePlaneIntersection(observer, sub(planePoint, observer), normal, planePoint);
+			if (pointPenetratesSurfaceVertices(intersection, surface.vertices) && intersection < yob){allHidden = false;}
 		}
 	}
 	

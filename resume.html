@@ -192,7 +192,7 @@ function fitCanvas(){	//We want to expand the canvas to fill the entire backgrou
 		textBlocks[i].fontSize = c.height / 20;
 	}
 	textBlocks[3].fontSize *= 1.5;	//Boost the title
-	repaint();
+	repaint("#FFFDF9");
 }
 //--------------------------------------------------------------------------
 //Events for scrolling (create 3D effect)
@@ -207,7 +207,7 @@ $(window).scroll(function(){
 		textBlocks[i].origin = add(textBlocks[i].origin, scale(direction, ($(window).scrollTop() - lastScrollTop) / 1000));
 	}
 	lastScrollTop = $(window).scrollTop();
-	repaint();
+	repaint("#FFFDF9");
 
 });
 //--------------------------------------------------------------------------

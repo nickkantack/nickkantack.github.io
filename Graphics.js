@@ -27,7 +27,7 @@ function animate(index, translationDirection, translationDistance, rotationAxisP
 	}
 }
 //--------------------------------------------------------------------------
-function repaint(backgroundCol = "#FFFDF9"){
+function repaint(backgroundCol){
 	
 	/*
 	This method paints the view of the 3D enviornment defined by the array things.
@@ -147,7 +147,7 @@ function requestRepaint(){
 	
 		lastRepaintTime = currentTime;
 		
-		repaint();
+		repaint("#FFFDF9");
 		
 	}
 	
