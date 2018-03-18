@@ -280,10 +280,6 @@
 	
 	<script>
 	
-		//Record of time of last repaint
-		var lastRepaintTime = 0;
-		var minRepaintInterval = 50; //in ms
-	
 		//Global lists
 		var things = [];	//The 3D environment paints surfaces. "Things" are groups of related surfaces (e.g. a thing could be a cube with all the faces as surfaces).
 		var textBlocks = [];
@@ -325,8 +321,6 @@
 			fitCanvas();
 			$(window).resize(function() {fitCanvas();});
 			homeAnimation();
-			setInterval(homeAnimation, 6000);
-			setTimeout(function(){reverseHomeAnimation(); setInterval(reverseHomeAnimation, 6000)}, 3000);
 		});
 		//--------------------------------------------------------------------------
 		function fitCanvas(){
@@ -337,63 +331,85 @@
 			repaint("#FDF9EF");
 		}
 		//--------------------------------------------------------------------------
+		// Animation
+		//--------------------------------------------------------------------------
+		//Record of time of last repaint
+		var lastRepaintTime = 0;
+		var minRepaintInterval = 50; //in ms
+		var counter = 0;
+		var stepLimit = 40;
+		var delay = 100;
+		var pauseBetweenAnimations = 1000;
+		
+		var translationDirection0 = [0, 5, 1];
+		var rotationAxisPoint0 = [-0.5, 3, -0.5];
+		var rotationAxisDirection0 = [1, 1, 1];
+
+		var translationDirection1 = [0, 0, 1];
+		var rotationAxisPoint1 = [-1.2, 3.5, 0];
+		var rotationAxisDirection1 = [0, -1, 0];
+
+		var translationDirection2 = [1, 0, 0];
+		var rotationAxisPoint2 = [0, 3.5, 1.4];
+		var rotationAxisDirection2 = [0, 1, 0];
+		
+		var translationDirection3 = [1, 0, 0];
+		var rotationAxisPoint3 = [0, 3.5, 0];
+		var rotationAxisDirection3 = [1, 0, 0];
+		
 		function homeAnimation(){
 		
 			// The forward animations
 		
-			var translationDirection = [0, 5, 1];
-			var rotationAxisPoint = [-0.5, 3, -0.5];
-			var rotationAxisDirection = [1, 1, 1];
 			
-			animate(0, translationDirection, 0, rotationAxisPoint, rotationAxisDirection, 2 * Math.PI, 2000, 50, 0, "#FDF9EF");
+			things[0] = translateAndRotateThing(things[0], translationDirection0, 0, rotationAxisPoint0, rotationAxisDirection0, Math.PI / stepLimit);
+				
+			things[1] = translateAndRotateThing(things[1], translationDirection1, 1.4 / stepLimit, rotationAxisPoint1, rotationAxisDirection1, 0);
 			
-			var translationDirection = [0, 0, 1];
-			var rotationAxisPoint = [-1.2, 3.5, 0];
-			var rotationAxisDirection = [0, -1, 0];
+			things[2] = translateAndRotateThing(things[2], translationDirection2, 1.4 / stepLimit, rotationAxisPoint2, rotationAxisDirection2, Math.PI / 2 / stepLimit);
+			rotationAxisPoint2 = add(rotationAxisPoint2, scale(unit(translationDirection2), 1.4 / stepLimit));
 			
-			animate(1, translationDirection, 1.4, rotationAxisPoint, rotationAxisDirection, 0, 2000, 50, 0, "#FDF9EF");
+			things[3] = translateAndRotateThing(things[3], translationDirection3, 0, rotationAxisPoint3, rotationAxisDirection3, Math.PI / stepLimit);
 			
-			var translationDirection = [1, 0, 0];
-			var rotationAxisPoint = [0, 3.5, 1.4];
-			var rotationAxisDirection = [0, 1, 0];
+			requestRepaint('#FDF9EF');
 			
-			animate(2, translationDirection, 1.4, rotationAxisPoint, rotationAxisDirection, Math.PI / 2, 2000, 50, 0, "#FDF9EF");
-			
-			var translationDirection = [1, 0, 0];
-			var rotationAxisPoint = [0, 3.5, 0];
-			var rotationAxisDirection = [1, 0, 0];
-			
-			animate(3, translationDirection, 0, rotationAxisPoint, rotationAxisDirection, Math.PI, 2000, 50, 0, "#FDF9EF");
+			counter++;
+			if (counter <= stepLimit){
+				setTimeout(homeAnimation, delay);
+			}
+			else{
+				counter = 0;
+				setTimeout(reverseHomeAnimation, delay + pauseBetweenAnimations);
+			}
 			
 		}
 		//--------------------------------------------------------------------------
 		function reverseHomeAnimation(){
 		
-			//The backward animations
-			var translationDirection = [0, 5, 1];
-			var rotationAxisPoint = [-0.5, 3, -0.5];
-			var rotationAxisDirection = [1, 1, 1];
+			things[0] = translateAndRotateThing(things[0], translationDirection0, 0, rotationAxisPoint0, rotationAxisDirection0, -Math.PI / stepLimit);
+				
+			things[1] = translateAndRotateThing(things[1], translationDirection1, -1.4 / stepLimit, rotationAxisPoint1, rotationAxisDirection1, 0);
 			
-			animate(0, translationDirection, 0, rotationAxisPoint, rotationAxisDirection, 2 * Math.PI, 2000, 50, 0, "#FDF9EF");
+			things[2] = translateAndRotateThing(things[2], translationDirection2, -1.4 / stepLimit, rotationAxisPoint2, rotationAxisDirection2, -Math.PI / 2 / stepLimit);
+			rotationAxisPoint2 = add(rotationAxisPoint2, scale(unit(translationDirection2), -1.4 / stepLimit));
 			
-			var translationDirection = [0, 0, 1];
-			var rotationAxisPoint = [-1.2, 3.5, 1.5];
-			var rotationAxisDirection = [1, 0, 0];
+			things[3] = translateAndRotateThing(things[3], translationDirection3, 0, rotationAxisPoint3, rotationAxisDirection3, -Math.PI / stepLimit);
 			
-			animate(1, translationDirection, -1.5, rotationAxisPoint, rotationAxisDirection, Math.PI / 2, 2000, 50, 0, "#FDF9EF");
+			requestRepaint('#FDF9EF');
 			
-			var translationDirection = [-1, 0, 0];
-			var rotationAxisPoint = [1, 3.5, 1.4];
-			var rotationAxisDirection = [0, -1, 0];
+			counter++;
+			if (counter <= stepLimit){
+				setTimeout(reverseHomeAnimation, delay);
+			}
+			else{
+				counter = 0;
+				setTimeout(homeAnimation, delay + pauseBetweenAnimations);
+			}
 			
-			animate(2, translationDirection, 1.4, rotationAxisPoint, rotationAxisDirection, 0, 2000, 50, 0, "#FDF9EF");
-			
-			var translationDirection = [1, 0, 0];
-			var rotationAxisPoint = [0, 3.5, 0];
-			var rotationAxisDirection = [-1, 0, 0];
-			
-			animate(3, translationDirection, 0, rotationAxisPoint, rotationAxisDirection, Math.PI, 2000, 50, 0, "#FDF9EF");
-			
+		}
+		//--------------------------------------------------------------------------
+		function homeEverything(){
+		
 		}
 		//--------------------------------------------------------------------------
 		// Links for buttons

@@ -224,7 +224,6 @@
 			fitCanvas();
 			$(window).resize(function() {fitCanvas();});
 			homeAnimation();
-			animator = setInterval(homeAnimation, 20000);
 		});
 		//--------------------------------------------------------------------------
 		function fitCanvas(){
@@ -244,13 +243,24 @@
 		var lastRepaintTime = 0;
 		var minRepaintInterval = 50; //in ms
 		
+		/*
+		if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) {
+			alert('mobile');
+		}
+		else{
+			alert('not mobile');
+		}
+		*/
+		
 		function homeAnimation(){
 			var translationDirection = [0, 5, 1];
 			var rotationAxisPoint = [0, 3, 0];
 			var rotationAxisDirection = [1, 1, 1];
 			for (var i = 0; i < things.length; i++){
-				animate(i, translationDirection, 0, rotationAxisPoint, rotationAxisDirection, 2 * Math.PI, 20000, 400, 0, "#FDF9EF");
+				things[i] = translateAndRotateThing(things[i], translationDirection, 0, rotationAxisPoint, rotationAxisDirection, Math.PI / 100)
 			}
+			setTimeout(homeAnimation, 2 * minRepaintInterval);
+			requestRepaint("#FDF9EF");
 		}
 		//--------------------------------------------------------------------------
 		// Links for buttons
