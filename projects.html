@@ -147,7 +147,7 @@ a convincing 3 dimensional environment.
 	
 	//Record of time of last repaint
 	var lastRepaintTime = 0;
-	var minRepaintInterval = 50; //in ms
+	var minRepaintInterval = 10; //in ms
 	
 	//Global lists
 	var things = [];	//The 3D environment paints surfaces. "Things" are groups of related surfaces (e.g. a thing could be a cube with all the faces as surfaces).
@@ -229,6 +229,9 @@ a convincing 3 dimensional environment.
 		var size = 80;
 		var textBlock = {text: "Nick Kantack  -  Projects", color: "#FFFFFF", origin: origin, fontStyle: "italic small-caps bold", fontSize: size, fontFamily: "Verdana"};
 		textBlocks.push(textBlock);
+		
+	//Things in the background	 	
+		
 
 //--------------------------------------------------------------------------
 //Events for startup go in here
@@ -299,7 +302,7 @@ $(window).scroll(function(){
 		
 	}
 	lastScrollTop = $(window).scrollTop();
-	repaint("#FFFDF9");
+	requestRepaint("#FFFDF9");
 
 });
 //--------------------------------------------------------------------------

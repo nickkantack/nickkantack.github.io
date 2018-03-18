@@ -1,4 +1,4 @@
-function animate(index, translationDirection, translationDistance, rotationAxisPoint, rotationAxisDirection, angle, time, steps, currentStep){
+function animate(index, translationDirection, translationDistance, rotationAxisPoint, rotationAxisDirection, angle, time, steps, currentStep, background){
 	
 	/*
 	Calling this function initiates the translation and/or rotation animation (specified by the input parameters) on the thing at things[index] (where index is a supplied parameter).
@@ -13,15 +13,15 @@ function animate(index, translationDirection, translationDistance, rotationAxisP
 	if (currentStep >= steps){	//Then we are one step away from being done with the animation.
 		things[index] = translateAndRotateThing(things[index], translationDirection, translationDistance * (1 - currentStep / steps + 1 / steps), rotationAxisPoint, rotationAxisDirection, angle * (1 - currentStep / steps + 1 / steps));
 		rotationAxisPoint = add(rotationAxisPoint, scale(translationDirection, translationDistance * (1 - currentStep / steps + 1 / steps)));	//Remove this if you don't want the rotationAxisPoint to translate
-		repaint();
+		requestRepaint(background);
 	}
 	else{	//Then we are beginning or in the midst of the animation.
 		things[index] = translateAndRotateThing(things[index], translationDirection, translationDistance / steps, rotationAxisPoint, rotationAxisDirection, angle / steps);
 		rotationAxisPoint = add(rotationAxisPoint, scale(translationDirection, translationDistance / steps));	//Remove this if you don't want the rotationAxisPoint to translate
-		repaint();
+		repaint(background);
 		setTimeout(function(){	//Schedule the next frame of the animation.
 		
-			animate(index, translationDirection, translationDistance, rotationAxisPoint, rotationAxisDirection, angle, time, steps, currentStep);
+			animate(index, translationDirection, translationDistance, rotationAxisPoint, rotationAxisDirection, angle, time, steps, currentStep, background);
 		
 		}, time / steps);
 	}
@@ -132,7 +132,7 @@ function repaint(backgroundCol){
 	
 }
 //--------------------------------------------------------------------------
-function requestRepaint(){
+function requestRepaint(color){
 	
 	/*
 	When lots of animations are taking place, repaint can get called an excessive number of times.
@@ -147,7 +147,7 @@ function requestRepaint(){
 	
 		lastRepaintTime = currentTime;
 		
-		repaint("#FFFDF9");
+		repaint(color);
 		
 	}
 	

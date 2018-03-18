@@ -17,7 +17,6 @@ function paintSurface(ctx, surface, yob, XFOVangle, YFOVangle){
 	/*
 	This method paints the surface based on its projection onto the screen from the 3D environment.
 	*/
-
 	var localVertices = copyOf(surface.vertices);
 	
 	var allHidden = true;	//This remains true if all the vertices of the surface are hidden from view.

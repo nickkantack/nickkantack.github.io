@@ -101,7 +101,7 @@ function rotate3D(vector2Rotate, rotationAxisPoint, rotationAxisDirection, rotat
 	){alert("Input vectors are not all 3 dimensional. All input vectors must be 3 dimensional.");return null;}
 	var v = sub(vector2Rotate, rotationAxisPoint);
 	var P = sub(v, projAonB(v, rotationAxisDirection));
-	if (mag(P) == 0){
+	if (mag(P) < 0.0001){
 		return vector2Rotate;
 	}
 	else{

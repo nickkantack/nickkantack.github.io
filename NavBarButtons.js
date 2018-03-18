@@ -47,7 +47,7 @@ $(document).mousemove(function (event) {
 				clearInterval(alterations[iCopy].animator);
 				}
 				//repaint();
-				requestRepaint();
+				requestRepaint("#FFFDF9");
 			}, alterations[iCopy].time / alterations[iCopy].steps);
 		}
 		if (alterations[i].hover && !pointPenetratesSurfaceVertices(mousePos, frontface)){	//Then we just left the button area.
@@ -69,7 +69,7 @@ $(document).mousemove(function (event) {
 					clearInterval(alterations[iCopy2].animator);
 				}
 				//repaint();
-				requestRepaint();
+				requestRepaint("#FFFDF9");
 			}, alterations[iCopy2].time / alterations[iCopy2].steps);
 		}
 		
