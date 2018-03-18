@@ -15,43 +15,77 @@
 <script src='Block.js'></script>
 
 <style>
-#controls {
-	position: absolute;
-	width: 65%;
-	left: 30%;
-	top: 80%;
-	border: 2px solid #FFFFFF;
-	background: #444444;
-}
-#intro {
-	position: absolute;
-	width: 25%;
-	left: 2%;
-	top: 5%;
-	border: 2px solid #FFFFFF;
-	background: #444444;
-	padding: 10px;
-}
-.slider {
-	width: 100%;
-	margin: 0;
-}
-p {
-	color: #FFFFFF;
-	margin: 0;
-	font-size: 15px;
-	font-family: Verdana;
-	font-weight: normal;
-}
-table {
-	border-collapse: collapse;
-}
-td {
-	border: 1px solid #FFFFFF
-}
-a {
-	color: #FFFFCC;
-}
+	#controls {
+		position: absolute;
+		width: 65%;
+		left: 30%;
+		top: 80%;
+		border: 2px solid #FFFFFF;
+		background: #444444;
+	}
+	#intro {
+		position: absolute;
+		width: 20%;
+		left: 0%;
+		top: 5%;
+		border: 2px solid #FFFFFF;
+		background: #444444;
+		padding: 10px;
+	}
+	.slider {
+		width: 100%;
+		margin: 0;
+	}
+	p {
+		color: #FFFFFF;
+		margin: 0;
+		font-size: 15px;
+		font-family: Verdana;
+		font-weight: normal;
+	}
+	table {
+		border-collapse: collapse;
+	}
+	td {
+		border: 1px solid #FFFFFF
+	}
+	a {
+		color: #FFFFCC;
+	}
+	.navBut {
+		font-variant: small-caps;
+		font-style: italic;
+		font-size: 25px;
+		font-size: 2vw;
+		width: 100%;
+		padding-top: 5%;
+		padding-bottom: 5%;
+		-webkit-transition-duration: 0.4s; /* Safari */
+		transition-duration: 0.4s;
+		background: #BB3322;
+		color: #FFFDF9;
+		border: none;
+		border-radius: 0px;
+	}
+	
+	.navBut:hover {
+		margin-left: -10%;
+		width: 120%;
+		border-radius: 15px;
+		box-shadow: 5px 10px 18px #661100
+	}
+	
+	#navBar {
+		width: 100%;
+		background: #BB3322;
+	}
+	
+	#navBarBoat {
+		position: fixed;
+		right: 0%;
+		width: 12%;
+		top: 5%;
+	}
 </style>
 <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
@@ -119,6 +153,13 @@ a {
 			</tr></table>
 		</div>
 	</div>
+	
+	<div id='navBarBoat'>
+	
+		<button class='navBut' id='backBut'>Back</button>
+
+	</div>
+	
 	<!--LOCAL FUNCTIONS-->
 	<script>
 
@@ -137,18 +178,6 @@ a {
 		var coilVectors = [];
 		var things = [];
 		var textBlocks = [];
-		
-		//Create back button
-		var origin = [4, 0, 2];
-		vertices = generateBlockVertices(origin, 2, 1, 1);
-		things.push(createThing(generateBlockSurfaces(vertices, "#BB3322"), "back"));
-		
-		//Create text for back button
-		origin = [5, 0, 2.6];
-		size = 50;
-		textBlock = {text: "Back", color: "#FFFFFF", origin: origin, fontStyle: "italic small-caps bold", fontSize: size, fontFamily: "Verdana"};
-		textBlocks.push(textBlock);
-		
 		
 		//viewport properties
 		var yob = 10;	//The view created in this page will be from point <0, yob, 0> in the <0, -1, 0> direction. Therefore, this value influences the apperance of object sizes and perspective
@@ -216,7 +245,6 @@ a {
 	var mousePos = [0, 0];
 	$(document).mousedown(function(e){
 		mousePos = [e.pageX, e.pageY];
-		if (mouseIsOverThing(things[0], e)){window.location.replace('./projects2.html'); return false;}
 		if (!$('#controls').is(':hover') && !$('#intro').is(':hover')){
 			mouseDown = true;
 		}
@@ -348,6 +376,10 @@ a {
 	function roundTo2Decimals(input){
 		return parseInt(input * 100) / 100;
 	}
+	//--------------------------------------------------------------------------
+	// Links
+	//--------------------------------------------------------------------------
+	$('#backBut').click(function(){window.location.replace("./projects2.html");});
 	</script>
 </body>
 </html>
