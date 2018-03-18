@@ -100,6 +100,10 @@
 		font-size: 25px;
 	}
 	
+	table {
+		width: 100%;
+	}
+	
 	</style>
 	
 	<!--Scripts I made-->
@@ -116,7 +120,7 @@
 
 	<!-- Everything on the page fits on the mainPanel (except for the floating nav bar) -->
 	<div id='mainPanel'>
-	
+		<p id='top'></p>
 		<!-- Title bar -->
 		<div id='titleBar'>
 			Projects
@@ -128,11 +132,26 @@
 			<br>
 			<br>
 			This page lists a sampling of projects that demonstrate my software and hardware design skills.
+			You can scroll down through the projects, or click the following links to jump directly to a specific
+			project.
 			<br>
 			<br>
-			<div id="projects" style="top: 90%; left: 10%; width: 100%;">
+			<a href='#softwareSimulations'>Simulations</a>
+			<br>
+			<a href='#jukeBoxesAnchor'>Android apps</a>
+			<br>
+			<a href='#javascript'>Web based applications and data processing</a>
+			<br>
+			<a href='#electronics'>Custom Device Electronics</a>
+			<br>
+			<a href='#AI'>Automation, Machine Learning, and AI</a>
+			<br>
+			<br>
 			
-				<!-- Software Simulations Project -->
+			<!-- Software Simulations Project -->
+				
+			<p id='softwareSimulations'></p>
+			<div id="projects" style="top: 90%; left: 10%; width: 100%;">
 			
 				<div id="project1" style="border: 2px solid #BB3322; padding: 5%;">
 					<table width="100%">
@@ -146,7 +165,7 @@
 						<tr>
 							<td width="100%" style='padding-top: 5%' colspan='2'>
 								<div>
-									<sectionTitle>Software Simulations</sectionTitle><br><br>
+									<sectionTitle>Simulations</sectionTitle><br><br>
 									I have extensive experience creating software to run physical simulations.
 									From modeling the field properties of electromagnetic coil geometries to
 									writing the scripts that power this website's 3D graphics, I enjoy applying
@@ -163,9 +182,11 @@
 						</tr>
 					</table>
 				</div>
-				<div id="project2" width="100%" style="padding: 5%;">
 				
 				<!-- Android Mobile Apps -->
+				
+				<p id='jukeBoxesAnchor'></p>
+				<div id="project2" width="100%" style="padding: 5%;">
 				
 					<table width="100%">
 						<tr width="100%">
@@ -187,15 +208,20 @@
 									with custom software and devices. For example, I've written an app to interface
 									with production monitoring software I wrote for my employer as well as an app to interface
 									with a homemade Arduino-based security system.
+									<br>
+									<br>
+									You can view the listing for JukeBoxes <a href='https://play.google.com/store/apps/details?id=com.creations.kantack.jukeboxes'>here</a>.
 								</div>
 							</td>
 						</tr>
 					</table>
 				</div>
-				<div id="project3" style="border: 2px solid #BB3322; padding: 5%;">
 				
 				<!-- Node.js and Javascript Powered Software -->
 				
+				<p id='javascript'></p>
+				<div id="project3" style="border: 2px solid #BB3322; padding: 5%;">
+					
 					<table>
 						<tr>
 							<td>
@@ -209,7 +235,7 @@
 						<tr>
 							<td>
 								<div style="padding: 5%;">
-									<sectionTitle>Node.js and Javascript Powered Software</sectionTitle><br><br>
+									<sectionTitle>Web based applications and data processing</sectionTitle><br><br>
 									I designed and fielded a custom, web-based production management system. It includes
 									features to enable logging of production shifts, plotting and basic statistical analysis of
 									production data, real-time monitoring of machine statuses, and scheduling automatic email notifications
@@ -222,9 +248,11 @@
 						</tr>
 					</table>
 				</div>
-				<div id="project4" style="padding: 5%;">
 				
 				<!-- Custom Device Electronics -->
+				
+				<p id='electronics'></p>
+				<div id="project4" style="padding: 5%;">
 				
 					<table>
 						<tr>
@@ -238,7 +266,7 @@
 							<td width="75%">
 								<div style="padding: 5%;">
 									<sectionTitle>Custom Device Electronics</sectionTitle><br><br>
-									I've built just over a dozen machine controllers for manufacturing lines, all implementing
+									I've built machine controllers for manufacturing lines, all implementing
 									microcontrollers running custom software I wrote for each application (not pictured, since 
 									they are property of my employer). I have also applied my controller design experience to
 									my own personal projects, including a temperature controlling thermostat at my home (a 
@@ -248,6 +276,44 @@
 						</tr>
 					</table>
 				</div>
+				
+				<!-- Node.js and Javascript Powered Software -->
+				
+				<p id='AI'></p>
+				<div id="project5" style="border: 2px solid #BB3322; padding: 5%;">
+				
+					<table>
+						<tr>
+							<td>
+								<center>
+								<div>
+									<img src="neuralNet.png" alt="Neural Network" width="100%" style='max-width: 700px'>
+								</div>
+								</center>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div style="padding: 5%;">
+									<sectionTitle>Automation, Machine Learning, and AI</sectionTitle><br><br>
+									Working with manufacturing automation, vision systems, and data processing applications,
+									I am very familiar with developing and implementing software and machinery to perform tasks
+									autonomously.
+									In my free time I enjoy applying my knowledge of probability, programming, and machine learning
+									to construct AIs for board games and other tasks.
+									These applications have cultivated my ability to envision and create effective AIs and 
+									efficient automation.
+									<br>
+									<br>
+									Shown above is a Python application I made to train an artificial neural network (ANN) to perform
+									a variety of tasks. In the picture, the ANN is teaching itself to play 
+									<a href='#jukeBoxesAnchor'>Juke Boxes</a> (a puzzle game I designed).
+								</div>
+							</td>
+						</tr>
+					</table>
+				</div>
+				
 			</div>
 		</div>
 		
@@ -271,6 +337,11 @@
 			<tr>
 				<td class='navBarCol'>
 					<button class='navBut' id='contactBut'>Contact</button>
+				</td>
+			</tr>
+			<tr>
+				<td class='navBarCol'>
+					<button class='navBut' id='toTopBut'>To Top</button>
 				</td>
 			</tr>
 			
@@ -362,7 +433,7 @@
 			// The forward animations
 		
 			
-			things[0] = translateAndRotateThing(things[0], translationDirection0, 0, rotationAxisPoint0, rotationAxisDirection0, Math.PI / stepLimit);
+			things[0] = translateAndRotateThing(things[0], translationDirection0, 0, rotationAxisPoint0, rotationAxisDirection0, 2 * Math.PI / stepLimit);
 				
 			things[1] = translateAndRotateThing(things[1], translationDirection1, 1.4 / stepLimit, rotationAxisPoint1, rotationAxisDirection1, 0);
 			
@@ -371,10 +442,10 @@
 			
 			things[3] = translateAndRotateThing(things[3], translationDirection3, 0, rotationAxisPoint3, rotationAxisDirection3, Math.PI / stepLimit);
 			
-			requestRepaint('#FDF9EF');
+			requestRepaint('#FDFCFA');
 			
 			counter++;
-			if (counter <= stepLimit){
+			if (counter < stepLimit){
 				setTimeout(homeAnimation, delay);
 			}
 			else{
@@ -386,7 +457,7 @@
 		//--------------------------------------------------------------------------
 		function reverseHomeAnimation(){
 		
-			things[0] = translateAndRotateThing(things[0], translationDirection0, 0, rotationAxisPoint0, rotationAxisDirection0, -Math.PI / stepLimit);
+			things[0] = translateAndRotateThing(things[0], translationDirection0, 0, rotationAxisPoint0, rotationAxisDirection0, -2 * Math.PI / stepLimit);
 				
 			things[1] = translateAndRotateThing(things[1], translationDirection1, -1.4 / stepLimit, rotationAxisPoint1, rotationAxisDirection1, 0);
 			
@@ -395,10 +466,10 @@
 			
 			things[3] = translateAndRotateThing(things[3], translationDirection3, 0, rotationAxisPoint3, rotationAxisDirection3, -Math.PI / stepLimit);
 			
-			requestRepaint('#FDF9EF');
+			requestRepaint('#FDFCFA');
 			
 			counter++;
-			if (counter <= stepLimit){
+			if (counter < stepLimit){
 				setTimeout(reverseHomeAnimation, delay);
 			}
 			else{
@@ -417,6 +488,7 @@
 		$('#homeBut').click(function(){window.location.replace("./index.html");});
 		$('#resumeBut').click(function(){window.location.replace("./resume2.html");});
 		$('#contactBut').click(function(){window.location.replace("./contact2.html");});
+		$('#toTopBut').click(function(){window.location.replace("./projects2.html#top");});
 		//--------------------------------------------------------------------------
 		//--------------------------------------------------------------------------
 		//--------------------------------------------------------------------------

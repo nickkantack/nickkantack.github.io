@@ -80,12 +80,14 @@ a {
 				</p>
 				<br>
 				<p>The simulation calculates the magnetic field at each
-				field line location by computing the integrand of Biot-Savart
-				Law for that location. The inductance is calculated by 
+				field line location by computing the integrand of 
+				<a href='https://en.wikipedia.org/wiki/Biot%E2%80%93Savart_law'>Biot-Savart
+				Law</a> for that location. The inductance is calculated by 
 				summing the field strength of all field lines (effectively
 				integrating over local space), determining the total energy
 				of the local field, and solving for inductance by equating
-				the energy in the field to the energy stored in a solenoid.
+				the energy in the field to the energy stored in a solenoid
+				(i.e. equation the two energy expressions <a href='http://hyperphysics.phy-astr.gsu.edu/hbase/electric/indeng.html'>here</a>).
 				Therefore, the simulation will underestimate inductance since
 				it only integrates over the volume shown.</p>
 			</p>
