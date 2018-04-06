@@ -19,7 +19,7 @@
 		position: absolute;
 		width: 65%;
 		left: 30%;
-		top: 80%;
+		bottom: 2%;
 		border: 2px solid #FFFFFF;
 		background: #444444;
 	}
@@ -195,6 +195,8 @@
 		var globalOrigin = [0, 0, 0];
 		var permeabilityOfSpace = 4 * Math.PI * 0.0001; //In mH
 		
+		var oldLength = parseInt($('#length').val());
+		
 		//--------------------------------------------------------------------------
 		//FILLING THE 3D ENVIRONMENT
 		//--------------------------------------------------------------------------
@@ -203,10 +205,10 @@
 			var color = "#0000FF";
 			var max = 0;
 			
-			for (var i = 0; i < 11; i++){
-				for (var j = 0; j < 11; j++){
-					for (k = 0; k < 11; k++){
-						origin = [i / 2 - 2.5, j / 2 - 8, k / 2 - 1];
+			for (var i = -5; i < 6; i++){
+				for (var j = -5; j < 6; j++){
+					for (k = -5; k < 6; k++){
+						origin = [i / 2, j / 2 - 5.6, k / 2 + 1.7];
 						direction = [0, 0, 0];
 						var floatingVector = createFloatingVector(origin, direction, length, color);
 						floatingVectors.push(floatingVector);
@@ -368,8 +370,8 @@
 		radius = parseInt($('#radius').val()) / 50;
 		revs = parseInt($('#turns').val()) / 2;
 		risePerRev = parseInt($('#length').val()) / revs / 50 * 2.5;
-		var centerPoint = [0, -5.5, 1.7];
-		principalOrigin = add(centerPoint, scale(axis, -parseInt($('#length').val()) / 50 * 2.5 / 2));
+		principalOrigin = add(principalOrigin, scale(axis, -(parseInt($('#length').val()) - oldLength) / 50 * 2.5 / 2));
+		oldLength = parseInt($('#length').val());
 		rebuildCoil();
 	}
 	//--------------------------------------------------------------------------

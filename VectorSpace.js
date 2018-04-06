@@ -126,7 +126,7 @@ function translateVector(vector, componentIndex, increment){//Returns the vector
 function nearestPointOnLine(refPoint, lineDirectionVector, pointOnLine){//Returns 3D vector of point on line nearest to refPoint. Input vectors must all be 3 dimensional.
 	if (!(refPoint.length == 3 && lineDirectionVector.length == 3 && pointOnLine.length == 3)
 	){alert("Input vectors are not all 3 dimensional. All input vectors must be 3 dimensional.");return null;}
-	return add(pointOnLine, projAonB(sub(refPoint, lineDirectionVector), lineDirectionVector));
+	return add(pointOnLine, projAonB(sub(refPoint, pointOnLine), lineDirectionVector));
 }
 //--------------------------------------------------------------------------
 function getXYProjection(coordinates, yob, XFOVangle, YFOVangle){

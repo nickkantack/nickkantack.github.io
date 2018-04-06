@@ -1,0 +1,101 @@
+#mainPanel {
+		position: absolute;
+		width: 90%;
+		left: 5%;
+		padding: 0;
+		overflow: hidden;
+	}
+	
+	#titleBar {
+		background: #BB3322;
+		width: 90%;
+		font-variant: small-caps;
+		font-style: italic;
+		font-size: 45px;
+		font-size: 5vw;
+		color: #FFFDF9;
+		padding-left: 5%;
+		padding-right: 5%;
+		padding-top: 3%;
+		padding-bottom:1%;
+	}
+	
+	#content {
+		width: 96%;
+		vertical-align: top;
+		padding: 2%;
+	}
+	
+	#contentTable {
+		width: 100%;
+	}
+	
+	#graph {
+		width: 100%;
+	}
+	
+	.note {
+		width: 95%;
+		padding: 2.5%;
+		margin-top: 5%;
+		border: 1px solid #DDC022;
+		background: #FFF4AB;
+		color: #997000;
+	}
+	
+	.navBarCol {
+		width: 33%;
+		background: #BB3322;
+	}
+	
+	.navBut {
+		font-variant: small-caps;
+		font-style: italic;
+		font-size: 25px;
+		font-size: 2vw;
+		width: 100%;
+		padding-top: 5%;
+		padding-bottom: 5%;
+		-webkit-transition-duration: 0.4s; /* Safari */
+		transition-duration: 0.4s;
+		background: #BB3322;
+		color: #FFFDF9;
+		border: none;
+		border-radius: 0px;
+	}
+	
+	.navBut:hover {
+		padding-left: 10%;
+		padding-right: 10%;
+		margin-left: -5%;
+		margin-right: -5%;
+		border-radius: 15px;
+		box-shadow: 5px 10px 18px #661100;
+		background: #D03322;
+	}
+	
+	#navBar {
+		width: 100%;
+		background: #BB3322;
+	}
+	
+	#navBarBoat {
+		position: fixed;
+		left: 0%;
+		width: 12%;
+		top: 5%;
+	}
+	
+	body {
+		background: linear-gradient(to right, #FDF3DF, #FFFFFF, #FDF3DF);
+		font-family: Verdana;
+		color: #BB3322;
+		font-size: 20px;
+	}
+	
+	sectionTitle {
+		font-weight: bold;
+		font-variant: small-caps;
+		font-size: 30px;
+	}
+	
