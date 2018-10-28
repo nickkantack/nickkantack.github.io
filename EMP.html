@@ -60,7 +60,7 @@
 				font-size: 20px;
 			}
 		</style>
-</head>
+	</head>
 	
 	<body onload='initialize()' onresize='initialize()'>
 	
@@ -71,35 +71,12 @@
 				<tr><td width='200px'>Time:</td><td width='100px'><div id='timeDisplay' class='tableDiv'>0</div></td><td width='50px'>ns</td></tr>
 				<tr><td>Exterior Field Peak:</td><td><div id='maxField' class='tableDiv'>0</div></td><td>%E<sub>0</sub></td></tr>
 				<tr><td>Interior Field Peak:</td><td><div id='at50' class='tableDiv'>0</div></td><td>%E<sub>0</sub></td></tr>
-				<tr><td class='heading' colspan=3>EMP Generator Characteristics</td></tr>
-				<tr><td>Pulse width:</td><td>75</td><td>m</td></tr>
-				<tr><td>Pulse duration:</td><td>250</td><td>ns</td></tr>
 			</table>
 		</div>
 		<canvas id='canvas'></canvas>
 		<button id='next'>Next</button>
 		<button id='previous' style='left: 20px; display: none;'>Previous</button>
 		<button id='replay'>Replay</button>
-		
-		<!-- EXPLANATIONS -->
-		<div id='e1' class='expl' style='display: block'>
-			A single EMP propagates from its origin with spherical symmetry. It can damage any electronic devices within its blast radius.
-		</div>
-		<div id='e2' class='expl'>
-			An EMP pulse is an electromagnetic wave. Electromagnetic waves can interfere with one another. Two EMPs can have constructive or destructive intereference with one another depending on their positions, their phases, and where the field is being measured.
-		</div>
-		<div id='e3' class='expl'>
-			Interference can be used to create a safety cone. In this example, a pair of EMPs fire in a pattern which generates a 180<sup>o</sup> phase difference on the right side of the propagating waves. On the right portion of the pulses, the two EMPs cancel out one another.
-		</div>
-		<div id='e4' class='expl'>
-			Multiple pairs of these cancelling EMP generators can be positioned so their safety cones overlap at a central location. This simulation shows a bird's eye view of a hypothetical generator array creating a force field around an 40 meter protection radius. Objects in the protection radius in this particular simulation experience no more than 2% of the energy of the outward wavefront.
-		</div>
-		<div id='e5' class='expl'>
-			Such an array is extremely robust. Imagine attackers were to disable a pair of generators. The resulting force field still does not have any holes, and the disabled side of the field retains more than 50% of its nominal EMP energy. Additionally, the protection radius is not adversely impacted by the loss of the generator pair.
-		</div>
-		<div id='e6' class='expl'>
-			This is a surface view of the array to show the complete coverage of the force field.
-		</div>
 		
 		<script>
 		
@@ -123,7 +100,7 @@
 			var amplitude = 1; // Arbitrary field strength (but must be equal for all generators! unless you change the color scaling to sum all the amplitudes rather than merely taking the number of generators
 			
 			// Ring structure
-			var ringRadius1 = 300;
+			var ringRadius1 = 320;
 			var ringRadius2 = 290;
 			var origin;
 			var ringPopulation = 6;
@@ -144,6 +121,7 @@
 			// testCode = 6 - Surface view
 			
 			var ringDelay = 0; // Periods
+			var ringTilt = 0;
 			
 			var timeout;
 			//----------------------------------------------------------------------------------------------------
@@ -169,54 +147,40 @@
 				
 				switch (testCode){
 					case 0:
-						generators.push(Generator.create(origin, frequency, 0, 0, 1 / 2 / frequency));
+						generators.push(Generator.create(origin, frequency, 0, 0, 1 / 2 / frequency, {x: 1, y: 0}));
 					break;
 					case 1:
-						generators.push(Generator.create(origin, frequency, 0, 0, 1 / frequency));
-						generators.push(Generator.create({x: origin.x + 500, y: origin.y}, frequency, Math.PI, 0, 1 / frequency));
+						generators.push(Generator.create(origin, frequency, 0, 0, 1 / 2 / frequency, {x: 1, y: 0}));
+						generators.push(Generator.create({x: origin.x + 300 * scale, y: origin.y}, frequency, Math.PI, (300 * scale) / speed, 1 / 2 / frequency, {x: 1, y: 0}));
+						
 					break;
 					case 2:
-						generators.push(Generator.create(origin, frequency, 0, 0, 1 / 2 / frequency));
-						generators.push(Generator.create({x: origin.x + 300 * scale, y: origin.y}, frequency, Math.PI, (300 * scale) / speed, 1 / 2 / frequency));
+					
+						// Outer ring
+						for (var i = 0; i < ringPopulation; i++){
+							generators.push(Generator.create({x: origin.x + ringRadius1 * Math.cos(2 * Math.PI * i / ringPopulation), y: origin.y + ringRadius1 * Math.sin(2 * Math.PI * i / ringPopulation)}, frequency, 0, i * ringDelay / 2 / frequency, 1 / 2 / frequency, {x: Math.sin(ringTilt + i / ringPopulation * 2 * Math.PI), y: -Math.cos(ringTilt + i / ringPopulation * 2 * Math.PI)}));
+						}
 						
+						// Inner ring
+						for (var i = 0; i < ringPopulation; i++){
+							generators.push(Generator.create({x: origin.x + ringRadius2 * Math.cos(2 * Math.PI * i / ringPopulation), y: origin.y + ringRadius2 * Math.sin(2 * Math.PI * i / ringPopulation)}, frequency, Math.PI, i * ringDelay / 2 / frequency + (ringRadius1 - ringRadius2) / speed, 1 / 2 / frequency, {x: Math.sin(ringTilt + i / ringPopulation * 2 * Math.PI), y: -Math.cos(ringTilt + i / ringPopulation * 2 * Math.PI)}));
+						}
 					break;
 					case 3:
 						// Outer ring
-						for (var i = 0; i < ringPopulation; i++){
-							generators.push(Generator.create({x: origin.x + ringRadius1 * Math.cos(2 * Math.PI * i / ringPopulation), y: origin.y + ringRadius1 * Math.sin(2 * Math.PI * i / ringPopulation)}, frequency, 0, i * ringDelay / 2 / frequency, i * ringDelay / 2 / frequency + 1 / 2 / frequency));
-						}
-						
-						// Inner ring
-						for (var i = 0; i < ringPopulation; i++){
-							generators.push(Generator.create({x: origin.x + ringRadius2 * Math.cos(2 * Math.PI * i / ringPopulation), y: origin.y + ringRadius2 * Math.sin(2 * Math.PI * i / ringPopulation)}, frequency, Math.PI, i * ringDelay / 2 / frequency + (ringRadius1 - ringRadius2) / speed, i * ringDelay / 2 / frequency + 1 / 2 / frequency));
-						}
-					break;
-					case 4:
-						// Outer ring
 						for (var i = 0; i < ringPopulation - 1; i++){
-							generators.push(Generator.create({x: origin.x + ringRadius1 * Math.cos(2 * Math.PI * i / ringPopulation), y: origin.y + ringRadius1 * Math.sin(2 * Math.PI * i / ringPopulation)}, frequency, 0, 0, 1 / 2 / frequency));
+							generators.push(Generator.create({x: origin.x + ringRadius1 * Math.cos(2 * Math.PI * i / ringPopulation), y: origin.y + ringRadius1 * Math.sin(2 * Math.PI * i / ringPopulation)}, frequency, 0, i * ringDelay / 2 / frequency, i * ringDelay / 2 / frequency + 1 / 2 / frequency, {x: Math.sin(ringTilt + i / ringPopulation * 2 * Math.PI), y: -Math.cos(ringTilt + i / ringPopulation * 2 * Math.PI)}));
 						}
 						
 						// Inner ring
 						for (var i = 0; i < ringPopulation - 1; i++){
-							generators.push(Generator.create({x: origin.x + ringRadius2 * Math.cos(2 * Math.PI * i / ringPopulation), y: origin.y + ringRadius2 * Math.sin(2 * Math.PI * i / ringPopulation)}, frequency, Math.PI, (ringRadius1 - ringRadius2) / speed, 1 / 2 / frequency));
-						}
-					break;
-					case 5:
-						// Outer ring
-						for (var i = 0; i < 2; i++){
-							generators.push(Generator.create({x: origin.x + ringRadius1 * Math.cos(2 * Math.PI * i / 2), y: origin.y + ringRadius1 * Math.sin(2 * Math.PI * i / 2)}, frequency, 0, 0, 1 / 2 / frequency));
-						}
-						
-						// Inner ring
-						for (var i = 0; i < 2; i++){
-							generators.push(Generator.create({x: origin.x + ringRadius2 * Math.cos(2 * Math.PI * i / 2), y: origin.y + ringRadius2 * Math.sin(2 * Math.PI * i / 2)}, frequency, Math.PI, (ringRadius1 - ringRadius2) / speed, 1 / 2 / frequency));
+							generators.push(Generator.create({x: origin.x + ringRadius2 * Math.cos(2 * Math.PI * i / ringPopulation), y: origin.y + ringRadius2 * Math.sin(2 * Math.PI * i / ringPopulation)}, frequency, Math.PI, i * ringDelay / 2 / frequency + (ringRadius1 - ringRadius2) / speed, i * ringDelay / 2 / frequency + 1 / 2 / frequency, {x: Math.sin(ringTilt + i / ringPopulation * 2 * Math.PI), y: -Math.cos(ringTilt + i / ringPopulation * 2 * Math.PI)}));
 						}
 					break;
 				}
 				
 				// schedule step in animation
-				timeout = setTimeout('timeStep()', timeRes);
+				timeout = setTimeout('timeStep();', timeRes);
 			}
 			
 			//----------------------------------------------------------------------------------------------------
@@ -224,11 +188,12 @@
 			//----------------------------------------------------------------------------------------------------
 			var Generator = {
 			
-				create: function(point, f, phasor, delay, end){
+				create: function(point, f, phasor, delay, end, moment){
 					return {
 						x: point.x,
 						y: point.y,
 						f: f,
+						moment: {x: moment.y, y:-moment.x},
 						phasor: phasor,
 						delay: delay,
 						field: function(time, location){
@@ -237,12 +202,20 @@
 						
 							if (epoch < distance(location, {x: this.x, y: this.y}) / speed){ return 0; } // No information reached yet
 							if (epoch > distance(location, {x: this.x, y: this.y}) / speed + end){ return 0; }
-							return amplitude * Math.sin(2 * Math.PI * (distance(location, {x: this.x, y: this.y}) - epoch * speed) / speed * this.f + phasor);
+							return amplitude * Math.pow(this.unitDP(this.sub(location, {x: this.x, y: this.y}), moment), 2) * Math.sin(2 * Math.PI * (distance(location, {x: this.x, y: this.y}) - epoch * speed) / speed * this.f + phasor);
+						},
+						unitDP: function(a, b){
+							return (a.x * b.x + a.y * b.y) / Math.sqrt(a.x * a.x + a.y * a.y) / Math.sqrt(b.x * b.x + b.y * b.y);
+						},
+						sub: function(a, b){
+							return {x: a.x - b.x, y: a.y - b.y};
 						}
 					};
 				}
 			
 			};
+			
+			
 			//----------------------------------------------------------------------------------------------------
 			// Graphics	
 			//----------------------------------------------------------------------------------------------------
@@ -272,7 +245,7 @@
 				for (var i = 0; i < resolution; i++){
 					for (var j = 0; j < resolutionY; j++){
 						var location = {x: i * xStep, y: j * yStep};
-						location= {x: origin.x + (location.x - origin.x) / scale, y: origin.y + (location.y - origin.y) / scale};
+						location = {x: origin.x + (location.x - origin.x) / scale, y: origin.y + (location.y - origin.y) / scale};
 						var field = 0;
 						for (var k = 0; k < generators.length; k++){
 							field += generators[k].field(t * timeRes / 1000, location);
@@ -288,7 +261,7 @@
 				}
 				
 				// Draw protection radius
-				if (testCode >= 3){
+				if (testCode >= 2){
 					ctx.strokeStyle = '#00FF00';
 					ctx.beginPath();
 					ctx.arc(origin.x + 2, origin.y, safety * ringRadius2 * scale, 0, 2 * Math.PI);
@@ -387,10 +360,8 @@
 			// Listeners
 			//----------------------------------------------------------------------------------------------------
 			E('next').addEventListener('click', function(){
-				E('e' + (testCode + 1)).style.display = 'none';
 				testCode++;
-				E('e' + (testCode + 1)).style.display = 'block';
-				if (testCode == 5){ E('next').style.display = 'none'; }
+				if (testCode == 3){ E('next').style.display = 'none'; }
 				E('previous').style.display = 'block';
 				clearTimeout(timeout);
 				createGeneratorField();
@@ -398,9 +369,7 @@
 			});
 			//----------------------------------------------------------------------------------------------------
 			E('previous').addEventListener('click', function(){
-				E('e' + (testCode + 1)).style.display = 'none';
 				testCode--;
-				E('e' + (testCode + 1)).style.display = 'block';
 				if (testCode == 0){ E('previous').style.display = 'none'; }
 				E('next').style.display = 'block';
 				clearTimeout(timeout);
