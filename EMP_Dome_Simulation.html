@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+	
+		<style>
+			#canvas {
+				width: 100%;
+				height: 100vh;
+			}
+			#display {
+				position: fixed;
+				left: 10px;
+				top: 10px;
+				background: #BBBBBB;
+				border: 2px solid #444444;
+			}
+			table {
+				width: 100%;
+				min-width: 300px;
+				text-align: center;
+			}
+			.tableDiv {
+				width: 100%;
+			}
+			body {
+				font-family: Arial;
+			}
+			.heading {
+				padding-top: 10px;
+				padding-bottom: 10px;
+				font-weight: bold;
+			}
+			button {
+				position: fixed;
+				bottom: 20px;
+				right: 20px;
+				background: #777777;
+				font-family: Arial;
+				font-size: 25px;
+				width: 200px;
+				height: 100px;
+				border: 2px solid #BBBBBB;
+				border-radius: 10px;
+				color: #FFFFFF;
+			}
+			button:hover {
+				background: #555555;
+			}
+			.expl {
+				padding: 15px;
+				border-radius: 10px;
+				width: 20%;
+				max-width: 300px;
+				position: fixed;
+				left: 10px;
+				top: 300px;
+				background: #999999;
+				display: none;
+				font-size: 20px;
+			}
+		</style>
+	</head>
+	
+	<body onload='initialize()' onresize='initialize()'>
+	
+			
+		<div id='display'>
+			<table>
+				<tr><td class='heading' colspan=3>Simulation Statistics</td></tr>
+				<tr><td width='200px'>Time:</td><td width='100px'><div id='timeDisplay' class='tableDiv'>0</div></td><td width='50px'>ns</td></tr>
+				<tr><td>Exterior Field Peak:</td><td><div id='maxField' class='tableDiv'>0</div></td><td>%E<sub>0</sub></td></tr>
+				<tr><td>Interior Field Peak:</td><td><div id='at50' class='tableDiv'>0</div></td><td>%E<sub>0</sub></td></tr>
+				<tr><td class='heading' colspan=3>EMP Generator Characteristics</td></tr>
+				<tr><td>Pulse width:</td><td>75</td><td>m</td></tr>
+				<tr><td>Pulse duration:</td><td>250</td><td>ns</td></tr>
+			</table>
+		</div>
+		<canvas id='canvas'></canvas>
+		<button id='next'>Next</button>
+		<button id='previous' style='left: 20px; display: none;'>Previous</button>
+		<button id='replay'>Replay</button>
+		
+		<!-- EXPLANATIONS -->
+		<div id='e1' class='expl' style='display: block'>
+			A single EMP (electromagnetic pulse) propagates from its origin with spherical symmetry. It can damage any electronic devices within its blast radius.
+		</div>
+		<div id='e2' class='expl'>
+			An EMP pulse is an electromagnetic wave. Electromagnetic waves can interfere with one another. Two EMPs can have constructive or destructive intereference with one another depending on their positions, their phases, and where the field is being measured.
+		</div>
+		<div id='e3' class='expl'>
+			Interference can be used to create a safety cone. In this example, a pair of EMPs fire in a pattern which generates a 180<sup>o</sup> phase difference on the right side of the propagating waves. On the right portion of the pulses, the two EMPs cancel out one another.
+		</div>
+		<div id='e4' class='expl'>
+			Multiple pairs of these cancelling EMP generators can be positioned so their safety cones overlap at a central location. This simulation shows a bird's eye view of a hypothetical generator array creating a force field around an 40 meter protection radius. Objects in the protection radius in this particular simulation experience no more than 2% of the energy of the outward wavefront.
+		</div>
+		<div id='e5' class='expl'>
+			Such an array is extremely robust. Imagine attackers were to disable a pair of generators. The resulting force field still does not have any holes, and the disabled side of the field retains more than 50% of its nominal EMP energy. Additionally, the protection radius is not adversely impacted by the loss of the generator pair.
+		</div>
+		<div id='e6' class='expl'>
+			This is a surface view of the array to show the complete coverage of the force field.
+		</div>
+		
+		<script>
+		
+			// Canvas object	
+			var canvas = document.getElementById('canvas');
+			var ctx = canvas.getContext('2d');
+			
+			// Space-time characteristics
+			var t = 0;
+			var timeRes = 75; // How much time should elapse (in milliseconds) between each refresh
+			var resolution = 200; // The spatial resolution
+			var scale = 0.5;
+			// Decide meters to pixel rate. That's up to you. Call that M = pixels / meter
+			var M = 1;
+			
+			// Pulse characteristics
+			var speed = 100; // pixels per second - This is how fast the speed of light seems. speed / M = t * 3 * 10^8 meters/sec (t is the number of real seconds that fit in one simulation second)
+				var dilation = speed / M / 3 / 100000000; // Ratio of simulation seconds to real world seconds
+			var realFreq = 2000000; // Hz
+				var frequency = realFreq * dilation; // Oscillations per simulation second. (this frequency) * t = real world frequency
+			var amplitude = 1; // Arbitrary field strength (but must be equal for all generators! unless you change the color scaling to sum all the amplitudes rather than merely taking the number of generators
+			
+			// Ring structure
+			var ringRadius1 = 320;
+			var ringRadius2 = 290;
+			var origin;
+			var ringPopulation = 6;
+			var generators = [];
+			
+			// Statistics
+			var maxField = 0;
+			var at50 = 0;
+			var safety = 0.25;
+			
+			var testCode = 0;
+			// testCode = 0 - Demonstration of a single generator
+			// testCode = 1 - Demonstration of two generators (constructive)
+			// testCode = 2 - Demonstration of two generators channel cancelling
+			// testCode = 3 - Demonstration of ring
+			// testCode = 4 - Damaged ring
+			// testCode = 5 - Variable frequency
+			// testCode = 6 - Surface view
+			
+			var ringDelay = 0; // Periods
+			var ringTilt = 0;
+			
+			var timeout;
+			//----------------------------------------------------------------------------------------------------
+			function initialize(){
+				canvas.width  = canvas.offsetWidth;
+				canvas.height = canvas.offsetHeight;
+				origin = {x: parseInt(canvas.width / 2), y: parseInt(canvas.height / 2)};
+				E('replay').style.left = canvas.width / 2 - 100 + 'px';
+				clearTimeout(timeout);
+				createGeneratorField();
+			}
+			
+			function createGeneratorField(){
+				clearCanvas();
+				generators = [];
+				
+				maxField = 0;
+				at50 = 0;
+				
+				t = 0;
+				
+				// create generator field
+				
+				switch (testCode){
+					case 0:
+						generators.push(Generator.create(origin, frequency, 0, 0, 1 / 2 / frequency, {x: 1, y: 0}));
+					break;
+					case 1:
+						generators.push(Generator.create(origin, frequency, 0, 0, 1 / frequency, {x: 1, y: 0}));
+						generators.push(Generator.create({x: origin.x + 500, y: origin.y}, frequency, Math.PI, 0, 1 / frequency, {x: 1, y: 0}));
+					break;
+					case 2:
+						generators.push(Generator.create(origin, frequency, 0, 0, 1 / 2 / frequency, {x: 1, y: 0}));
+						generators.push(Generator.create({x: origin.x + 300 * scale, y: origin.y}, frequency, Math.PI, (300 * scale) / speed, 1 / 2 / frequency, {x: 1, y: 0}));
+						
+					break;
+					case 3:
+					
+						// Outer ring
+						for (var i = 0; i < ringPopulation; i++){
+							generators.push(Generator.create({x: origin.x + ringRadius1 * Math.cos(2 * Math.PI * i / ringPopulation), y: origin.y + ringRadius1 * Math.sin(2 * Math.PI * i / ringPopulation)}, frequency, 0, i * ringDelay / 2 / frequency, i * ringDelay / 2 / frequency + 1 / 2 / frequency, {x: Math.sin(ringTilt + i / ringPopulation * 2 * Math.PI), y: -Math.cos(ringTilt + i / ringPopulation * 2 * Math.PI)}));
+						}
+						
+						// Inner ring
+						for (var i = 0; i < ringPopulation; i++){
+							generators.push(Generator.create({x: origin.x + ringRadius2 * Math.cos(2 * Math.PI * i / ringPopulation), y: origin.y + ringRadius2 * Math.sin(2 * Math.PI * i / ringPopulation)}, frequency, Math.PI, i * ringDelay / 2 / frequency + (ringRadius1 - ringRadius2) / speed, i * ringDelay / 2 / frequency + 1 / 2 / frequency, {x: Math.sin(ringTilt + i / ringPopulation * 2 * Math.PI), y: -Math.cos(ringTilt + i / ringPopulation * 2 * Math.PI)}));
+						}
+					break;
+					case 4:
+						// Outer ring
+						for (var i = 0; i < ringPopulation - 1; i++){
+							generators.push(Generator.create({x: origin.x + ringRadius1 * Math.cos(2 * Math.PI * i / ringPopulation), y: origin.y + ringRadius1 * Math.sin(2 * Math.PI * i / ringPopulation)}, frequency, 0, i * ringDelay / 2 / frequency, i * ringDelay / 2 / frequency + 1 / 2 / frequency, {x: Math.sin(ringTilt + i / ringPopulation * 2 * Math.PI), y: -Math.cos(ringTilt + i / ringPopulation * 2 * Math.PI)}));
+						}
+						
+						// Inner ring
+						for (var i = 0; i < ringPopulation - 1; i++){
+							generators.push(Generator.create({x: origin.x + ringRadius2 * Math.cos(2 * Math.PI * i / ringPopulation), y: origin.y + ringRadius2 * Math.sin(2 * Math.PI * i / ringPopulation)}, frequency, Math.PI, i * ringDelay / 2 / frequency + (ringRadius1 - ringRadius2) / speed, i * ringDelay / 2 / frequency + 1 / 2 / frequency, {x: Math.sin(ringTilt + i / ringPopulation * 2 * Math.PI), y: -Math.cos(ringTilt + i / ringPopulation * 2 * Math.PI)}));
+						}
+					break;
+					case 5:
+						// Outer ring
+						for (var i = 0; i < 2; i++){
+							generators.push(Generator.create({x: origin.x + ringRadius1 * Math.cos(2 * Math.PI * i / 2), y: origin.y + ringRadius1 * Math.sin(2 * Math.PI * i / 2)}, frequency, 0, 0, 1 / 2 / frequency, {x: Math.cos(ringTilt + i / ringPopulation * 2 * Math.PI), y: Math.sin(ringTilt + i / 2 * 2 * Math.PI)}));
+						}
+						
+						// Inner ring
+						for (var i = 0; i < 2; i++){
+							generators.push(Generator.create({x: origin.x + ringRadius2 * Math.cos(2 * Math.PI * i / 2), y: origin.y + ringRadius2 * Math.sin(2 * Math.PI * i / 2)}, frequency, Math.PI, (ringRadius1 - ringRadius2) / speed, 1 / 2 / frequency, {x: Math.cos(ringTilt + i / ringPopulation * 2 * Math.PI), y: Math.sin(ringTilt + i / 2 * 2 * Math.PI)}));
+						}
+					break;
+				}
+				
+				// schedule step in animation
+				timeout = setTimeout('timeStep();', timeRes);
+			}
+			
+			//----------------------------------------------------------------------------------------------------
+			// Generator class
+			//----------------------------------------------------------------------------------------------------
+			var Generator = {
+			
+				create: function(point, f, phasor, delay, end, moment){
+					return {
+						x: point.x,
+						y: point.y,
+						f: f,
+						moment: {x: moment.y, y:-moment.x},
+						phasor: phasor,
+						delay: delay,
+						field: function(time, location){
+						
+							var epoch = time - delay;
+						
+							if (epoch < distance(location, {x: this.x, y: this.y}) / speed){ return 0; } // No information reached yet
+							if (epoch > distance(location, {x: this.x, y: this.y}) / speed + end){ return 0; }
+							return amplitude * Math.pow(this.unitDP(this.sub(location, {x: this.x, y: this.y}), moment), 2) * Math.sin(2 * Math.PI * (distance(location, {x: this.x, y: this.y}) - epoch * speed) / speed * this.f + phasor);
+						},
+						unitDP: function(a, b){
+							return (a.x * b.x + a.y * b.y) / Math.sqrt(a.x * a.x + a.y * a.y) / Math.sqrt(b.x * b.x + b.y * b.y);
+						},
+						sub: function(a, b){
+							return {x: a.x - b.x, y: a.y - b.y};
+						}
+					};
+				}
+			
+			};
+			
+			
+			//----------------------------------------------------------------------------------------------------
+			// Graphics	
+			//----------------------------------------------------------------------------------------------------
+			function clearCanvas(){
+				ctx.fillStyle = '#000000';
+				ctx.fillRect(0, 0, canvas.width, canvas.height);
+			}
+			//----------------------------------------------------------------------------------------------------
+			// Animation
+			//----------------------------------------------------------------------------------------------------
+			function timeStep(){
+			
+				document.getElementById('timeDisplay').innerHTML = round2n(t * timeRes / 1000 * dilation * Math.pow(10, 9), 3);
+			
+				clearCanvas();
+				
+				var resolutionY = parseInt(resolution * canvas.height / canvas.width);
+				var resolutionX = resolution;
+				if (canvas.height > canvas.width){
+					resolutionY = resolutionX;
+					resolutionX = parseInt(resolutionY * canvas.width / canvas.height);
+				}
+				
+				xStep = parseInt((canvas.width + 200) / resolutionX);
+				yStep = parseInt((canvas.height + 200) / resolutionY);
+				
+				for (var i = 0; i < resolution; i++){
+					for (var j = 0; j < resolutionY; j++){
+						var location = {x: i * xStep, y: j * yStep};
+						location = {x: origin.x + (location.x - origin.x) / scale, y: origin.y + (location.y - origin.y) / scale};
+						var field = 0;
+						for (var k = 0; k < generators.length; k++){
+							field += generators[k].field(t * timeRes / 1000, location);
+						}
+						if (Math.abs(field) > maxField){ maxField = Math.abs(field); }
+						if (distance(origin, location) < safety * ringRadius2 && 100 * Math.abs(field) > at50){ at50 = Math.abs(field) * 100; }
+						// color the point based on the field value
+						if (field > 0){ ctx.fillStyle = 'rgba(' + parseInt(255 * field / 2 / amplitude) + ',0,0,1)'; }
+						else { ctx.fillStyle = 'rgba(0,0,' + parseInt(-255 * field / 2 / amplitude) + ',1)'; }
+						
+						ctx.fillRect(i * xStep, j * yStep, xStep, yStep);
+					}
+				}
+				
+				// Draw protection radius
+				if (testCode >= 3){
+					ctx.strokeStyle = '#00FF00';
+					ctx.beginPath();
+					ctx.arc(origin.x + 2, origin.y, safety * ringRadius2 * scale, 0, 2 * Math.PI);
+					ctx.stroke();
+				}
+				
+				// Draw ground if necessary
+				if (testCode == 5){ 
+					ctx.fillStyle = '#003300';
+					ctx.fillRect(0, parseInt(canvas.height / 2), canvas.width, canvas.height);
+				}
+				
+				// Draw each generator
+				ctx.fillStyle = '#999999';
+				for (var i = 0; i < generators.length; i++){
+					ctx.beginPath();
+					ctx.arc(origin.x + (generators[i].x - origin.x) * scale + 5 * scale, origin.y + (generators[i].y - origin.y) * scale + 5 * scale, 5 * scale, 0, 2 * Math.PI);
+					ctx.fill();
+				}
+				
+				
+				// Draw metric
+				ctx.fillStyle = '#FFFFFF';
+				ctx.fillRect(canvas.width - 30 - M * 100, 30, M * 100, 10);
+				ctx.font = '20px Arial';
+				ctx.fillText('100 meters', canvas.width - 30 - M * 100, 70);
+
+				// Draw legend
+					// Black background
+					ctx.fillStyle = '#000000';
+					ctx.fillRect(canvas.width - 200, 100, 200, 280);
+					// White outline
+					ctx.strokeStyle = '#FFFFFF';
+					ctx.rect(canvas.width - 200, 100, 200, 280);
+					ctx.stroke();
+					// E Field Blue
+					ctx.fillStyle = '#0000FF';
+					ctx.fillRect(canvas.width - 200 + 30, 100 + 30, 30, 30);
+					ctx.fillStyle = '#FFFFFF';
+					ctx.fillText('E > 0', canvas.width - 80, 100 + 50);
+					// E Field Red
+					ctx.fillStyle = '#FF0000';
+					ctx.fillRect(canvas.width - 200 + 30, 100 + 90, 30, 30);
+					ctx.fillStyle = '#FFFFFF';
+					ctx.fillText('E < 0', canvas.width - 80, 160 + 50);
+					// Generator
+					ctx.fillStyle = '#999999';
+					ctx.beginPath();
+					ctx.arc(canvas.width - 200 + 45, 210 + 50, 10, 0, 2 * Math.PI);
+					ctx.fill();
+					ctx.fillStyle = '#FFFFFF';
+					ctx.fillText('Generator', canvas.width - 110, 220 + 48);
+					// Green circle
+					ctx.strokeStyle = '#00FF00';
+					ctx.beginPath();
+					ctx.arc(canvas.width - 200 + 45, 270 + 50, 20, 0, 2 * Math.PI);
+					ctx.stroke();
+					ctx.fillStyle = '#FFFFFF';
+					ctx.fillText('Protection', canvas.width - 110, 270 + 48);
+					ctx.fillText('radius', canvas.width - 110, 270 + 80);
+				
+				// Increment frame counter
+				t++;
+				
+				// Update statistics
+				document.getElementById('maxField').innerHTML = round2n(maxField * 100, 3);
+				document.getElementById('at50').innerHTML = round2n(at50, 3);
+				
+				// Schedule next frame
+				setTimeout(timeStep, timeRes);
+			
+			}
+			//----------------------------------------------------------------------------------------------------
+			// Mathematics
+			//----------------------------------------------------------------------------------------------------
+			function distance(p1, p2){
+				return Math.sqrt((p1.x-p2.x)*(p1.x-p2.x)+(p1.y-p2.y)*(p1.y-p2.y));
+			}
+			//----------------------------------------------------------------------------------------------------
+			function round2n(a, n){
+				return parseFloat(a).toPrecision(n);
+				/*
+				var number = parseInt(a * Math.pow(10, n)) * Math.pow(10, -n);
+				
+				var isNatural = Math.abs(number - parseInt(number)) < 0.0001;
+				var str = number.toString();
+				if (str.length < n + 1){ 
+					if (isNatural && str.length < n){ str += '.'; }
+					while (str.length < n + 1){ str += '0'; }
+				}
+				if (str.substring(3, 4) == '.'){ return str.substring(0, 3); }
+				return str.substring(0, 4);
+				*/
+			}
+			function E(a){ return document.getElementById(a); }//----------------------------------------------------------------------------------------------------
+			// Listeners
+			//----------------------------------------------------------------------------------------------------
+			E('next').addEventListener('click', function(){
+				E('e' + (testCode + 1)).style.display = 'none';
+				testCode++;
+				E('e' + (testCode + 1)).style.display = 'block';
+				if (testCode == 4){ E('next').style.display = 'none'; }
+				E('previous').style.display = 'block';
+				clearTimeout(timeout);
+				createGeneratorField();
+				clearTimeout(timeout);
+			});
+			//----------------------------------------------------------------------------------------------------
+			E('previous').addEventListener('click', function(){
+				E('e' + (testCode + 1)).style.display = 'none';
+				testCode--;
+				E('e' + (testCode + 1)).style.display = 'block';
+				if (testCode == 0){ E('previous').style.display = 'none'; }
+				E('next').style.display = 'block';
+				clearTimeout(timeout);
+				createGeneratorField();
+				clearTimeout(timeout);
+			});
+			//----------------------------------------------------------------------------------------------------
+			E('replay').addEventListener('click', function(){
+				clearTimeout(timeout);
+				createGeneratorField();
+				clearTimeout(timeout);
+			});
+		</script>
+	</body>
+</html>
