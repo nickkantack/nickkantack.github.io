@@ -97,8 +97,8 @@ li {
 .navButton {
 	padding-left: 20px;
 	padding-right: 20px;
-	background: #6EABFB;
-	color: #1A56B6;
+	background: #2B67C7;
+	color: #FFFFFF;
 	font-size: 30px;
 	border: none;
 	border-radius: 4px;
@@ -118,7 +118,8 @@ li {
 	border-radius: 4px;
 	margin: 10px;
 	display: inline;
-	width: 200px;
+	width: 25vw;
+	max-width: 200px;
 }
 .sectionTitle {
 	font-style: italic;

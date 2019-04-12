@@ -10,6 +10,7 @@ E('navProjects').addEventListener('click', function(){ window.location.replace('
 E('navLiterature').addEventListener('click', function(){ window.location.replace('./literature.html'); });
 //-------------------------------------------------------------------------------------------------------
 // Nav bar stickiness
+/*
 var offset = E('navBar').offsetTop;
 window.onscroll = function() {
   if (window.pageYOffset >= offset) {
@@ -18,6 +19,7 @@ window.onscroll = function() {
     E('navBar').classList.remove('stickyNavBar');
   }
 };
+*/
 //-------------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------------
