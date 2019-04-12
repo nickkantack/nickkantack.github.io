@@ -1,338 +1,120 @@
 <!DOCTYPE html>
 <html>
-<head>
-<title>Projects Nick Kantack</title>
-
-<!--Scripts brilliant people made-->
-<script src="jquery.js"></script>
-<!--End of scripts brillaint people made-->
-
-<!--Scripts I made-->
-<script src="VectorSpace.js"></script>
-<script src="Block.js"></script>
-<script src="Surface.js"></script>
-<script src="Thing.js"></script>
-<script src="Letters.js"></script>
-<script src="Graphics.js"></script>
-<script src="Alterations.js"></script>
-<script src="NavBarButtons.js"></script>
-
-<!--
-The scripts above which I designed are part of a 3D enviornment suite. Together, they facilitate an easy, lightweight
-protocol for displaying objects in space with effects like shading, perspective, and overlay that create
-a convincing 3 dimensional environment.
--->
-
-<link rel="stylesheet" type="text/css" href="styles.css">
-</head>
-<body>
-<div id="mainPanel"> <!--This div holds everything-->
-	<canvas id="graph" style="position: fixed;"></canvas>
-	<div id="content" style="position: absolute;">
-		<b>Projects Overview</b><br><br>
-		Below are some examples of projects I've undertaken which demonstrate the type of work I enjoy
-		and with which I have considerable experience.
-	</div>
-	<div id="projects" style="position: absolute; top: 90%; left: 10%; width: 80%;">
-		<div id="project1" style="border: 2px solid #BB3322; padding: 5%;">
-			<table width="100%">
-				<tr>
-					<td width="30%">
-						<div>
-							<a id='softwareSimAnchor'></a>
-							<b>Software Simulations</b><br><br>
-							I have extensive experience creating software to run physical simulations.
-							From modeling the field properties of electromagnetic coil geometries to
-							writing the scripts that power this website's 3D graphics, I enjoy applying
-							physics and math to build up solutions to computational challenges from
-							fundamental principles. Featured at right are a magnetic field map for a 
-							solenoid, a snapshot of a wire winding around a spinning core, and a
-							simulation of the peaks of a 2D wavefunction in an infinite box potential
-							responding to a time-dependent perturbation.
-							<br><br>
-							Try out and/or view the code for a <a href='./magFieldSimulator.html'>simple magnetic field simulator</a> I made.
-						</div>
-					</td>
-					<td width="70%">
-						<div>
-							<img src="Software_Simulations.png" alt="Software Simulations" width="90%" style="margin: 10%;">
-						</div>
-					</td>
-				</tr>
-			</table>
+	<head>
+		<title>Nick Kantack - Projects</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="styles.css">
+	</head>
+	<body>
+		
+		<div class='mainPanel'>
+		
+			<div class='pageTitle'>Projects</div>
+			
+			<div id='navBar' class='navBar'>
+			<button class='navButton' id='navHome'>Home</button>
+			<button class='navButton' id='navResume'>Resume</button>
+			<button class='navButton' id='navProjects'>Projects</button>
+			<button class='navButton' id='navLiterature'>Literature</button>
+			</div>
+			
+			<div class='lightPanel'>
+				<p>
+					This section provides a few examples of projects which showcase my skills and interests.
+				</p>
+				<!------------------------------------------------------------------------------------------------->
+				<div class='darkPanel'>
+					<div class='sectionTitle'>
+						Coil Inductance Calculator
+					</div>
+					<br/>
+					<img src='./coilSimImage.jpg' align=left class='picture' />
+					<p>
+						This simulation depicts the magnetic field around a solenoid. It also calculates the inductance
+						of the solenoid and provides an insightful comparison to the inductance as calculated using the
+						common long coil approximation.
+					</p>
+					
+					<button onclick="location.href='./coilSimulator.html';">
+					View Simulation
+					</button>
+					
+				</div>
+				<!------------------------------------------------------------------------------------------------->
+				<div class='lightPanel'>
+					<div class='sectionTitle'>
+						Emergent Cooperation
+					</div>
+					<br/>
+					<img src='./emergenceImage.jpg' align=right class='picture' />
+					<p>
+						View a simple, thought provoking example of a swarm of individualistically-minded agents
+						"accidentally" cooperate to reach a common goal.
+					</p>
+					
+					<button onclick="location.href='./Emergence.html';">
+					View Simulation
+					</button>
+					
+				</div>
+				<!------------------------------------------------------------------------------------------------->
+				<div class='darkPanel'>
+					<div class='sectionTitle'>
+						EMP Dome
+					</div>
+					<br/>
+					<img src='./EMP_dome_image.jpg' align=left class='picture' />
+					<p>
+						See a cool demo for an energy weapon based force field generation system.
+					</p>
+					
+					<button onclick=''>
+					View Simulation
+					</button>
+					
+				</div>
+			</div>
+			
 		</div>
-		<div id="project2" width="100%" style="padding: 0%;">
-			<table width="100%">
-				<tr width="100%">
-					<td width="50%">
-						<div>
-							<img src="JukeBoxesListing.png" alt="JukeBoxes Listing" width="90%" style="margin: 10%;">
-						</div>
-					</td>
-					<td width="50%">
-						<div style="padding: 5%;">
-							<b>Android Mobile Apps</b><br><br>
-							I recently began mobile app development primarily as a hobby creating puzzle-based games.
-							Juke Boxes is my first creation and available for free on the Google Play Store. Since then
-							I've deepened my experience with Android's API's and began building apps to interface
-							with custom software and devices. For example, I've written an app to interface
-							with production monitoring software I wrote for my employer as well as an app to interface
-							with a homemade Arduino-based security system.
-						</div>
-					</td>
-				</tr>
-			</table>
-		</div>
-		<div id="project4" style="border: 2px solid #BB3322; padding: 5%;">
-			<table>
-				<tr>
-					<td width="30%">
-						<div style="padding: 5%;">
-							<b>Node.js and Javascript Powered Software</b><br><br>
-							I designed and fielded a custom, web-based production management system. It includes
-							features to enable logging of production shifts, plotting and basic statistical analysis of
-							production data, real-time monitoring of machine statuses, and scheduling automatic email notifications
-							based on desired events. It also includes a cool feature where the host server periodically analyzes
-							each batch of new log entries against their historical values and compiles a list of outliers
-							into a production data summary that it emails to managers on a daily basis. The system is hosted
-							on a LAN via Node.js. A mock up is shown at right, with all fictional names and values.
-						</div>
-					</td>
-					<td width="70%">
-						<div>
-							<img src="pm.png" alt="Production Management Software" width="100%">
-						</div>
-					</td>
-				</tr>
-			</table>
-		</div>
-		<div id="project4" style="padding: 5%;">
-			<table>
-				<tr>
-					<td width="25%">
-						<div>
-							<img src="thermostat.png" alt="Thermostat" width="100%">
-						</div>
-					</td>
-					<td width="75%">
-						<div style="padding: 5%;">
-							<b>Custom Device Electronics</b><br><br>
-							I've built just over a dozen machine controllers for manufacturing lines, all implementing
-							microcontrollers running custom software I wrote for each application (not pictured, since 
-							they are property of my employer). I have also applied my controller design experience to
-							my own personal projects, including a temperature controlling thermostat at my home (a 
-							prototype version is shown at left).
-						</div>
-					</td>
-				</tr>
-			</table>
-		</div>
-	</div>
-	<!--Projects-->
-</div>
-</body>
-<!--LOCAL FUNCTIONS-->
-<script>
-
-	/*
-	Comments on the 3D environment
-	This page and its supporting scripts use a 3D coordinate system with directions x, y, and z. 
-	
-		The positive x direction is straight left in the browser
-		The positive y direction is straight out of the browser (straight out of the screen towards the user).
-		The positive z direction is straight up in the browser
-	
-	*/
-	var unitToPixelRatio = 1;
-	
-	//Record of time of last repaint
-	var lastRepaintTime = 0;
-	var minRepaintInterval = 10; //in ms
-	
-	//Global lists
-	var things = [];	//The 3D environment paints surfaces. "Things" are groups of related surfaces (e.g. a thing could be a cube with all the faces as surfaces).
-	var textBlocks = [];
-	var allSurfaces = [];	//When it comes time to paint all the surfaces in the 3D environment, "things" are dissolved and all surfaces are dumped and sorted into this array.
-	var alterations = [];	//This object registers an instance of a "thing" which is to undergo a change during mouseover (e.g. menu buttons sliding on mouseover).
-	
-	//viewport properties
-	var yob = 10;	//The view created in this page will be from point <0, yob, 0> in the <0, -1, 0> direction. Therefore, this value influences the apperance of object sizes and perspective
-	var YFOVangle = Math.PI / 4;	//This is the angular width of the web page's field of view, in radians. A computer screen takes up about PI / 4 of your vertical field of view, so this is
-									//a good YFOVangle for the 3D effects in browser to look natural and realistic.
-	var XFOVangle = Math.PI / 4 * window.innerWidth / window.innerHeight;	//This is the angular height of the web page's field of view, in radians. This is determined by our choice for
-																			//YFOVangle and the aspect ratio of the screen.
-	
-	//For scrolling 3D effects, we need a record of the latest scroll position
-	var lastScrollTop = 0;
-	
-	/*
-	FILLING THE 3D ENVIRONMENT
-	*/
-	
-	//Things in the foreground
-		//Top sign (where the page title is)
-		origin = [-2.5, 3, 0.75];	//This is the start point about which the vertices of a thing are built. If we're building a cube, this would appear as the back, right, bottom corner.
-		vertices = generateBlockVertices(origin, 5, 2, 1);	//This creates a lattice of corner points for a rectangular prism at the above origin of x width 5, y depth 2, and z height 1.
-		things.push(createThing(generateBlockSurfaces(vertices, "#BB3322"), "topSign"));	//Any thing we make should be added to the list of things so it is painted on the canvas. We also
-																							//give the thing a name so that we can easily reference it and pull it from the list later.
 		
-		//Top navigation button
-		origin = [-2.5, 3, 0.15];
-		vertices = generateBlockVertices(origin, 1, 2, 0.5);
-		things.push(createThing(generateBlockSurfaces(vertices, "#BB3322"), "topButton"));
+		<!-- 
+			<p>I want to showcase the following applications:</p>
+				<ol>
+					<li>Inductance Calculator</li>
+					<li>Something showing 3D animation</li>
+					<li>Image Analyzer</li>
+					<li>Search bar engine?</li>
+					<li>Shoplock</li>
+					<li>Some example of the camera system like from IIN (integrate with machine learning ideas)?</li>
+					<li>JukeBoxes</li>
+					<li>Emergence simulation</li>
+					<li>Codenames AI</li>
+					<li>Factory Logix Bot (the working principle)</li>
+					<li>Music Maker</li>
+					<li>BubbleHorde</li>
+					<li>EMP Dome simulator</li>
+					<li>The spiral thingy</li>
+					<li>Check excel creations</li>
+				</ol>
+				<p>I want to showcase theory on the following topics</p>
+				<ol>
+					<li>3D graphics</li>
+					<li>Bupkis</li>
+					<li></li>
+					<li></li>
+					<li></li>
+					<li></li>
+					<li></li>
+					<li></li>
+					<li></li>
+				</ol>
+		-->
 		
-		//Create text for topNavigationButton
-		origin = [-3.4, 3, 0.3];
-		size = 50;
-		textBlock = {text: "Resume", color: "#FFFFFF", origin: origin, fontStyle: "italic small-caps bold", fontSize: size, fontFamily: "Verdana"};
-		textBlocks.push(textBlock);
+		<script>
 		
-		//Create top button alteration for button hover animation - an alteration is a recorded transformation that is to take place when we mouse over the thing associated with that alteration.
-		var alterationTranslationDirection = [0, 1, 0];
-		var localAlteration = createAlteration("topButton", alterationTranslationDirection, 0.5, origin, origin, 0, 250, 10, 0); //Try to keep steps / time (ms) <= 0.4. 40fps is plenty. Go easy on the client.
-		alterations.push(localAlteration);
+		</script>
 		
-		//Middle navigation button
-		origin = [-2.5, 3, -0.45];
-		vertices = generateBlockVertices(origin, 1, 2, 0.5);
-		things.push(createThing(generateBlockSurfaces(vertices, "#BB3322"), "middleButton"));
+		<script src="procedurals.js"></script>
 		
-		//Create text for topNavigationButton
-		origin = [-3.4, 3, -0.4];
-		size = 50;
-		textBlock = {text: "Home", color: "#FFFFFF", origin: origin, fontStyle: "italic small-caps bold", fontSize: size, fontFamily: "Verdana"};
-		textBlocks.push(textBlock);
-		
-		//Create middle button alteration for button hover animation
-		var alterationTranslationDirection = [0, 1, 0];
-		localAlteration = createAlteration("middleButton", alterationTranslationDirection, 0.5, origin, origin, 0, 250, 10, 0);
-		alterations.push(localAlteration);
-		
-		//Bottom navigation button
-		origin = [-2.5, 3, -1.05];
-		vertices = generateBlockVertices(origin, 1, 2, 0.5);
-		things.push(createThing(generateBlockSurfaces(vertices, "#BB3322"), "bottomButton"));
-		
-		//Create text for topNavigationButton
-		origin = [-3.4, 3, -1.1];
-		size = 50;
-		textBlock = {text: "Contact", color: "#FFFFFF", origin: origin, fontStyle: "italic small-caps bold", fontSize: size, fontFamily: "Verdana"};
-		textBlocks.push(textBlock);
-	
-		//Create bottom button alteration for button hover animation
-		var alterationTranslationDirection = [0, 1, 0];
-		localAlteration = createAlteration("bottomButton", alterationTranslationDirection, 0.5, origin, origin, 0, 250, 10, 0);
-		alterations.push(localAlteration);
-		
-		//Create text for topSign
-		origin = [-3, 3, 1.25];
-		var size = 80;
-		var textBlock = {text: "Nick Kantack  -  Projects", color: "#FFFFFF", origin: origin, fontStyle: "italic small-caps bold", fontSize: size, fontFamily: "Verdana"};
-		textBlocks.push(textBlock);
-		
-	//Things in the background	 	
-		
-
-//--------------------------------------------------------------------------
-//Events for startup go in here
-$(document).ready(function(){
-
-	window.scrollTo(0, 0);
-
-	lastScrollTop = $(window).scrollTop();
-	
-	fitCanvas(); //This includes the initial canvas paint
-
-});
-//--------------------------------------------------------------------------
-
-$(window).resize(function() {
-
-	fitCanvas();
-
-});
-
-//--------------------------------------------------------------------------
-function fitCanvas(){	//We want to expand the canvas to fill the entire background of the page.
-	var c = document.getElementById("graph");
-	var ctx = c.getContext("2d");
-	c.width  = window.innerWidth;
-	c.height = window.innerHeight;
-	c.width  = c.offsetWidth;
-	c.height = c.offsetHeight;
-	
-	var testPoint = [1, 0, 0];
-	unitToPixelRatio = c.width * (getXYProjection(testPoint, yob, XFOVangle, YFOVangle)[0] - 0.5)
-
-	//Update viewport properties
-	YFOVangle = Math.PI / 4;
-	XFOVangle = Math.PI / 4 * parseFloat(c.width) / parseFloat(c.height);
-	//Adjust body text size
-	$('body').css({"font-size": c.height / 40 + "px"});
-	//Adjust button text sizes
-	for (var i = 0; i < 4; i++){	//For this page we'll standardize the button font sizes as a fraction of screen height.
-		textBlocks[i].fontSize = c.height / 20;
-	}
-	for (var i = 0; i < textBlocks.length; i++){	//Standardize all other font sizes
-		
-	}
-	textBlocks[3].fontSize *= 1.5;	//Boost the title
-	repaint("#FFFDF9");
-}
-//--------------------------------------------------------------------------
-//Events for scrolling (create 3D effect)
-$(window).scroll(function(){
-
-	if ($(window).scrollTop() == 0){	//Restore everything at the top
-	
-		restoreAllThings();
-	
-	}
-	else{	//Calculate the transformation
-
-		//Add transformation for things
-		var direction = [0, 0, 1];
-		for (var i = 0; i < things.length; i++){
-			things[i] = translateThing(things[i], direction, ($(window).scrollTop() - lastScrollTop) / unitToPixelRatio * 0.8);
-		}
-		//Add transformation for text
-		for (var i = 0; i < textBlocks.length; i++){
-			textBlocks[i].origin = add(textBlocks[i].origin, scale(direction, ($(window).scrollTop() - lastScrollTop) / unitToPixelRatio * 0.8 * 1.45));
-		}
-		
-	}
-	lastScrollTop = $(window).scrollTop();
-	requestRepaint("#FFFDF9");
-
-});
-//--------------------------------------------------------------------------
-//Handle clicks (on this page, clicks navigate to other pages)
-$(document).mousedown(function(){
-
-	if (alterations[0].hover){	//Resume button
-		window.location.replace("./resume.html");
-	}
-	if (alterations[1].hover){	//Projects button
-		window.location.replace("./index.html");
-	}
-	if (alterations[2].hover){	//Contact button
-		window.location.replace("./contact.html");
-	}
-	
-	
-});
-//--------------------------------------------------------------------------
-function restoreAllThings(){
-
-	var origin = [-2.5, 3, 0.75];	//This is the start point about which the vertices of a thing are built. If we're building a cube, this would appear as the back, right, bottom corner.
-	things[0].vertices = generateBlockVertices(origin, 5, 2, 1);	//This creates a lattice of corner points for a rectangular prism at the above origin of x width 5, y depth 2, and z height 1.
-	origin = [-2.5, 3, 0.15];
-	things[1].vertices = generateBlockVertices(origin, 1, 2, 0.5);
-	origin = [-2.5, 3, -0.45];
-	things[2].vertices = generateBlockVertices(origin, 1, 2, 0.5);
-	origin = [-2.5, 3, -1.05];
-	things[3].vertices = generateBlockVertices(origin, 1, 2, 0.5);
-	
-}
-</script>
+	</body>
 </html>

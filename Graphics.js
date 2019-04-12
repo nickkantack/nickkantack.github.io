@@ -1,4 +1,4 @@
-function animate(index, translationDirection, translationDistance, rotationAxisPoint, rotationAxisDirection, angle, time, steps, currentStep, background){
+function animate(index, translationDirection, translationDistance, rotationAxisPoint, rotationAxisDirection, angle, time, steps, currentStep){
 	
 	/*
 	Calling this function initiates the translation and/or rotation animation (specified by the input parameters) on the thing at things[index] (where index is a supplied parameter).
@@ -13,15 +13,15 @@ function animate(index, translationDirection, translationDistance, rotationAxisP
 	if (currentStep >= steps){	//Then we are one step away from being done with the animation.
 		things[index] = translateAndRotateThing(things[index], translationDirection, translationDistance * (1 - currentStep / steps + 1 / steps), rotationAxisPoint, rotationAxisDirection, angle * (1 - currentStep / steps + 1 / steps));
 		rotationAxisPoint = add(rotationAxisPoint, scale(translationDirection, translationDistance * (1 - currentStep / steps + 1 / steps)));	//Remove this if you don't want the rotationAxisPoint to translate
-		requestRepaint(background);
+		requestRepaint("#FFFDF9");
 	}
 	else{	//Then we are beginning or in the midst of the animation.
 		things[index] = translateAndRotateThing(things[index], translationDirection, translationDistance / steps, rotationAxisPoint, rotationAxisDirection, angle / steps);
 		rotationAxisPoint = add(rotationAxisPoint, scale(translationDirection, translationDistance / steps));	//Remove this if you don't want the rotationAxisPoint to translate
-		repaint(background);
+		repaint();
 		setTimeout(function(){	//Schedule the next frame of the animation.
 		
-			animate(index, translationDirection, translationDistance, rotationAxisPoint, rotationAxisDirection, angle, time, steps, currentStep, background);
+			animate(index, translationDirection, translationDistance, rotationAxisPoint, rotationAxisDirection, angle, time, steps, currentStep);
 		
 		}, time / steps);
 	}

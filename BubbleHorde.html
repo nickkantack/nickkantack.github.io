@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src='jquery.js'></script>
+	<style>
+		#gameboard {
+		
+			position: absolute;
+			width: 80%;
+			left: 10%;
+			border: 3px solid #000000;
+			
+		}
+	</style>
+</head>
+<body>
+	<canvas id='gameboard'>Cannot display the canvas</canvas>
+	<center><p id='debug'></p></center>
+	<script>
+		var c;
+		var ctx;
+		var timer;
+		var timer2;
+		var score = 0;
+		var player;
+		var playing = false;
+		var enemies = [];
+		var enemiesRadius = 100;
+		var enemiesRadiusBleed = 0.02;
+		var enemiesRadiusMin = 10;
+		var probMax = 1;
+		var probIncrement = 0.001;
+		var prob = 0.05;
+		var AIactive = false;
+		//------------------------------------------------------------------------------------------------------------------
+		$(initialize);
+		//------------------------------------------------------------------------------------------------------------------
+		function initialize(){
+		
+			c = document.getElementById('gameboard');
+			ctx = c.getContext('2d');
+			
+			//Define a square gameboard
+			c.height = c.width;
+			c.width  = c.offsetWidth;
+			c.height = c.offsetWidth;
+			
+			timer = setInterval(tick, 50);
+			timer2 = setInterval(eliminateEnemies, 50);
+			
+		}
+		//------------------------------------------------------------------------------------------------------------------
+		function tick(){
+			
+			if (playing){
+			
+				//Adjust constants
+				score++;
+				$('#debug').text(score);
+				if (enemiesRadius - enemiesRadiusBleed >= enemiesRadiusMin){enemiesRadius -= enemiesRadiusBleed;}
+				if (prob + probIncrement <= probMax){prob += probIncrement;}
+				//possible generate a new enemy
+				if (Math.random() > 1 - prob){
+					var X = 0;
+					var Y = 0;
+					
+					var corner = parseInt(Math.random() * 4);
+
+					switch(corner){
+					
+						case 0:
+							X = -enemiesRadius + Math.random() * (c.width + 2 * enemiesRadius);
+							Y = -enemiesRadius;
+						break;
+						case 1:
+							X = c.width + enemiesRadius;
+							Y = -enemiesRadius + Math.random() * (c.height + 2 * enemiesRadius);
+						break;
+						case 2:
+							X = c.width + enemiesRadius- Math.random() * (c.width + 2 * enemiesRadius);
+							Y = c.height + enemiesRadius;
+						break;
+						case 3:
+							X = -enemiesRadius;
+							Y = c.height + enemiesRadius - Math.random() * (c.height + 2 * enemiesRadius);
+						break;
+					
+					}
+					
+					var enemy = Enemy.create(X, Y);
+					enemies.push(enemy);
+				}
+				
+				//move enemies
+				for (var i = 0; i < enemies.length; i++){
+					
+					var distance = Math.sqrt(Math.pow((player.X - enemies[i].X) , 2) + Math.pow((player.Y - enemies[i].Y), 2));
+					enemies[i].X += enemies[i].speed * (player.X - enemies[i].X) / distance;
+					enemies[i].Y += enemies[i].speed * (player.Y - enemies[i].Y) / distance;
+					
+				}
+			
+				repaint();
+			
+			}
+		
+		}
+		//------------------------------------------------------------------------------------------------------------------
+		function eliminateEnemies(){
+		
+			//Eliminate colliding enemies
+			for (var i = 0; i < enemies.length; i++){
+				for (var j = i + 1; j < enemies.length; j++){
+				
+					if (Math.sqrt(Math.pow(enemies[i].X - enemies[j].X, 2) + Math.pow(enemies[i].Y - enemies[j].Y, 2)) < 2 * enemiesRadius){
+					
+						enemies.splice(j, 1);
+						enemies.splice(i, 1);
+						
+						i--;
+		
+					}
+				
+				}
+			}
+		
+		}
+		//------------------------------------------------------------------------------------------------------------------
+		function startNewGame(X, Y){
+		
+			player = Player.create(X, Y);
+		
+		}
+		//------------------------------------------------------------------------------------------------------------------
+		$('#gameboard').mousedown(function(e){
+		
+			if (!playing){
+			
+				playing = true;
+				var offset = $('#gameboard').offset();
+				startNewGame(e.pageX - offset.left, e.pageY - offset.top);
+				enemies = [];
+				
+			}
+		
+		});
+		//------------------------------------------------------------------------------------------------------------------
+		$('#gameboard').mousemove(function(e){
+		
+			if (playing){
+				var offset = $('#gameboard').offset();
+				player.X = e.pageX - offset.left;
+				player.Y = e.pageY - offset.top;
+			}
+		
+		});
+		//------------------------------------------------------------------------------------------------------------------
+		function repaint(){
+		
+			ctx.fillStyle = '#FFFFFF';
+			ctx.fillRect(0, 0, c.width, c.height);
+			ctx.fillStyle = '#FF0000';
+			ctx.beginPath();
+			ctx.arc(player.X,player.Y,player.radius,0,2*Math.PI);
+			ctx.fill();
+			
+			//paint enemies
+			ctx.fillStyle = '#00FF00';
+			for (var i = 0; i < enemies.length; i++){
+				ctx.beginPath();
+				ctx.arc(enemies[i].X, enemies[i].Y, enemiesRadius, 0, 2 * Math.PI);
+				ctx.fill();
+			}
+		
+		}
+		//------------------------------------------------------------------------------------------------------------------
+		//------------------------------------------------------------------------------------------------------------------
+		
+		
+		//------------------------------------------------------------------------------------------------------------------
+		//------------------------------------------------------------------------------------------------------------------
+		//CLASSES
+		//------------------------------------------------------------------------------------------------------------------
+		//------------------------------------------------------------------------------------------------------------------
+		
+		var Player = {
+		
+			create: function(X, Y){
+			
+				var result = {
+					X: X,
+					Y: Y,
+					radius: 10
+				}
+				
+				return result;
+			
+			}
+		
+		}
+		
+		//------------------------------------------------------------------------------------------------------------------
+		//------------------------------------------------------------------------------------------------------------------
+		
+		var Enemy = {
+		
+			create: function (X, Y){
+			
+				var result = {
+				
+					X: X,
+					Y: Y,
+					speed: 8
+				
+				}
+				
+				return result;
+			
+			}
+		
+		}
+		
+	</script>
+</body>
+</html>

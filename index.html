@@ -1,284 +1,69 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<title>Nick Kantack</title>
-	<style>
-	#mainPanel {
-		position: absolute;
-		width: 90%;
-		left: 5%;
-		padding: 0 0 5% 0;
-		overflow: hidden;
-	}
-	
-	#titleBar {
-		background: #BB3322;
-		width: 90%;
-		font-variant: small-caps;
-		font-style: italic;
-		font-size: 45px;
-		font-size: 5vw;
-		color: #FFFDF9;
-		padding-left: 5%;
-		padding-right: 5%;
-		padding-top: 3%;
-		padding-bottom:1%;
-	}
-	
-	#content {
-		width: 96%;
-		vertical-align: top;
-		padding: 2%;
-	}
-	
-	#contentTable {
-		width: 100%;
-	}
-	
-	#graph {
-		width: 100%;
-	}
-	
-	.note {
-		width: 95%;
-		padding: 2.5%;
-		margin-top: 5%;
-		border: 1px solid #DDC022;
-		background: #FFF4AB;
-		color: #997000;
-	}
-	
-	.navBarCol {
-		width: 33%;
-		background: #BB3322;
-	}
-	
-	.navBut {
-		font-variant: small-caps;
-		font-style: italic;
-		font-size: 25px;
-		font-size: 2vw;
-		width: 100%;
-		padding-top: 5%;
-		padding-bottom: 5%;
-		-webkit-transition-duration: 0.4s; /* Safari */
-		transition-duration: 0.4s;
-		background: #BB3322;
-		color: #FFFDF9;
-		border: none;
-		border-radius: 0px;
-	}
-	
-	.navBut:hover {
-		padding-top: 10%;
-		padding-bottom: 10%;
-		margin-top: -5%;
-		margin-bottom: -5%;
-		border-radius: 15px;
-		box-shadow: 5px 10px 18px #661100;
-		background: #D03322;
-	}
-	
-	#navBar {
-		width: 100%;
-		background: #BB3322;
-		bottom: 2%;
-	}
-	
-	body {
-		background: linear-gradient(to right, #FDF3DF, #FFFFFF, #FDF3DF);
-		font-family: Verdana;
-		color: #BB3322;
-		font-size: 20px;
-	}
-	
-	sectionTitle {
-		font-weight: bold;
-		font-variant: small-caps;
-		font-size: 30px;
-	}
-	
-	#contentTable td {
-		padding-top: 20px
-	}
-	
-	img {
-		max-width: 250px;
-	}
-	
-	canvas {
-		max-width: 250px;
-	}
-	
-	</style>
-	
-	<!--Scripts I made-->
-	<script src="VectorSpace.js"></script>
-	<script src="Block.js"></script>
-	<script src="Surface.js"></script>
-	<script src="Thing.js"></script>
-	<script src="Graphics.js"></script>
-	<script src="Alterations.js"></script>
-	<script src='jquery.js'></script>
-	
-</head>
-<body>
-
-	<!-- Everything on the webpage fits on the mainPanel -->
-	<div id='mainPanel'>
-	
-		<!-- Title bar -->
-		<div id='titleBar'>
-			Nick Kantack
+	<head>
+		<title>Nick Kantack Personal Site</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="styles.css">
+	</head>
+	<body>
+		
+		<div class='mainPanel'>
+		
+			<div class='pageTitle'>Nick Kantack</div>
+			
+			<div id='navBar' class='navBar'>
+			<button class='navButton' id='navHome'>Home</button>
+			<button class='navButton' id='navResume'>Resume</button>
+			<button class='navButton' id='navProjects'>Projects</button>
+			<button class='navButton' id='navLiterature'>Literature</button>
+			</div>
+			
+			<div class='lightPanel'>
+				<img src='./headshot.jpg' class='picture' align=right width='200px'></img>
+				<p>I am a engineer at the Johns Hopkins Applied Physics Lab and a masters student at the University of Virginia. I currently work as an manufacturing engineer supporting the assembly of electronic spaceflight hardware while I pursue my master of electrical engineering. This site provides information about me and examples of my work. In particular, this site includes several applications I've coded (see <a href='./projects.html'>Projects</a>) and some literature and presentations I've authored (see <a href='./literature.html'>Literature</a>).
+				</p>
+			</div>
+			
 		</div>
 		
-		<!-- Middle stuff -->
-		<div id='content'>
-			<table id='contentTable'>
-			
-			
-				<!-- Establish the skeleton for all subsequent rows of this table -->
-				<tr><td style='width: 20%'></td><td style='width: 50%;'></td><td style='30%;'></td></tr>
-				
-				<!-- Introduction row -->
-				
-				<tr>
-					<td style='padding-right: 5%;' colspan='2'>
-						<sectionTitle>Introduction</sectionTitle>
-						<br>
-						<br>
-						I am an electrical engineer specializing in the design and implementation
-						of custom software and hardware for a variety of device technology challenges.
-						I have extensive experience in design, assembly, and programming of automation 
-						and manufacturing machinery, controls, and sensors. I also have extensive
-						experience with the design and fabrication of electronic components. My strong
-						physics and research backgrounds equip me with the ability to apply electronic
-						fundamentals to create custom electronic devices and the means to produce them.
-					</td>
-					<td style='width: 20%'>
-						<img src='./headshot.png' width='100%' alt='Could not display image'></img>
-					</td>
-				</tr>
-				
-				<!-- Software features row -->
-				
-				<tr>
-					<td style='padding-top: 2%;'>
-						<canvas id="graph"></canvas>
-					</td>
-					<td colspan='2' style='padding-left: 5%;'>
-						<sectionTitle>Site Features</sectionTitle>
-						<br>
-						<br>
-						This site includes demonstrations of my work (such as the scripts that powers
-						this website's 3D graphics), including some browser based applications (see
-						the <a href='./projects2.html'>Projects</a> section). These work best on a 
-						laptop or desktop. If you view an application from a mobile	platform, it may
-						have reduced features.
-					</td>
-				</tr>
-			</table>
-		</div>
+		<!-- 
+			<p>I want to showcase the following applications:</p>
+				<ol>
+					<li>Inductance Calculator</li>
+					<li>Something showing 3D animation</li>
+					<li>Image Analyzer</li>
+					<li>Search bar engine?</li>
+					<li>Shoplock</li>
+					<li>Some example of the camera system like from IIN (integrate with machine learning ideas)?</li>
+					<li>JukeBoxes</li>
+					<li>Emergence simulation</li>
+					<li>Codenames AI</li>
+					<li>Factory Logix Bot (the working principle)</li>
+					<li>Music Maker</li>
+					<li>BubbleHorde</li>
+					<li>EMP Dome simulator</li>
+					<li>The spiral thingy</li>
+					<li>Check excel creations</li>
+				</ol>
+				<p>I want to showcase theory on the following topics</p>
+				<ol>
+					<li>3D graphics</li>
+					<li>Bupkis</li>
+					<li></li>
+					<li></li>
+					<li></li>
+					<li></li>
+					<li></li>
+					<li></li>
+					<li></li>
+				</ol>
+		-->
 		
-		<!-- Nav bar at bottom -->
+		<script>
 		
-		<table id='navBar'>
-			<tr>
-				<td class='navBarCol'>
-					<button class='navBut' id='resumeBut'>Resume</button>
-				</td>
-				<td class='navBarCol'>
-					<button class='navBut' id='projectsBut'>Projects</button>
-				</td>
-				<td class='navBarCol'>
-					<button class='navBut' id='contactBut'>Contact</button>
-				</td>
-			</tr>
-			
-		</table>
-
-	</div>
-	
-	<script>
-	
-		// Global lists
-		var things = [];	// The 3D environment paints surfaces. "Things" are groups of related surfaces (e.g. a thing could be a cube with all the faces as surfaces).
-		var textBlocks = [];
-		var allSurfaces = [];	// When it comes time to paint all the surfaces in the 3D environment, "things" are dissolved and all surfaces are dumped and sorted into this array.
-		var alterations = [];	// This object registers an instance of a "thing" which is to undergo a change during mouseover (e.g. menu buttons sliding on mouseover).
+		</script>
 		
-		// viewport properties
-		var yob = 10;	// The view created in this page will be from point <0, yob, 0> in the <0, -1, 0> direction. Therefore, this value influences the apperance of object sizes and perspective
-		var c = document.getElementById('graph');
-		var ctx = c.getContext('2d');
+		<script src="procedurals.js"></script>
 		
-		//--------------------------------------------------------------------------
-		// Objects for the animation
-		//--------------------------------------------------------------------------
-		
-		origin = [-0.5, 3, -0.5];	
-		vertices = generateBlockVertices(origin, 1, 1, 1);	
-		things.push(createThing(generateBlockSurfaces(vertices, "#BB3322"), "Block1"));	
-		
-		origin = [-1.7, 3, -0.5];	
-		vertices = generateBlockVertices(origin, 1, 1, 1);	
-		things.push(createThing(generateBlockSurfaces(vertices, "#BB3322"), "Block2"));	
-		
-		origin = [-0.5, 3, 0.7];	
-		vertices = generateBlockVertices(origin, 1, 1, 1);	
-		things.push(createThing(generateBlockSurfaces(vertices, "#BB3322"), "Block3"));	
-		
-		origin = [-0.5, 1.8, -0.5];	
-		vertices = generateBlockVertices(origin, 1, 1, 1);	
-		things.push(createThing(generateBlockSurfaces(vertices, "#BB3322"), "Block4"));	
-		
-		//--------------------------------------------------------------------------
-		// Document preparation functions
-		//--------------------------------------------------------------------------
-		$(document).ready(function(){
-			fitCanvas();
-			$(window).resize(function() {fitCanvas();});
-			homeAnimation();
-		});
-		//--------------------------------------------------------------------------
-		function fitCanvas(){
-			c.width  = c.offsetWidth;
-			c.height = c.width;
-			XFOVangle = Math.PI / 4;												// This is the angular width of the web page's field of view, in radians. A computer screen takes up about PI / 4 of your vertical field of view, so this is
-																					// a good YFOVangle for the 3D effects in browser to look natural and realistic.
-			YFOVangle = Math.PI / 4 / parseFloat(c.width) * parseFloat(c.height);
-			repaint("#FDF9EF");
-		}
-		//--------------------------------------------------------------------------
-		// Animation
-		//--------------------------------------------------------------------------
-		
-		// Record of time of last repaint - this helps prevent unnecessarily frequent
-		// and burdensome calls to the repaint function
-		var lastRepaintTime = 0;
-		var minRepaintInterval = 50; //in ms
-		
-		function homeAnimation(){
-			var translationDirection = [0, 5, 1];
-			var rotationAxisPoint = [0, 3, 0];
-			var rotationAxisDirection = [1, 1, 1];
-			for (var i = 0; i < things.length; i++){
-				things[i] = translateAndRotateThing(things[i], translationDirection, 0, rotationAxisPoint, rotationAxisDirection, Math.PI / 100)
-			}
-			setTimeout(homeAnimation, 2 * minRepaintInterval);
-			requestRepaint("#FDF9EF");
-		}
-		//--------------------------------------------------------------------------
-		// Links for buttons
-		//--------------------------------------------------------------------------
-		$('#resumeBut').click(function(){window.location.replace("./resume2.html");});
-		$('#projectsBut').click(function(){window.location.replace("./projects2.html");});
-		$('#contactBut').click(function(){window.location.replace("./contact2.html");});
-		//--------------------------------------------------------------------------
-		//--------------------------------------------------------------------------
-		//--------------------------------------------------------------------------
-		//--------------------------------------------------------------------------
-	
-	</script>
-</body>
+	</body>
 </html>
