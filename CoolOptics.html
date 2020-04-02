@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Cool Optics</title>
+		<link rel="stylesheet" href="opticsStyles.css">
+	</head>
+	<body>
+		<canvas id='canvas'></canvas>
+		<script src='opticsProcedurals.js'></script>
+		<script src='LightSource.js'></script>
+		<script src='Vector.js'></script>
+		<script src='CloakSphere.js'></script>
+		<script>
+			
+			var canvas = E('canvas');
+			var ctx = canvas.getContext('2d');
+			// Stuff here is for quick debug
+			
+			// An array of all optics for checking influence on travelling rays
+			var optics = [];
+			var sources = [];
+			
+			// Element 1
+			var origin = VectorFactory.create(300, 700);
+			var radius = 100;
+			var sphere = CloakSphereFactory.create(origin, radius, 
+				function (rho) {
+					if (rho > 100){
+						return 1;
+					}
+					var freq = 1;
+					var vary = Math.sin(2 * freq * Math.PI * rho / radius);
+					return 1 + vary * vary;
+				}
+			, 'n(r) = 1 + sin^2(r)');
+			optics.push(sphere);
+			
+			// Element 2
+			var origin = VectorFactory.create(550, 700);
+			var radius = 100;
+			var sphere = CloakSphereFactory.create(origin, radius, 
+				function (rho) {
+					if (rho > 100){
+						return 1;
+					}
+					return 1 + Math.sqrt(rho / radius);
+				}
+			, 'n(r) = 1 + sqrt(r)');
+			optics.push(sphere);
+			
+			//Element 3
+			var origin = VectorFactory.create(800, 700);
+			var radius = 100;
+			var sphere = CloakSphereFactory.create(origin, radius, 
+				function (rho) {
+					if (rho > 100){
+						return 1;
+					}
+					var sincPart = Math.sin(Math.PI * rho / radius) * radius / rho;
+					return 1 +  0.5 * sincPart * sincPart;
+				}
+			, 'n(r) = 1 + sinc^2(r)');
+			optics.push(sphere);
+			
+			// Element 4
+			var origin = VectorFactory.create(1050, 700);
+			var radius = 100;
+			var sphere = CloakSphereFactory.create(origin, radius, 
+				function (rho) {
+					if (rho > 100){
+						return 1;
+					}
+					return 1 + Math.pow(rho / radius, 2);
+				}
+			, 'n(r) = 1 + r^2');
+			optics.push(sphere);
+			
+			// Element 5
+			var origin = VectorFactory.create(1300, 700);
+			var radius = 100;
+			var sphere = CloakSphereFactory.create(origin, radius, 
+				function (rho) {
+					if (rho > 100){
+						return 1;
+					}
+					return 1 + 1 / (1 + Math.exp(4 * (rho / radius - 0.5)));
+				}
+			, 'n(r) = 1 + sigmoid(r)');
+			optics.push(sphere);
+			
+			// Element 6
+			var origin = VectorFactory.create(1550, 700);
+			var radius = 100;
+			var sphere = CloakSphereFactory.create(origin, radius, 
+				function (rho) {
+					if (rho > 100){
+						return 1;
+					}
+					return 1 + 0.5 * Math.sin(2 * Math.PI * rho / radius);
+				}
+			, 'n(r) = 1 + sin(r)');
+			optics.push(sphere);
+			
+			
+			for (var i = 0; i < 10; i++) {
+				var ls = LightSourceFactory.create(VectorFactory.create(100, 200 + 15 * i), VectorFactory.create(100, 0));
+				sources.push(ls);
+			}
+			
+			// Painting stuff (eventually to go in a painting method)
+			repaint(ctx);
+			
+		</script>
+		<script src='Mouse.js'></script>
+	</body>
+</html>
