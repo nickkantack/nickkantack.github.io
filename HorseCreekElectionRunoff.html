@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Horse Creek Election Runoff</title>
+</head>
+<body onload="initialize()">
+
+<div id="ProgressBar"></div>
+
+<div id="LeaderBoard">
+    <table id="LeaderBoardTable">
+        <tr>
+            <td>A table cell</td>
+        </tr>
+    </table>
+</div>
+
+<script>
+
+
+
+    function initialize() {
+        // Load in participants
+        let xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                // Typical action to be performed when the document is ready:
+                E("ProgressBar").innerHTML = xhttp.responseText;
+            }
+        };
+        xhttp.open("GET", "participantsList.txt", true);
+        xhttp.send();
+
+    }
+
+    function E(a) {
+        return document.getElementById(a);
+    }
+
+</script>
+</body>
+</html>
