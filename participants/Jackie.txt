@@ -1,0 +1,3 @@
+Maine:0
+Alaksa:1
+Texas:1

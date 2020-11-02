@@ -17,6 +17,8 @@
 
 <script>
 
+    let predictions = {};
+
 
 
     function initialize() {
@@ -24,12 +26,47 @@
         let xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
-                // Typical action to be performed when the document is ready:
-                E("ProgressBar").innerHTML = xhttp.responseText;
+
+                // Parse the participants file content as a list of participants
+                let responseText = xhttp.responseText;
+                responseText = responseText.replaceAll(/\r\n/g, "!")
+                let participants = responseText.split("!");
+
+                for (let i = 0; i < participants.length; i++) {
+                    let participantName = participants[i];
+                    predictions[participantName] = [];
+                }
+
+                // For each participant, schedule a request to read in their predictions
+                for (let i = 0; i < participants.length; i++) {
+                    let participantName = participants[i]
+                    let xhttp2 = new XMLHttpRequest();
+                    xhttp2.onreadystatechange = function() {
+                        if (this.readyState == 4 && this.status == 200) {
+
+                            // Parse the participants file content as a list of participants
+                            let responseText = xhttp.responseText;
+                            responseText = responseText.replaceAll(/\r\n/g, "!")
+                            let predictionsRaw = responseText.split("!");
+                            for (let j = 0; j < predictionsRaw.length; j++) {
+                                let prediction = predictionsRaw[j].split(":")[1];
+                                predictions[participantName].append(prediction);
+                            }
+
+                            alert("Got predictions for Lisa of:\r\n" + predictions["Lisa"]);
+
+                        }
+                    };
+                    xhttp2.open("GET", "participants/" + participantName + ".txt", true);
+                    xhttp2.send();
+                }
+
             }
         };
         xhttp.open("GET", "participantList.txt", true);
         xhttp.send();
+
+        // Schedule a request to read in the current state statuses
 
     }
 
