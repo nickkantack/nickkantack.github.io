@@ -3,20 +3,6 @@
 	<head>
 		<title>Nick Kantack - Resume</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<style>
-			#gameboard {
-			
-				width: 60%;
-				min-width: 300px;
-				border: 3px solid #000000;
-				margin: 15px;
-				border-radius: 5px;
-				
-			}
-			input {
-				width: 100%;
-			}
-		</style>
 		<link rel="stylesheet" href="styles.css">
 	</head>
 	<body onload='initialize()'>
@@ -26,18 +12,21 @@
 			<div class='pageTitle'>Emergence Clustering Simulation</div>
 			
 			<div id='navBar' class='navBar'>
-			<button class='navButton' id='navHome'>Home</button>
-			<button class='navButton' id='navResume'>Resume</button>
-			<button class='navButton' id='navProjects'>Projects</button>
-			<button class='navButton' id='navLiterature'>Literature</button>
+				<button class='navButton' id='navHome'>Home</button>
+				<button class='navButton' id='navProjects'>Projects</button>
+				<button class='navButton' id='navResume'>Resume</button>
 			</div>
 			
 			<div class='lightPanel'>
 			
-				Below is a simulation of a swarm of agents (brown dots) who are all independently pursuing random destinations. Each agent can spontaneously reroute (choose a random intermediate destination, e.g., was going to point A, now decided to go to point B first and then go to point A). Each agent can also spontaneously give up on reaching its current destination and go to its next planned destination or stop. Below the simulation, I explain a very interesting example with this simulation.
+				Below is a simulation of a swarm of agents (dots) who are all independently pursuing random
+				destinations. Each agent can spontaneously reroute (choose a random intermediate destination,
+				e.g., was going to point A, now decided to go to point B first and then go to point A). Each agent
+				can also spontaneously give up on reaching its current destination and go to its next planned
+				destination or stop. Below the simulation, I explain a very interesting example with this simulation.
 				<br/>
 			
-				<center><canvas id='gameboard'>Cannot display simulation</canvas></center>
+				<center><canvas id='gameboard2'>Cannot display simulation</canvas></center>
 				<!------------------------------------------------------------------------------------------------->
 				<div class='darkPanel'>
 					<div class='sectionTitle'>
@@ -54,16 +43,30 @@
 				</div>
 				<!------------------------------------------------------------------------------------------------->
 				<div class='lightPanel'>
-					<div class='sectionTitle'>
+					<div class='sectionTitleLight'>
 						Design and Motivation
 					</div>
 					
 					<p>
-					The purpose of this simulation is to demonstrate how a consequence of random statistics can appear like coordinated swarm behavior. First, note that a high probability of giving up (i.e. extremely indecisive agents) causes an emergent clustering in the center which is not planned. This is arguably not due to the swarm's intent to cluster (in fact, the agent's shouldn't "want" to cluster since each agent "wants" to be mobile. Rather, this is likely due to the fact that, for any given agent, the statistical expectation of the position of the agent becomes more concentrated around the center as the agent becomes more indecisive. Therefore, when indecisive, each agent behaves as though the center of the environment is the desired destination, even though very few agents are actively seeking the center.
+					The purpose of this simulation is to demonstrate how a consequence of random statistics can
+						appear like coordinated swarm behavior. First, note that a high probability of giving up
+						(i.e. extremely indecisive agents) causes an emergent clustering in the center which is
+						not planned. This is arguably not due to the swarm's intent to cluster (in fact, the agent's
+						shouldn't "want" to cluster since each agent "wants" to be mobile. Rather, this is likely
+						due to the fact that, for any given agent, the statistical expectation of the position of
+						the agent becomes more concentrated around the center as the agent becomes more indecisive.
+						Therefore, when indecisive, each agent behaves as though the center of the environment is
+						the desired destination, even though very few agents are actively seeking the center.
 					</p>
 					
 					<p>
-					Imagine a swarm of ants in a hostile environment (say, the proximity of fire). Imagine that the heat induces panic in each ant, which makes the ant very indecisive in where it wants to go. This simulation indicates that these circumstances could lead ants to bundle up with one another. An observer might conclude the ants are collectively responding to the threat and trying to create a shape with the highest heat resistance (a sphere, or in 2D, a circle). However, the observer has introduced this complicated mode of thinking; the ants did not plan their collective behavior, and each ant is trying to individually run for its life.
+					Imagine a swarm of ants in a hostile environment (say, the proximity of fire). Imagine that the
+						heat induces panic in each ant, which makes the ant very indecisive in where it wants to go.
+						This simulation indicates that these circumstances could lead ants to bundle up with one
+						another. An observer might conclude the ants are collectively responding to the threat and
+						trying to create a shape with the highest heat resistance (a sphere, or in 2D, a circle).
+						However, the observer has introduced this complicated mode of thinking; the ants did not
+						plan their collective behavior, and each ant is trying to individually run for its life.
 					</p>
 					
 				</div>
@@ -95,7 +98,7 @@
 				//------------------------------------------------------------------------------------------------------------------
 				function initialize(){
 				
-					c = document.getElementById('gameboard');
+					c = document.getElementById('gameboard2');
 					ctx = c.getContext('2d');
 					
 					//Define a square gameboard
@@ -188,7 +191,7 @@
 				function repaint(){
 					
 					// Repaint background
-					ctx.fillStyle = '#DCBA77';
+					ctx.fillStyle = "#d1c4ff";
 					ctx.fillRect(0, 0, c.width, c.height);
 					
 					// Repaint pons
@@ -204,7 +207,7 @@
 						ctx.arc(parseInt(groupDestination.x), parseInt(groupDestination.y), 5, 0, 2*Math.PI);
 						ctx.stroke();
 						// Label the goal
-						ctx.font = '15px Cambria';
+						ctx.font = '15px Georgia';
 						ctx.fillText('Goal', parseInt(groupDestination.x) - 15, parseInt(groupDestination.y) - 15);
 					}
 				
@@ -231,7 +234,7 @@
 							supported: false,
 							freefall: false,
 							paint: function(){
-								ctx.fillStyle = '#663300';
+								ctx.fillStyle = "#371aa1";
 								ctx.beginPath();
 								ctx.arc(parseInt(this.location.x), parseInt(this.location.y), this.radius, 0, 2*Math.PI);
 								ctx.fill();

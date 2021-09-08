@@ -5,9 +5,8 @@ function E(a){
 //-------------------------------------------------------------------------------------------------------
 // Nav bar
 E('navHome').addEventListener('click', function(){ window.location.replace('./index.html'); });
-// E('navResume').addEventListener('click', function(){ window.location.replace('./resume.pdf'); });
+E('navResume').addEventListener('click', function(){ window.location.replace('./resume.pdf'); });
 E('navProjects').addEventListener('click', function(){ window.location.replace('./projects.html'); });
-E('navLiterature').addEventListener('click', function(){ window.location.replace('./literature.html'); });
 //-------------------------------------------------------------------------------------------------------
 // Nav bar stickiness
 /*

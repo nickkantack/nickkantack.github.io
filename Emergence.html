@@ -3,20 +3,6 @@
 	<head>
 		<title>Nick Kantack - Resume</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<style>
-			#gameboard {
-			
-				width: 60%;
-				max-width: 400px;
-				border: 3px solid #000000;
-				margin: 15px;
-				border-radius: 5px;
-				
-			}
-			input {
-				width: 100%;
-			}
-		</style>
 		<link rel="stylesheet" href="styles.css">
 	</head>
 	<body onload='initialize()'>
@@ -34,7 +20,10 @@
 			
 			<div class='lightPanel'>
 			
-				Below is a simulation of a swarm of agents (red dots) who are all attempting to reach a goal location. The agents have no concept of cooperation, yet the agent's individually selfish behavior has the appearance and effect of cooperation. Below the simulation I explore some interesting implications from this simulation.
+				Below is a simulation of a swarm of agents (red dots) who are all attempting to reach a goal location.
+				The agents have no concept of cooperation, yet the agent's individually selfish behavior has the
+				appearance and effect of cooperation. Below the simulation I explore some interesting implications
+				from this simulation.
 				<br/>
 			
 				<center><canvas id='gameboard'>Cannot display simulation</canvas></center>
@@ -54,25 +43,41 @@
 				</div>
 				<!------------------------------------------------------------------------------------------------->
 				<div class='lightPanel'>
-					<div class='sectionTitle'>
+					<div class='sectionTitleLight'>
 						Design and Motivation
 					</div>
 					
 					<p>
-					The purpose of this simulation is to illustrate how ostensibly cooperative behavior can emerge from a population of agents who are fundamentally non-cooperative, perhaps even ignorant of each other's behavior or existence.
+					The purpose of this simulation is to illustrate how ostensibly cooperative behavior can emerge
+						from a population of agents who are fundamentally non-cooperative, perhaps even ignorant of
+						each other's behavior or existence.
 					</p>
 					
 					<p>
-					This simulation demonstrates a simple yet thought provoking concept. The agents in this simulation are not aware of one another. Each agent perceives the other as an obstacle in its environment. However, they are still able to, as a whole, coordinate to reach a common goal. <i>Cooperation, in this case, is seemingly rooted in the physical environment, not the individual agent neurology.</i>
+					This simulation demonstrates a simple yet thought provoking concept. The agents in this simulation
+						are not aware of one another. Each agent perceives the other as an obstacle in its environment.
+						However, they are still able to, as a whole, coordinate to reach a common goal.
+						<i>Cooperation, in this case, is seemingly rooted in the physical environment, not the
+							individual agent neurology.</i>
 					</p>
 					
 					<p>
-					We often try to understand swarm cooperation as originating in the swarm member's neurology. For instance, we think of ants as having roles, knowing them, and executing them for the good of the colony. However, imagine if ants were fundamentally unaware of the colony and perceived other ants as mere obstacles, yet their individual neurology was structured in a way which produced cooperative behavior without their consent. The results of simulations like this challenge our understanding of cooperation. If pons that don't intend to cooperate might ultimately cooperate, then what does it really mean to cooperate? This is a deep question, but its answer will likely play an instrumental role in the design of successful, coordinating, autonomous networks in the future.
+					We often try to understand swarm cooperation as originating in the swarm member's neurology.
+						For instance, we think of ants as having roles, knowing them, and executing them for the
+						good of the colony. However, imagine if ants were fundamentally unaware of the colony and
+						perceived other ants as mere obstacles, yet their individual neurology was structured in
+						a way which produced cooperative behavior without their consent. The results of simulations
+						like this challenge our understanding of cooperation. If pons that don't intend to cooperate
+						might ultimately cooperate, then what does it really mean to cooperate? This is a deep question,
+						but its answer will likely play an instrumental role in the design of successful,
+						coordinating, autonomous networks in the future.
 					</p>
 					
 				</div>
 				<!------------------------------------------------------------------------------------------------->
 			</div>
+
+			<button class="generalButton" onclick="location.href='Emergence_2.html'">More on emergence!</button>
 			
 		</div>
 			<script>
