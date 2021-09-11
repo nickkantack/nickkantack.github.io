@@ -63,6 +63,7 @@ p {
 	background: #371aa1;
 	color: #FFFFFF;
 	font-size: 40px;
+	text-align: left;
 }
 .generalButton {
 	padding: 10px;
@@ -106,6 +107,7 @@ p {
 	padding: 15px;
 	margin-top: 20px;
 	transition: 0.50s;
+	max-width: 90%;
 }
 .lightPanelLink {
 	color: #371aa1;
@@ -114,6 +116,7 @@ p {
 	margin-top: 20px;
 	cursor: pointer;
 	transition: 0.50s;
+	max-width: 90%;
 }
 .lightPanelLink:hover {
 	background: #d1c4ff;
