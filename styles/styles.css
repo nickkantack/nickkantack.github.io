@@ -79,14 +79,17 @@ p {
 	padding: 15px;
 	margin-top: 20px;
 	transition: 0.50s;
-}.darkPanelLink {
-	 background: #c5b8f5;
-	 color: #371aa1;
-	 display: inline-block;
-	 padding: 15px;
-	 margin-top: 20px;
-	 cursor: pointer;
-	 transition: 0.50s;
+	max-width: 90%;
+}
+.darkPanelLink {
+	background: #c5b8f5;
+	color: #371aa1;
+	display: inline-block;
+	padding: 15px;
+	margin-top: 20px;
+	cursor: pointer;
+	transition: 0.50s;
+	max-width: 90%;
  }
 
 .standardPanel {
@@ -155,10 +158,13 @@ p {
 .centeredImage {
 	display: block;
 	margin: 10px auto;
+	max-width: 100%;
 }
 .headshot {
 	margin: 15px;
+	max-width: 40%;
 	border-radius: 3px;
+	float: right;
 }
 
 /* The slider itself */
@@ -215,4 +221,26 @@ p {
 	margin: 15px;
 	border-radius: 5px;
 
+}
+
+/* For small displays */
+@media (max-width: 800px) {
+	body {
+		font-size: 12px;
+	}
+	button {
+		font-size: 18px;
+	}
+	.pageTitle {
+		font-size: 24px;
+	}
+	.navButton {
+		font-size: 18px;
+	}
+	.sectionTitle {
+		font-size: 18px;
+	}
+	.sectionSubtitle {
+		font-size: 15px;
+	}
 }
