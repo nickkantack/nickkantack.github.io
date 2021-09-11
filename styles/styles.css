@@ -31,6 +31,9 @@ button {
 a {
 	color: #5f4cb0;
 }
+ul {
+	margin-right: 20px;
+}
 li {
 	padding: 7px;
 }
@@ -112,14 +115,14 @@ p {
 .lightPanelLink:hover {
 	background: #d1c4ff;
 }
-.sectionTitleDark {
+.sectionTitle {
 	font-size: 30px;
 	border-bottom: 5px solid #371aa1;
 	padding-bottom: 2px;
 }
-.sectionTitleLight {
-	font-size: 30px;
-	border-bottom: 5px solid #371aa1;
+.sectionSubtitle {
+	font-size: 20px;
+	font-weight: bold;
 	padding-bottom: 2px;
 }
 .navBar {
@@ -148,6 +151,10 @@ p {
 	width: 30%;
 	margin: 15px;
 	border-radius: 3px;
+}
+.centeredImage {
+	display: block;
+	margin: 10px auto;
 }
 .headshot {
 	margin: 15px;
