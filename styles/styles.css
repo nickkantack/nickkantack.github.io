@@ -12,6 +12,7 @@ body {
 	font: 18px Georgia;
 	color: #371aa1;
 	text-align: justify;
+	line-height: 145%;
 }
 div {
 	padding: 2%;
@@ -40,6 +41,10 @@ video {
 iframe {
 	margin: 20px;
 	float: right;
+}
+p {
+	margin-left: 10px;
+	margin-right: 10px;
 }
 
 /*------------------------------------------*/
@@ -116,10 +121,6 @@ iframe {
 	font-size: 30px;
 	border-bottom: 5px solid #371aa1;
 	padding-bottom: 2px;
-}
-.text {
-	padding: 10px;
-	line-height: 125%;
 }
 .navBar {
 	width: 99%;

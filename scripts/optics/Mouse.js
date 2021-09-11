@@ -1,13 +1,13 @@
-var mouseIsDown = false;
-var mousePos = VectorFactory.create(0, 0);
-var selectedObject;
-var anObjectIsSelected = true;
+let mouseIsDown = false;
+let mousePos = VectorFactory.create(0, 0);
+let selectedObject;
+let anObjectIsSelected = true;
 
 canvas.addEventListener('mousedown', function(e){
 	if (!mouseIsDown){
 		mouseIsDown = true;
 	}
-	var rect = canvas.getBoundingClientRect();
+	let rect = canvas.getBoundingClientRect();
 	mousePos.x = e.clientX - rect.left;
 	mousePos.y = e.clientY - rect.top;
 	// Select an object if necessary
@@ -37,9 +37,9 @@ canvas.addEventListener('mouseup', function(e){
 
 canvas.addEventListener('mousemove', function(e){
 	if (mouseIsDown){
-		var rect = canvas.getBoundingClientRect();
-		var newMousePosition = VectorFactory.create(e.clientX - rect.left, e.clientY - rect.top);
-		var changeVector = newMousePosition.sub(mousePos);
+		let rect = canvas.getBoundingClientRect();
+		let newMousePosition = VectorFactory.create(e.clientX - rect.left, e.clientY - rect.top);
+		let changeVector = newMousePosition.sub(mousePos);
 		mousePos = newMousePosition;
 		// If an object is selected, move its pos by the changeVector
 		if (anObjectIsSelected){

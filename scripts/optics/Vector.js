@@ -1,4 +1,4 @@
-var VectorFactory = {
+let VectorFactory = {
 	create: function(x, y){
 		return{
 			x: x,

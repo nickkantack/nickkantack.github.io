@@ -4,25 +4,25 @@ function E(a){
 }
 //-------------------------------------------------------------------------------------------------------
 // Nav bar
-E('navHome').addEventListener('click', function(){ window.location.replace('./index.html'); });
-E('navResume').addEventListener('click', function(){
+E("navHome").addEventListener("click", function(){ window.location.replace("./home.html"); });
+E("navResume").addEventListener("click", function(){
 	let a = document.createElement("a");
-	a.href="./resume.pdf";
+	a.href="../pdf/resume.pdf";
 	a.download = "resume.pdf";
 	document.body.appendChild(a);
 	a.click();
 });
-E('navProjects').addEventListener('click', function(){ window.location.replace('./projects.html'); });
-E('navLiterature').addEventListener('click', function(){ window.location.replace('./literature.html'); });
+E("navProjects").addEventListener("click", function(){ window.location.replace("./projects.html"); });
+E("navLiterature").addEventListener("click", function(){ window.location.replace("./literature.html"); });
 //-------------------------------------------------------------------------------------------------------
 // Nav bar stickiness
 /*
-var offset = E('navBar').offsetTop;
+var offset = E("navBar").offsetTop;
 window.onscroll = function() {
   if (window.pageYOffset >= offset) {
-    E('navBar').classList.add('stickyNavBar')
+    E("navBar").classList.add("stickyNavBar")
   } else {
-    E('navBar').classList.remove('stickyNavBar');
+    E("navBar").classList.remove("stickyNavBar");
   }
 };
 */
