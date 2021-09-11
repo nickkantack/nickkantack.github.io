@@ -1,4 +1,4 @@
-<!DOCTYPE hmtl>
+<!DOCTYPE html>
 <html>
 	<head>
 		<title>Robot Arm Demo</title>
@@ -6,11 +6,24 @@
 		<link rel="stylesheet" href="styles.css">
 	</head>
 	<body>
-		<center>
-			<div style='padding: 10px; font-size: 20px'>
-			If the video does not load on your browser, you can <a href='./robotArmMovie.MOV'>download it</a>.
+
+		<div class="mainPanel">
+
+			<div class='pageTitle'>Project - Robot Arm</div>
+
+			<div id='navBar' class='navBar'>
+				<button class='navButton' id='navHome'>Home</button>
+				<button class='navButton' id='navProjects'>Projects</button>
+				<button class='navButton' id='navLiterature'>Literature</button>
+				<button class='navButton' id='navResume'>Resume</button>
 			</div>
-			<video controls="controls" src="./robotArmMovie.MOV" type="video/mov"></video>
-		</center>
+
+			<div>
+				<video controls="controls" src="videos/robotArmMovie.MOV" type="video/mov"></video>
+			</div>
+
+		</div>
+
+		<script src="procedurals.js"></script>
 	</body>
 </html>

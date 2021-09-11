@@ -5,8 +5,15 @@ function E(a){
 //-------------------------------------------------------------------------------------------------------
 // Nav bar
 E('navHome').addEventListener('click', function(){ window.location.replace('./index.html'); });
-E('navResume').addEventListener('click', function(){ window.location.replace('./resume.pdf'); });
+E('navResume').addEventListener('click', function(){
+	let a = document.createElement("a");
+	a.href="./resume.pdf";
+	a.download = "resume.pdf";
+	document.body.appendChild(a);
+	a.click();
+});
 E('navProjects').addEventListener('click', function(){ window.location.replace('./projects.html'); });
+E('navLiterature').addEventListener('click', function(){ window.location.replace('./literature.html'); });
 //-------------------------------------------------------------------------------------------------------
 // Nav bar stickiness
 /*

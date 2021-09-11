@@ -6,11 +6,23 @@
 		<link rel="stylesheet" href="styles.css">
 	</head>
 	<body>
-		<center>
-		<div style='padding: 10px; font-size: 20px'>
-			If the video does not load on your browser, you can <a href='./acrylic_pump_working.mp4'>download it</a>.
+		<div class="mainPanel">
+
+			<div class='pageTitle'>Project - Acrylic Pump</div>
+
+			<div id='navBar' class='navBar'>
+				<button class='navButton' id='navHome'>Home</button>
+				<button class='navButton' id='navProjects'>Projects</button>
+				<button class='navButton' id='navLiterature'>Literature</button>
+				<button class='navButton' id='navResume'>Resume</button>
 			</div>
-			<video height="800" controls="controls" src="./acrylic_pump_working.mp4"></video>
-		</center>
+
+			<div style="text-align: center">
+				<video controls="controls" src="videos/acrylic_pump_working.mp4" type="video/mp4"></video>
+			</div>
+
+		</div>
+
+		<script src="procedurals.js"></script>
 	</body>
 </html>

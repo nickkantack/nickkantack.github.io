@@ -1,6 +1,13 @@
 /*------------------------------------------*/
 /* DEFAULTS */
 /*------------------------------------------*/
+html {
+	overflow: scroll;
+	overflow-x: hidden;
+}
+::-webkit-scrollbar {
+	width: 0;  /* Remove scrollbar space */
+}
 body {
 	font: 18px Georgia;
 	color: #371aa1;
@@ -14,7 +21,7 @@ div {
 button {
 	padding-left: 20px;
 	padding-right: 20px;
-	font: 30px Georgia;
+	font: 25px Georgia;
 	border-radius: 2px;
 	border: none;
 	background: #371aa1;
@@ -26,6 +33,14 @@ a {
 li {
 	padding: 7px;
 }
+video {
+	max-width: 100%;
+	max-height: 800px;
+}
+iframe {
+	margin: 20px;
+	float: right;
+}
 
 /*------------------------------------------*/
 /* CLASSES */
@@ -35,7 +50,6 @@ li {
 	margin-left: auto;
 	margin-right: auto;
 	max-width: 900px;
-	top: 10%;
 }
 .pageTitle {
 	background: #371aa1;
@@ -51,15 +65,15 @@ li {
 	cursor: pointer;
 }
 .darkPanel {
-	background: #371aa1;
-	color: #FFFFFF;
+	background: #c5b8f5;
+	color: #371aa1;
 	display: inline-block;
 	padding: 15px;
 	margin-top: 20px;
 	transition: 0.50s;
 }.darkPanelLink {
-	 background: #371aa1;
-	 color: #FFFFFF;
+	 background: #c5b8f5;
+	 color: #371aa1;
 	 display: inline-block;
 	 padding: 15px;
 	 margin-top: 20px;
@@ -73,7 +87,7 @@ li {
 	margin-top: 20px;
 }
 .darkPanelLink:hover {
-	background: #603ce6;
+	background: #9c8ade;
 }
 .lightPanel {
 	color: #371aa1;
@@ -95,7 +109,7 @@ li {
 }
 .sectionTitleDark {
 	font-size: 30px;
-	border-bottom: 5px solid #FFFFFF;
+	border-bottom: 5px solid #371aa1;
 	padding-bottom: 2px;
 }
 .sectionTitleLight {
@@ -132,9 +146,11 @@ li {
 .picture {
 	width: 30%;
 	margin: 15px;
+	border-radius: 3px;
 }
 .headshot {
 	margin: 15px;
+	border-radius: 3px;
 }
 
 /* The slider itself */
