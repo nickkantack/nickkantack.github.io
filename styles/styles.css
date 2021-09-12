@@ -18,6 +18,7 @@ div {
 	padding: 2%;
 	width: 96%;
 	margin: 0px;
+	text-align: justify;
 }
 button {
 	padding-left: 20px;
@@ -59,11 +60,15 @@ p {
 	margin-right: auto;
 	max-width: 900px;
 }
+.centeredContent {
+	text-align: center;
+}
 .pageTitle {
 	background: #371aa1;
 	color: #FFFFFF;
 	font-size: 40px;
 	text-align: left;
+	line-height: 145%;
 }
 .generalButton {
 	padding: 10px;
@@ -239,6 +244,8 @@ p {
 	}
 	.navButton {
 		font-size: 18px;
+		width: 50%;
+		text-align: left;
 	}
 	.sectionTitle {
 		font-size: 18px;
