@@ -41,6 +41,7 @@ li {
 video {
 	max-width: 100%;
 	max-height: 800px;
+	border-radius: 3px;
 }
 iframe {
 	margin: 20px;
@@ -167,6 +168,19 @@ p {
 	display: block;
 	margin: 10px auto;
 	max-width: 100%;
+	border-radius: 3px;
+}
+.rightFloatImage {
+	max-width: 50%;
+	float: right;
+	margin: 20px;
+	display: inline-block;
+}
+.caption {
+	font-style: italic;
+	font-size: 16px;
+	text-align: center;
+	margin-bottom: 20px;
 }
 .headshot {
 	margin: 15px;
@@ -234,13 +248,13 @@ p {
 /* For small displays */
 @media (max-width: 800px) {
 	body {
-		font-size: 12px;
+		font-size: 15px;
 	}
 	button {
 		font-size: 18px;
 	}
 	.pageTitle {
-		font-size: 24px;
+		font-size: 22px;
 	}
 	.navButton {
 		font-size: 18px;
@@ -248,9 +262,12 @@ p {
 		text-align: left;
 	}
 	.sectionTitle {
-		font-size: 18px;
+		font-size: 20px;
 	}
 	.sectionSubtitle {
-		font-size: 15px;
+		font-size: 18px;
+	}
+	.caption {
+		font-size: 12px;
 	}
 }
