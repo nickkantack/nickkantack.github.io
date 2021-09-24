@@ -42,6 +42,7 @@ video {
 	max-width: 100%;
 	max-height: 800px;
 	border-radius: 3px;
+	margin: 10px;
 }
 iframe {
 	margin: 20px;
@@ -245,6 +246,15 @@ p {
 
 }
 
+#mountainKing {
+	float: right;
+	width: 50%;
+}
+
+#acrylicPumpVideo {
+	width: 50%;
+}
+
 /* For small displays */
 @media (max-width: 800px) {
 	body {
@@ -269,5 +279,11 @@ p {
 	}
 	.caption {
 		font-size: 12px;
+	}
+	#mountainKing {
+		width: 100%;
+	}
+	#acrylicPumpVideo {
+		width: 100%;
 	}
 }
