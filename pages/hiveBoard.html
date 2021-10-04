@@ -21,7 +21,7 @@
     <script src="../scripts/hive_scripts/Meter.js"></script>
     <script src="../scripts/hive_scripts/NotificationTable.js"></script>
 </head>
-<body onload="initialize()">
+<body onload="initialize()" class="lock-screen">
 <canvas id="canvas"></canvas>
 <div id="controls">
     <div id="diagnostics">Controls</div>
@@ -113,6 +113,8 @@
 
     let hive = new Hive();
     hive.setTreeSearchMaxDepth(2);
+
+    let transitionScreenWidth = 800;
 
     function initialize(){
 

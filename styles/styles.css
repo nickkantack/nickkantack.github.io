@@ -227,6 +227,12 @@ p {
 	background: #4CAF50;
 	cursor: pointer;
 }
+.lock-screen {
+	height: 100%;
+	overflow: hidden;
+	width: 100%;
+	position: fixed;
+}
 #gameboard {
 
 	width: 60%;

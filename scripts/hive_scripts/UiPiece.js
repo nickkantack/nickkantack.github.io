@@ -6,7 +6,7 @@ let UiPiece = {
     COLOR_2_TEXT: "#FFFFFF",
     LEVEL_DECREMENT_PIXELS: 4,
     create: function(color, type, position, level) {
-        return {
+        let result = {
             type: type,
             centerPoint: position,
             color: color,
@@ -54,6 +54,15 @@ let UiPiece = {
                 return this.type + "," + this.color + "," + coordinates.getX() + "," + coordinates.getY() + "," + this.level;
             }
         }
+
+        // Adjust for screen
+        if (screen.width < transitionScreenWidth) {
+            result.sizePixels = 80;
+            result.xVector = UiPoint.create(1, 0).scale(110);
+            result.yVector = UiPoint.create(0.5, Math.sqrt(3) / 2).setLength(110);
+        }
+
+        return result;
     }
 }
 

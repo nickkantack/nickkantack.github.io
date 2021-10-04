@@ -1,6 +1,7 @@
 
 let Board = {
     DEFAULT_SIZE_PIXELS: 50,
+    DEFAULT_SIZE_PIXELS_LARGER: 80,
     BORDER_MARGIN_PIXELS: 0,
     COLOR_1_ACCESS_COLOR: "#665522",
     COLOR_2_ACCESS_COLOR: "#773333",
@@ -11,6 +12,7 @@ let Board = {
             hexColor: "#444444",
             mouseManager: null,
             centerPoint: centerPoint,
+            boardSize: 50,
             seed: 10,
             isOver: function(position) {
                 let indices = this.getBoardIndicesFromPixelCoordinates(position);
@@ -24,15 +26,15 @@ let Board = {
             getBoardIndicesFromPixelCoordinates: function(position) {
                 let px = position.getX() - this.centerPoint.getX();
                 let py = position.getY() - this.centerPoint.getY();
-                let xIndex = (px - py / Math.sqrt(3)) / Board.DEFAULT_SIZE_PIXELS;
-                let yIndex = 2 / Math.sqrt(3) * py / Board.DEFAULT_SIZE_PIXELS;
+                let xIndex = (px - py / Math.sqrt(3)) / this.boardSize;
+                let yIndex = 2 / Math.sqrt(3) * py / this.boardSize;
                 xIndex = this.round(xIndex);
                 yIndex = this.round(yIndex);
                 return UiPoint.create(xIndex, yIndex);
             },
             getScreenCoordinatesFromIndices(squaresFromLeft, squaresFromBottom) {
-                return this.centerPoint.add(this.xVector.setLength(squaresFromLeft * Board.DEFAULT_SIZE_PIXELS)).add(
-                this.yVector.setLength(squaresFromBottom * Board.DEFAULT_SIZE_PIXELS));
+                return this.centerPoint.add(this.xVector.setLength(squaresFromLeft * this.boardSize)).add(
+                this.yVector.setLength(squaresFromBottom * this.boardSize));
             },
             paint: function(canvas, ctx) {
 
@@ -63,7 +65,7 @@ let Board = {
                     ctx.fillStyle = Board.COLOR_2_ACCESS_COLOR;
                 }
 
-                let smallerLength = Board.DEFAULT_SIZE_PIXELS / 2;
+                let smallerLength = this.boardSize / 2;
                 for (let theta = Math.PI / 6; theta < 2 * Math.PI; theta += Math.PI / 3) {
                     let destination = centerPoint.add(this.xVector.rotate(theta).setLength(smallerLength));
                     if (theta === Math.PI / 6) {
@@ -154,7 +156,14 @@ let Board = {
 
                 return false;
 
-			}
+			},
+        }
+
+        // Adjust for screen size
+        if (screen.width < transitionScreenWidth) {
+            result.boardSize = 80;
+            result.xVector = UiPoint.create(1, 0).scale(80);
+            result.yVector = UiPoint.create(0.5, Math.sqrt(3) / 2).setLength(80);
         }
 
         return result;
