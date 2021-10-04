@@ -10,8 +10,8 @@ let UiPiece = {
             type: type,
             centerPoint: position,
             color: color,
-            xVector: UiPoint.create(1, 0).scale(canonicalScale),
-            yVector: UiPoint.create(0.5, Math.sqrt(3) / 2).setLength(canonicalScale),
+            xVector: UiPoint.create(1, 0).scale(80),
+            yVector: UiPoint.create(0.5, Math.sqrt(3) / 2).setLength(80),
             z: 0,
             level: level,
             paint: function (canvas, ctx) {

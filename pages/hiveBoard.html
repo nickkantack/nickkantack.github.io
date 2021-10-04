@@ -2,15 +2,6 @@
 <html>
 <head>
     <link rel="stylesheet" type="text/css" href="../styles/hive_styles.css">
-    <style>
-        body {
-            position: relative;
-        }
-        html, body {
-            overflow-x: hidden;
-            overflow-y: hidden;
-        }
-    </style>
     <title>Hive</title>
     <script src="../scripts/hive_scripts/UiPoint.js"></script>
     <script src="../scripts/hive_scripts/MouseManager.js"></script>
@@ -122,7 +113,6 @@
 
     let screenWidthToChange = 800;
     let canonicalSize = 50;
-    let canonicalScale = 80;
     let seed = 10;
 
     let hive = new Hive();
@@ -169,7 +159,6 @@
 
         if (screen.width < screenWidthToChange) {
             canonicalSize = 80;
-            canonicalScale = 110;
             seed = 8;
         }
 

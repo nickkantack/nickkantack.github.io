@@ -118,6 +118,7 @@ let MouseManager = {
         result.parentElement.addEventListener('touchend', executeMouseUp);
         //-----------------------------------------------------------------------------
         let executeMouseMove = function(e) {
+            e.preventDefault();
             if (result.mouseDown && result.objectBeingMoved != null){
                 // If there is a card held, move the card
                 let x = e.pageX - result.parentElement.offsetLeft;
