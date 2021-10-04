@@ -4,6 +4,7 @@ body {
 #canvas {
     width: 100%;
     height: 95vh;
+    touch-action: none;
 }
 #controls {
     position: absolute;

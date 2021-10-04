@@ -66,7 +66,7 @@
             many do not yet exist).
             With this formalism, we are targeting a network of the structure
             $$
-            \vec{y} = \text{sigmoid}\left(W\vec{x} + \vec{b}\right)\tag{1}
+            \vec{y} = \text{tanh}\left(W\vec{x} + \vec{b}\right)\tag{1}
             $$
             where \(\vec{y}\) is a \(10 \times 1\) vector with a one-hot encoding that gives the strength of activation
             for each possible character (assumed to be a capital, English letter), \(W\) is a \(10 \times 784\) vector of
@@ -91,29 +91,58 @@
             every \(W_{ij}\) based on knowledge of the input space. To that end, we'll make some assumption about the
             initial values for the elements of \(W\) and \(\vec{b}\). In particular, at initialization, we'll assume
             $$
-            W_{ij}, b_{k} \sim \mathcal{N}(0, \sigma) \ \forall \ i,j,k
+            W_{ij}, b_{k} \sim \mathcal{N}(0, \sigma) \ \forall \ i,j,k \tag{4}
             $$
             This is fairly common practice when initializing a network. From this, we can begin to find the distribution
             of the elements of the output vector \(\vec{y}\). Noting
             $$
-            y_{i} = \sum_{k=1}^{784}W_{ik}x_{k}
+            y_{i} = \sum_{k=1}^{784}W_{ik}x_{k}\tag{5}
             $$
             Let us define the variable \(^{i}g_{k}=W_{ik}x_{k}\), noting that it is the product of two <i>independent</i>
             (at initialization) random variables. Since we've assumed \(\text{E}[W_{ij}]=0\), we can conclude that
             \(\text{E}[^{i}g_{k}]=\text{E}[W_{ik}]\text{E}[x_{k}]=0\). Also,
             $$
-            \text{Var}[^{i}g_{k}] = \text{Var}[W_{ik}]\text{Var}[x_{k}] + \text{Var}[W_{ik}]\text{E}[x_{k}]^{2}
+            \text{Var}[^{i}g_{k}] = \text{Var}[W_{ik}]\text{Var}[x_{k}] + \text{Var}[W_{ik}]\text{E}[x_{k}]^{2}\tag{6}
             $$
             Importantly, both \(\text{E}[x_{k}]\) and \(\text{Var}[x_{k}]\) can be estimated by sampling from the input
             space. These values should remained conditioned on the class of \(\vec{x}\), since we will estimate the evolution
             of the weights matrix based on the expected distribution of training samples across classes.
             If these figures can be estimated, then \(\text{Var}[^{i}g_{k}]\) can be estimated. Therefore, we
-            now can describe the statistics of the random variable $y_{i}$.
+            now can describe the statistics of the random variable \(y_{i}\).
             $$
-            \text{E}[y_{i}]=0,\ \ \text{Var}[y_{i}] = \sum_{k=1}^{784}\text{Var}\left(^{i}g_{k}\right)
+            \text{E}[y_{i}]=0,\ \ \text{Var}[y_{i}] = \sum_{k=1}^{784}\text{Var}\left(^{i}g_{k}\right)\tag{7}
             $$
             where I will reiterate again that \(\text{Var}[^{i}g_{k}]\) is dependent on the class of \(\vec{x}\), and so the
             class of \(\vec{x}\) should be factored in when estimating the statistics of \(\vec{y}\).
+        </p>
+        <p>
+            Let's do a sanity check here. After initialization, \(y_{i}\) is nothing more than a weighted sum of zero mean
+            random variables \(W_{ij}\) (with the weights being \(\vec{x}\)). Therefore, from the linearity of expectations
+            we would expect that \(E[y_{i}]\), which indeed we have proven.
+        </p>
+        <div class="sectionSubtitle">
+            The statistics of \(\delta W_{ij}\)
+        </div>
+        <p>
+            Let us return to (2) and finally determine \(E[\delta W_{ij}]\). To do this, we will make another assumption, namely,
+            that the target network will see an equal number of each classes. Doing so, we now know the frequency with
+            which each branch of \(W_{ij}\) will be visited.
+            $$
+            \delta W_{ij} = \left\lbrace\begin{matrix}
+            \alpha (1 - y_{i})x_{j} & \text{Probability }\frac{1}{n} \\
+            \alpha (0 - y_{i})x_{j} & \text{Probability }\frac{n - 1}{n} \\
+            \end{matrix}\right.\tag{8}
+            $$
+            Therefore, we can apply the linearity of expectations once more to obtain the single statement
+            $$
+            E[\delta W_{ij}] = \frac{1}{n}\left(E[\alpha(1 - ^{i}y_{i})^{i}x_{j}]\right) +
+            \frac{n-1}{n}\left(\sum_{k\neq i}^{n}E[\alpha(0 - ^{k}y_{i})^{k}x_{j}]\right)
+            $$
+            By the same argument presented after (7), we can identify \((1 - ^{i}y_{i})\) and \(^{i}x_{j}\) as independent
+            random variables (as well as \((1 - ^{k}y_{i})\) and \(^{k}x_{j}\)), and then write
+            $$
+            E[\delta W_{ij}] = \frac{1}{n}
+            $$
         </p>
 
     </div>
