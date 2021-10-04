@@ -111,10 +111,6 @@
     let redBar = document.getElementById("redBar");
     let notifier = document.getElementById("notifier");
 
-    let screenWidthToChange = 800;
-    let canonicalSize = 50;
-    let seed = 10;
-
     let hive = new Hive();
     hive.setTreeSearchMaxDepth(2);
 
@@ -156,11 +152,6 @@
         createPieceBank(paintStackManager, mouseManager);
 
         paintStackManager.setPostPaint(paintAnnotations);
-
-        if (screen.width < screenWidthToChange) {
-            canonicalSize = 80;
-            seed = 8;
-        }
 
         repaint();
     }

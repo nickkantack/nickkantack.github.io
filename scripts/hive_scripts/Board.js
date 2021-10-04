@@ -1,19 +1,21 @@
 
 let Board = {
+    DEFAULT_SIZE_PIXELS: 50,
     BORDER_MARGIN_PIXELS: 0,
     COLOR_1_ACCESS_COLOR: "#665522",
     COLOR_2_ACCESS_COLOR: "#773333",
     create: function(centerPoint, canvas) {
         let result = {
-            xVector: UiPoint.create(1, 0).scale(canonicalSize),
-            yVector: UiPoint.create(0.5, Math.sqrt(3) / 2).setLength(canonicalSize),
+            xVector: UiPoint.create(1, 0).scale(Board.DEFAULT_SIZE_PIXELS),
+            yVector: UiPoint.create(0.5, Math.sqrt(3) / 2).setLength(Board.DEFAULT_SIZE_PIXELS),
             hexColor: "#444444",
             mouseManager: null,
             centerPoint: centerPoint,
+            seed: 10,
             isOver: function(position) {
                 let indices = this.getBoardIndicesFromPixelCoordinates(position);
-                return Math.abs(indices.getX()) < seed &&
-                 Math.abs(indices.getY()) < seed && Math.abs(indices.getX() + indices.getY()) < seed;
+                return Math.abs(indices.getX()) < this.seed &&
+                 Math.abs(indices.getY()) < this.seed && Math.abs(indices.getX() + indices.getY()) < this.seed;
             },
             getPixelCoordinatesRelativeToBoard: function(position) {
                 let point = this.getBoardIndicesFromPixelCoordinates(position);
@@ -22,23 +24,23 @@ let Board = {
             getBoardIndicesFromPixelCoordinates: function(position) {
                 let px = position.getX() - this.centerPoint.getX();
                 let py = position.getY() - this.centerPoint.getY();
-                let xIndex = (px - py / Math.sqrt(3)) / canonicalSize;
-                let yIndex = 2 / Math.sqrt(3) * py / canonicalSize;
+                let xIndex = (px - py / Math.sqrt(3)) / Board.DEFAULT_SIZE_PIXELS;
+                let yIndex = 2 / Math.sqrt(3) * py / Board.DEFAULT_SIZE_PIXELS;
                 xIndex = this.round(xIndex);
                 yIndex = this.round(yIndex);
                 return UiPoint.create(xIndex, yIndex);
             },
             getScreenCoordinatesFromIndices(squaresFromLeft, squaresFromBottom) {
-                return this.centerPoint.add(this.xVector.setLength(squaresFromLeft * canonicalSize)).add(
-                this.yVector.setLength(squaresFromBottom * canonicalSize));
+                return this.centerPoint.add(this.xVector.setLength(squaresFromLeft * Board.DEFAULT_SIZE_PIXELS)).add(
+                this.yVector.setLength(squaresFromBottom * Board.DEFAULT_SIZE_PIXELS));
             },
             paint: function(canvas, ctx) {
 
                 // Paint all of the squares
-                for (let x = -seed + 1; x < seed; x++) {
-                    for (let y = -Math.abs(x + seed) + 1; y < Math.abs(x - seed); y++) {
+                for (let x = -this.seed + 1; x < this.seed; x++) {
+                    for (let y = -Math.abs(x + this.seed) + 1; y < Math.abs(x - this.seed); y++) {
 
-                        if (Math.abs(y) >= seed) {
+                        if (Math.abs(y) >= this.seed) {
                             continue;
                         }
 
@@ -61,7 +63,7 @@ let Board = {
                     ctx.fillStyle = Board.COLOR_2_ACCESS_COLOR;
                 }
 
-                let smallerLength = canonicalSize / 2;
+                let smallerLength = Board.DEFAULT_SIZE_PIXELS / 2;
                 for (let theta = Math.PI / 6; theta < 2 * Math.PI; theta += Math.PI / 3) {
                     let destination = centerPoint.add(this.xVector.rotate(theta).setLength(smallerLength));
                     if (theta === Math.PI / 6) {
