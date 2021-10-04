@@ -44,6 +44,7 @@ canvas.addEventListener('touchend', executeMouseUp);
 let executeMouseMove = function(e) {
 	if (mouseIsDown){
 		let rect = canvas.getBoundingClientRect();
+		e.preventDefault();
 		let x = e.clientX || e.targetTouches[0].pageX;
 		let y = e.clientY || e.targetTouches[0].pageY;
 		let newMousePosition = VectorFactory.create(x - rect.left, y - rect.top);

@@ -56,7 +56,7 @@ function repaintBank() {
     }
 
     // Set piece bank location based on screen width
-    let bankPositionByPieceType = screen.width < 800 ? bankPositionByPieceTypeNarrow : bankPositionByPieceTypeWide;
+    let bankPositionByPieceType = screen.width < screenWidthToChange ? bankPositionByPieceTypeNarrow : bankPositionByPieceTypeWide;
 
     for (let pieceType of Piece.PIECE_TYPES) {
         if (!isPieceTypeMaxedOut(pieceType, currentColor)) {
