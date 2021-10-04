@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>No-Box Attacks</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles/styles.css">
+    <script type="text/javascript" id="MathJax-script" async
+            src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+    </script>
+</head>
+<body>
+<div class="mainPanel">
+
+    <div class='pageTitle'>Project - "No Box" Adversarial Attacks</div>
+
+    <div id='navBar' class='navBar'>
+        <button class='navButton' id='navHome'>Home</button>
+        <button class='navButton' id='navProjects'>Projects</button>
+        <button class='navButton' id='navLiterature'>Literature</button>
+        <button class='navButton' id='navResume'>Resume</button>
+    </div>
+
+    <div class="lightPanel">
+
+        <div class="sectionTitle">Adversarial Attacks on Neural Networks</div>
+
+        <p>
+            Neural networks are extremely good at learning a set of training data. They're accuracy on similar
+            data sets can be astounding. Remarkably, however, seemingly imperceptible changes to these training
+            samples can cause even a stellar network to make astounding errors. Why is this?
+        </p>
+
+        <div class="sectionSubtitle">Adversarial attacks and the training process</div>
+        <p>
+            Neural networks are trained on data that are just a sampling of the total population. Consequently,
+            a neural network's performance can be considerably fragile. Data from the training set are accurately
+            classified, but marginally different samples are grossly misclassified. Designing adversarial attacks
+            is a process of generating samples that are as marginal as possible but which produce as gross of
+            misclassification as possible.
+        </p>
+        <p>
+            Adversarial samples are generated using one of two typical approaches.
+        </p>
+
+        <div class="sectionTitle">"No Box" Attacks</div>
+
+        <p>
+            It is possible to develop a method of generating adversarial attacks for neural networks that we cannot
+            observe or query, perhaps even networks that do not yet exist? Provided we can make some reasonable
+            assumptions about the structure of the to-be target network and have some understanding of the sample
+            space from which its training samples will be drawn, this is possible. To do this, we can construct a
+            plausible model for the target network and treat its weights as random variables that evolve during the
+            training process. If we are able to calculate the distribution of networks we expect to attack, we can
+            craft a sort of white box attack that promises to be effective against a significant portion of the
+            expected distribution of target networks.
+        </p>
+        <p>
+            To illustrate this technique, I'll begin with something of an <i>implausible</i> model for the target network:
+            a no-hidden-layer, affine network. While there are drawbacks to this architecture (for a discussion of some
+            in connection to the rank of data, see my course paper
+            <a href="../pdf/Kantack_Matrix_factorization_gradient_descent.pdf">"Gradient descent and matrix factorization"</a>),
+            we'll nonetheless examine it because it admits a particularly lucid portrayal of the approach.
+            Let's consider the application of optical character recongition (OCR). Suppose we are in the business of Captcha
+            design. "No Box" adversarial samples of letters might be well suited to our needs, since we are trying to
+            generate samples that will be misclassified by a host of OCR systems to which we have no access (and of which
+            many do not yet exist).
+            With this formalism, we are targeting a network of the structure
+            $$
+            \vec{y} = \text{sigmoid}\left(W\vec{x} + \vec{b}\right)\tag{1}
+            $$
+            where \(\vec{y}\) is a \(10 \times 1\) vector with a one-hot encoding that gives the strength of activation
+            for each possible character (assumed to be a capital, English letter), \(W\) is a \(10 \times 784\) vector of
+            weights, \(\vec{x}\) is a \(784 \times 1\) vector of pixel activations, and \(\vec{b}\) is a \(784 \times 1\)
+            bias vector. We'll assume that the network is trained via stochastic gradient descent. In this case, we can
+            express the update, \(\delta W\), that \(W\) would receive in response to a batch of one input, \(\vec{x}\).
+            $$
+            \delta W_{ij} = \left\lbrace\begin{matrix}
+                \alpha (1 - y_{i})x_{j} & x\text{ is in class }i \\
+                \alpha (0 - y_{i})x_{j} & x\text{ is not class }i \\
+            \end{matrix}\right.\tag{2}
+            $$
+            This branching of \(\delta W\) is simply a reflection of the fact that the correct activation is either a 1
+            or 0 in our one-hot encoding scheme. Similarly, we find
+            $$
+            \delta \vec{b} = \left\lbrace\begin{matrix}
+                \alpha (1 - y_{i}) & x\text{ is in class }i \\
+                \alpha (0 - y_{i}) & x\text{ is not class }i \\
+            \end{matrix}\right.\tag{3}
+            $$
+            Let's recall the objective. We want to find a reasonable estimate for the probability density function for
+            every \(W_{ij}\) based on knowledge of the input space. To that end, we'll make some assumption about the
+            initial values for the elements of \(W\) and \(\vec{b}\). In particular, at initialization, we'll assume
+            $$
+            W_{ij}, b_{k} \sim \mathcal{N}(0, \sigma) \ \forall \ i,j,k
+            $$
+            This is fairly common practice when initializing a network. From this, we can begin to find the distribution
+            of the elements of the output vector \(\vec{y}\). Noting
+            $$
+            y_{i} = \sum_{k=1}^{784}W_{ik}x_{k}
+            $$
+            Let us define the variable \(^{i}g_{k}=W_{ik}x_{k}\), noting that it is the product of two <i>independent</i>
+            (at initialization) random variables. Since we've assumed \(\text{E}[W_{ij}]=0\), we can conclude that
+            \(\text{E}[^{i}g_{k}]=\text{E}[W_{ik}]\text{E}[x_{k}]=0\). Also,
+            $$
+            \text{Var}[^{i}g_{k}] = \text{Var}[W_{ik}]\text{Var}[x_{k}] + \text{Var}[W_{ik}]\text{E}[x_{k}]^{2}
+            $$
+            Importantly, both \(\text{E}[x_{k}]\) and \(\text{Var}[x_{k}]\) can be estimated by sampling from the input
+            space. These values should remained conditioned on the class of \(\vec{x}\), since we will estimate the evolution
+            of the weights matrix based on the expected distribution of training samples across classes.
+            If these figures can be estimated, then \(\text{Var}[^{i}g_{k}]\) can be estimated. Therefore, we
+            now can describe the statistics of the random variable $y_{i}$.
+            $$
+            \text{E}[y_{i}]=0,\ \ \text{Var}[y_{i}] = \sum_{k=1}^{784}\text{Var}\left(^{i}g_{k}\right)
+            $$
+            where I will reiterate again that \(\text{Var}[^{i}g_{k}]\) is dependent on the class of \(\vec{x}\), and so the
+            class of \(\vec{x}\) should be factored in when estimating the statistics of \(\vec{y}\).
+        </p>
+
+    </div>
+
+    <div class="darkPanel">
+        <div class="sectionTitle">
+            Uh oh! This content is not finished.
+        </div>
+        <p>
+            I'm actively developing this site, and unfortunately I haven't yet had the time to complete this page.
+            If you're interested, I'll hopefully have this content finished by the end of October 2021.
+        </p>
+    </div>
+
+</div>
+
+<script src="../scripts/procedurals.js"></script>
+</body>
+</html>

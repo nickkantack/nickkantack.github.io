@@ -10,7 +10,7 @@ html {
 }
 body {
 	font: 18px Georgia;
-	color: #371aa1;
+	color: #0c2245;
 	text-align: justify;
 	line-height: 145%;
 }
@@ -26,11 +26,11 @@ button {
 	font: 25px Georgia;
 	border-radius: 2px;
 	border: none;
-	background: #371aa1;
+	background: #0c2245;
 	color: #FFFFFF;
 }
 a {
-	color: #5f4cb0;
+	color: #2a61b8;
 }
 ul {
 	margin-right: 20px;
@@ -66,7 +66,7 @@ p {
 	text-align: center;
 }
 .pageTitle {
-	background: #371aa1;
+	background: #2a61b8;
 	color: #FFFFFF;
 	font-size: 40px;
 	text-align: left;
@@ -77,12 +77,12 @@ p {
 	transition: 0.25s;
 }
 .generalButton:hover {
-	background: #603ce6;
+	background: #669cf2;
 	cursor: pointer;
 }
 .darkPanel {
-	background: #c5b8f5;
-	color: #371aa1;
+	background: #bfd2ff;
+	color: #0c2245;
 	display: inline-block;
 	padding: 15px;
 	margin-top: 20px;
@@ -90,8 +90,8 @@ p {
 	max-width: 90%;
 }
 .darkPanelLink {
-	background: #c5b8f5;
-	color: #371aa1;
+	background: #bfd2ff;
+	color: #0c2245;
 	display: inline-block;
 	padding: 15px;
 	margin-top: 20px;
@@ -106,10 +106,10 @@ p {
 	margin-top: 20px;
 }
 .darkPanelLink:hover {
-	background: #9c8ade;
+	background: #a7bbfa;
 }
 .lightPanel {
-	color: #371aa1;
+	color: #0c2245;
 	display: inline-block;
 	padding: 15px;
 	margin-top: 20px;
@@ -117,7 +117,7 @@ p {
 	max-width: 90%;
 }
 .lightPanelLink {
-	color: #371aa1;
+	color: #0c2245;
 	display: inline-block;
 	padding: 15px;
 	margin-top: 20px;
@@ -126,11 +126,11 @@ p {
 	max-width: 90%;
 }
 .lightPanelLink:hover {
-	background: #d1c4ff;
+	background: #a7bbfa;
 }
 .sectionTitle {
 	font-size: 30px;
-	border-bottom: 5px solid #371aa1;
+	border-bottom: 5px solid #0c2245;
 	padding-bottom: 2px;
 }
 .sectionSubtitle {
@@ -142,7 +142,7 @@ p {
 	width: 99%;
 	margin: 0;
 	padding: 0.5%;
-	background: #371aa1;
+	background: #2a61b8;
 	color: #FFFFFF;
 	font-size: 30px;
 	transition: 0.25s;
@@ -151,13 +151,13 @@ p {
 	padding-left: 20px;
 	padding-right: 20px;
 	color: #FFFFFF;
-	background: #371aa1;
+	background: #2a61b8;
 	border: none;
 	border-radius: 4px;
 	transition: 0.25s;
 }
 .navButton:hover {
-	background: #8f75fa;
+	background: #669cf2;
 	cursor: pointer;
 }
 .picture {
@@ -215,7 +215,7 @@ p {
 	appearance: none;
 	width: 35px;
 	height: 35px;
-	background: #8f75fa;
+	background: #669cf2;
 	cursor: pointer;
 	border-radius: 17.5px;
 	border: 4px solid #FFFFFF;
@@ -231,7 +231,7 @@ p {
 
 	width: 60%;
 	max-width: 400px;
-	border: 3px solid #371aa1;
+	border: 3px solid #0c2245;
 	margin: 15px;
 	border-radius: 5px;
 
@@ -240,7 +240,7 @@ p {
 
 	width: 60%;
 	min-width: 300px;
-	border: 3px solid #371aa1;
+	border: 3px solid #0c2245;
 	margin: 15px;
 	border-radius: 5px;
 
@@ -253,6 +253,21 @@ p {
 
 #acrylicPumpVideo {
 	width: 50%;
+}
+#hiveImage:hover {
+	cursor: pointer;
+}
+#hiveButton {
+	width: 300px;
+	background: #2a61b8;
+	color: #FFFFFF;
+	padding: 10px;
+	margin: 10px auto;
+	display: block;
+	transition: 0.25s;
+}
+#hiveButton:hover {
+	background: #669cf2;
 }
 
 /* For small displays */

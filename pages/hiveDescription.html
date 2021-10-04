@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hive AI</title>
+    <link rel="stylesheet" href="../styles/styles.css">
+</head>
+<body>
+
+    <div class='mainPanel'>
+
+        <div class='pageTitle'>Hive AI</div>
+
+        <div id='navBar' class='navBar'>
+            <button class='navButton' id='navHome'>Home</button>
+            <button class='navButton' id='navProjects'>Projects</button>
+            <button class='navButton' id='navLiterature'>Literature</button>
+            <button class='navButton' id='navResume'>Resume</button>
+        </div>
+
+        <div class="centeredContent">
+
+            <div class="lightPanel">
+
+                <img id="hiveImage" class="centeredImage" onclick="location.href='hiveBoard.html'" style="max-width: 600px"
+                     src="../images/hiveScreenshot.png"/>
+                <div class="caption">
+                    A screenshot of the Hive analysis tool I built
+                </div>
+
+                <button id="hiveButton" onclick="location.href='hiveBoard.html';">
+                    Interactive Hive Board
+                </button>
+                <br/>
+                <div class="sectionTitle">
+                    The Challenge of Developing a Hive AI
+                </div>
+                <p>
+                    Hive is a unique, dynamic, and complex game. Since discovering the game in 2020, I became very interested
+                    and strongly suspected that it was possible to make an AI that would outperform most humans.
+                    In searching for an existing, strong Hive AI, I discovered that a handful of Hive agent's have been
+                    built (e.g. <a href="http://tdk.bme.hu/VIK/DownloadPaper/Mely-megerositeses-tanulas-alapu-Hive-jatekos">a student paper</a>,
+                    <a href="https://info.cs.st-andrews.ac.uk/student-handbook/files/project-library/cs5099/cmm40-Final_report.pdf">a graduate thesis</a>,
+                    and an <a href="https://github.com/shaw3257/hive">open source project</a>),
+                    yet none seemed to achieve strong play strength (namely, the ability to consistently beat humans).
+                    I set out to try my hand at building a Hive agent that could, ideally, outperform any human opponent.
+                    I've already gotten my AI to the level of outperforming myself, but I'm actively developing it to
+                    try to achieve even stronger play.
+                </p>
+                <div class="sectionSubtitle">Why is building a good Hive AI so challenging?</div>
+                <p>
+                    One major challenge with developing a Hive agent is calculating the list of possible moves. In a game
+                    like chess or Go, calculating a list of all currently legal moves is straightforward and computationally
+                    cheap. The mechanics of piece motion in Hive and the evolution of the game board over time causes
+                    the delineation of possible moves to be computationally more intensive. To be clear, developing algorithms
+                    that determine legal moves in Hive can be done methodically, but making these algorithms <i>fast</i>
+                    so as to allow deeper AI evaluation is much more difficult. For instance, the "one Hive" rule stipulates
+                    that the only pieces that can move are those which are not currently critical to keeping all played
+                    tiles as one connected group. In short, if removing a piece would cut the hive into to completely
+                    disjoint groups, then that piece cannot move. Unfortunately, whether a piece is mobile according to this
+                    rule can change on each move, even moves that concern very far away pieces. Thus far, a majority of my
+                    development effort has involved developing, refining, and accelerating these algorithms to minimize their
+                    computational footprint and allow deeper tree searches to discover stronger moves.
+                </p>
+
+                <div class="sectionTitle">My Hive AI Design</div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <script src="../scripts/procedurals.js"></script>
+</body>
+</html>

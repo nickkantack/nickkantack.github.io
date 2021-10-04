@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="../styles/hive_styles.css">
+    <title>Hive</title>
+    <script src="../scripts/hive_scripts/UiPoint.js"></script>
+    <script src="../scripts/hive_scripts/MouseManager.js"></script>
+    <script src="../scripts/hive_scripts/PaintStackManager.js"></script>
+    <script src="../scripts/hive_scripts/Board.js"></script>
+    <script src="../scripts/hive_scripts/UiPiece.js"></script>
+    <script src="../scripts/hive_scripts/StringParser.js"></script>
+    <script src="../scripts/hive_scripts/Point.js"></script>
+    <script src="../scripts/hive_scripts/Piece.js"></script>
+    <script src="../scripts/hive_scripts/Move.js"></script>
+    <script src="../scripts/hive_scripts/PieceGrid.js"></script>
+    <script src="../scripts/hive_scripts/Game.js"></script>
+    <script src="../scripts/hive_scripts/Hive.js"></script>
+    <script src="../scripts/hive_scripts/MoveTable.js"></script>
+    <script src="../scripts/hive_scripts/PieceBank.js"></script>
+    <script src="../scripts/hive_scripts/ClientUiInteractions.js"></script>
+    <script src="../scripts/hive_scripts/Meter.js"></script>
+    <script src="../scripts/hive_scripts/NotificationTable.js"></script>
+</head>
+<body onload="initialize()">
+<canvas id="canvas"></canvas>
+<div id="controls">
+    <div id="diagnostics">Controls</div>
+    <div id="moveTableDiv">
+        <table id="moveTable">
+            <colgroup>
+                <col style="width:20%">
+                <col style="width:30%">
+                <col style="width:30%">
+            </colgroup>
+            <tr><th>Move No.</th><th>P1</th><th>P2</th></tr>
+        </table>
+    </div>
+    <div id="buttonBar">
+        <button id="backup" onclick="backup()">
+            &#8592;
+        </button>
+        <button id="advance" onclick="advance()">
+            &#8594;
+        </button>
+    </div>
+    <button id="aiMove" onclick="askAiToMakeMove()">Let AI make next move</button>
+    <button id="pass" onclick="pass()">Pass</button>
+    <div id="meter">
+        Player 1 has an estimated win probability of
+        <div id="prob">
+            50%
+        </div>
+        <div id="bar">
+            <div id="whiteBar">
+
+            </div>
+            <div id="redBar">
+
+            </div>
+        </div>
+    </div>
+    <div id="notificationPane">
+        Messages
+        <div id="notifier">
+
+        </div>
+    </div>
+</div>
+<div id="instructions">
+    <p>
+        This is an analysis tool for the game <a href="https://www.gen42.com/games/hive">Hive</a>.
+        You'll want to know the <a href="https://www.ultraboardgames.com/hive/game-rules.php">rules</a> of Hive before
+        digging deeply into this tool.
+    </p>
+    <p>
+        I developed a AI that will perform live diagnostics of the board. You can play both sides and explore different
+        game scenarios, or your can play against the computer (by asking the AI to make all the moves for one side).
+    </p>
+    <p>
+        To play, just click and drag to move pieces on the board, or introduce pieces to the board from the piece bank
+        on the right.
+    </p>
+    <button id="closeInstructions" onclick="hideInstructions()">Close</button>
+</div>
+<script>
+
+    let useBackend = false;
+    let showMoveSuggestions = true;
+
+    let suggestedMovesByStrength = [];
+    let numberOfMovesToSuggest = 3;
+    let estimatedWinProbability = 0.5;
+    let canvas = document.getElementById("canvas");
+    let ctx = canvas.getContext("2d");
+    let moveTableDiv = document.getElementById("moveTableDiv");
+    let moveTable = document.getElementById("moveTable");
+    let prob = document.getElementById("prob");
+    let board = [];
+    let pieces = [];
+    let currentColor = 0;
+    let snapshots = [[]];
+    let moves = [];
+    let snapshotIndex = 0;
+    let lastMoveString = "";
+    let heldPiecePreviousCoordinates = "";
+    let heldPiecePreviousLevel = 0;
+    let paintStackManager;
+    let mouseManager;
+
+    let whiteBar = document.getElementById("whiteBar");
+    let redBar = document.getElementById("redBar");
+    let notifier = document.getElementById("notifier");
+
+    let hive = new Hive();
+    hive.setTreeSearchMaxDepth(2);
+
+    function initialize(){
+
+        // Set up the paint stack manager
+        paintStackManager = PaintStackManager.create(canvas, "#000000");
+
+        // Create the board
+        board = Board.create(UiPoint.create(canvas.offsetWidth / 2, canvas.offsetHeight / 2), canvas);
+        paintStackManager.register(board, board.paint);
+        mouseManager = MouseManager.create(canvas);
+
+        board.setZ(-1);
+
+        // Set the an enter key press can repaint the board
+        document.addEventListener("keypress", function(e) {
+            if (event.keyCode === 13) { // enter
+                askAiToMakeMove();
+            }
+            if (event.keyCode === 49) { // 1
+                // Set the current color to be white
+               currentColor = 0;
+            }
+            if (event.keyCode === 50) { // 2
+               // Set the current code to be black
+                currentColor = 1;
+            }
+            if (event.keyCode === 113) { // q
+               backup();
+            }
+            if (event.keyCode === 119) { // w
+               advance();
+            }
+            repaint();
+        });
+
+        // Create the piece bank
+        createPieceBank(paintStackManager, mouseManager);
+
+        paintStackManager.setPostPaint(paintAnnotations);
+
+        repaint();
+    }
+
+    function hideInstructions() {
+        document.getElementById("instructions").style.display = "none";
+    }
+
+    function askAiToMakeMove() {
+        // Don't make a move if the game is over
+        let winningPlayerIndex = hive.getWinningPlayerIndex();
+        if (winningPlayerIndex !== Game.NO_WINNER_PLAYER_INDEX) {
+            newNotification("The game is over. Player " + (winningPlayerIndex + 1) + " won.", false);
+        } else {
+            sendMoveToAi("MAKE_MOVE_FOR_ME");
+        }
+    }
+
+    function backup() {
+        if (snapshotIndex > 0) {
+            snapshotIndex--;
+            suggestedMovesByStrength = [];
+            loadSnapshot(paintStackManager, mouseManager, snapshots[snapshotIndex], snapshotIndex);
+        }
+    }
+
+    function advance() {
+        if (snapshotIndex < snapshots.length - 1) {
+            snapshotIndex++;
+            suggestedMovesByStrength = [];
+            loadSnapshot(paintStackManager, mouseManager, snapshots[snapshotIndex], snapshotIndex);
+        }
+    }
+
+    function paintAnnotations(canvas, ctx) {
+        // Now paint actual moves made
+        let move = moves[snapshotIndex - 1];
+        if (snapshotIndex > 1) {
+            paintMove(move, false, 0);
+        }
+
+        // Now paint move suggestions, if available
+        for (let i = 0; i < suggestedMovesByStrength.length; i++) {
+            let suggestedMove = suggestedMovesByStrength[i][0];
+            paintMove(suggestedMove, true, i);
+            // TODO pass in some information about if the letters need to be offset so they can show different
+            //  pieces spawning in the same hex
+        }
+    }
+
+    function repaint() {
+        repaintBank();
+    }
+
+    function paintMove(move, isSuggested, rank) {
+        let startCoordinates = Piece.getPointString(Move.getOldPieceString(move));
+        let endCoordinates = Piece.getPointString(Move.getNewPieceString(move));
+        let endPoint = board.getScreenCoordinatesFromIndices(parseInt(parseInt(Point.getA(endCoordinates))), parseInt(Point.getB(endCoordinates)));
+        if (startCoordinates === Point.OFFBOARD_POINT) {
+            ctx.fillStyle = isSuggested ? "rgba(150, 150, 250, 0.5)" : "rgba(1, 200, 1, 0.5)";
+            ctx.beginPath();
+            ctx.arc(endPoint.getX(), canvas.offsetHeight - endPoint.getY(), 20, 0, 2 * Math.PI);
+            ctx.closePath();
+            ctx.fill();
+            // Text for which kind of piece
+            let leftPadPixels = 50 / 5;
+            let topPadPixels = 50 / 6;
+            ctx.fillStyle = isSuggested ? "rgba(250, 250, 250, 0.5)" : "rgba(0, 0, 0, 0)";
+            ctx.fillText(Piece.getType(Move.getNewPieceString(move)), endPoint.getX() - leftPadPixels,
+                canvas.offsetHeight - endPoint.getY() + topPadPixels);
+        } else {
+            let startPoint = board.getScreenCoordinatesFromIndices(parseInt(parseInt(Point.getA(startCoordinates))), parseInt(Point.getB(startCoordinates)));
+
+            // Paint the ray
+            ctx.lineWidth = 4;
+            ctx.strokeStyle = isSuggested ? "rgba(150, 150, 250, 0.5)" : "rgba(1, 200, 1, 0.5)";
+            ctx.beginPath();
+            ctx.moveTo(startPoint.getX(), canvas.offsetHeight - startPoint.getY());
+            ctx.lineTo(endPoint.getX(), canvas.offsetHeight - endPoint.getY());
+            ctx.closePath();
+            ctx.stroke();
+            ctx.lineWidth = 1;
+            if (isSuggested) {
+                // TODO add info about the rank
+            }
+        }
+    }
+
+    function createAPiece(paintStackManager, mouseManager, type, color, x, y, level) {
+        let testPiece = UiPiece.create(color, type, board.getScreenCoordinatesFromIndices(x, y), level);
+        pieces.push(testPiece);
+
+        // Automatically bump up the level to be on top of the stack
+        let newLevel = 0;
+        for (let i = 0; i < pieces.length; i++) {
+            if (pieces[i] !== testPiece && pieces[i].centerPoint.matches(testPiece.centerPoint)) {
+                newLevel = pieces[i].z + 1;
+            }
+        }
+
+        testPiece.z = newLevel;
+        paintStackManager.register(testPiece, testPiece.paint);
+
+        // Register the piece with the mouse manager
+        mouseManager.register(testPiece, function(translationPoint) {
+            // Remove the piece from the bin
+            testPiece.centerPoint = testPiece.centerPoint.add(translationPoint);
+            paintStackManager.paint();
+
+        }, function(mousePosition) {
+            return mousePosition.sub(testPiece.centerPoint).mag() < testPiece.sizePixels / 2;
+        });
+        mouseManager.registerReleaseAction(function(piece) {
+            let lastMoveString = "";
+            if (board.isOver(mouseManager.oldMousePosition)) {
+                let oldCoordinates = UiPoint.create(99, 99);
+                let challengerOldCoordinates = heldPiecePreviousCoordinates.copy();
+                if (challengerOldCoordinates.getX() !== 99) {
+                    oldCoordinates = board.getBoardIndicesFromPixelCoordinates(challengerOldCoordinates);
+                }
+                let oldLevel = piece.level;
+                piece.centerPoint = board.getPixelCoordinatesRelativeToBoard(mouseManager.oldMousePosition);
+
+                // If this is the first or second ply, set the piece centerpoint to the required location
+                if (moves.length === 0) {
+                    newNotification("The first two moves of the game must be made to predetermined locations.", false);
+                    piece.centerPoint = board.centerPoint;
+                }
+                if (moves.length === 1) {
+                    newNotification("The first two moves of the game must be made to predetermined locations.", false);
+                    piece.centerPoint = board.getScreenCoordinatesFromIndices(1, 0);
+                }
+
+                let newCoordinates = board.getBoardIndicesFromPixelCoordinates(piece.centerPoint);
+                // Set the level
+                let newLevel = 0;
+                for (let i = 0; i < pieces.length; i++) {
+                    if (pieces[i] !== piece && pieces[i].centerPoint.matches(piece.centerPoint)) {
+                        newLevel++;
+                    }
+                }
+                piece.level = newLevel;
+                deletePiece(piece);
+
+                // Cache the last move and send it to the server if playing with the server
+                lastMoveString = getMoveString(piece, oldCoordinates, newCoordinates, oldLevel);
+                // TODO don't send a move to the server if the player picked up and set a piece back down in the same
+                //  location!
+                sendMoveToAi(lastMoveString);
+
+            } else {
+                // Destroy the piece
+                paintStackManager.unregister(piece);
+                this.unregister(piece);
+                pieces.splice(pieces.indexOf(piece), 1);
+            }
+
+            // Handle when a piece is dropped off in space
+            repaint();
+            if (lastMoveString === "") {
+                // alert("I would have pushed a new move to the move strings, but it was blank.");
+            }
+
+        });
+        return testPiece;
+    }
+
+    function loadSnapshot(paintStackManager, mouseManager, snapshot, snapshotIndex) {
+
+        // First remove all pieces on the board
+        for (let i = pieces.length - 1; i >= 0; i--) {
+            if (board.isOver(pieces[i].centerPoint)) {
+                let piece = pieces[i];
+                deletePiece(piece);
+            }
+        }
+
+        // Now create each piece from the snapshot
+        for (let i = 0; i < snapshot.length; i++) {
+            let piece = snapshot[i];
+            let indices = board.getBoardIndicesFromPixelCoordinates(piece.centerPoint);
+            createAPiece(paintStackManager, mouseManager, piece.type, piece.color,
+                indices.getX(), indices.getY(), piece.level);
+        }
+
+        // If we are using the local hive AI, we can use the snapshot to force pieces and then
+        // the move list to place the latest move
+        hive.reset();
+        for (let piece of snapshot) {
+            hive.forcePiece(piece.toPieceString());
+        }
+        // We'll make the hive move history only one move long, even though that wouldn't normally
+        // be true for a game that was made via regular moves.
+        if (snapshotIndex > 0) {
+            let previousMove = moves[snapshotIndex - 1];
+            hive.moveHistory = [previousMove];
+            hive.playerTurnIndex = 1 - Piece.getPlayerIndex(Move.getNewPieceString(previousMove));
+        } else {
+            hive.moveHistory = [];
+            hive.playerTurnIndex = 0;
+        }
+        hive.updateCaches();
+        currentColor = hive.playerTurnIndex;
+        updateTableHighlighting();
+        // Only schedule an appraisal if the game is not over
+        if (hive.getWinningPlayerIndex() === Game.NO_WINNER_PLAYER_INDEX) {
+            scheduleAiAppraisal();
+        } else {
+            updateProb(1 - hive.getWinningPlayerIndex());
+        }
+    }
+
+    function getMoveString(piece, oldCoordinates, newCoordinates, oldLevel) {
+        return piece.type + "," + piece.color + "," + oldCoordinates.getX() + "," + oldCoordinates.getY() + "," + oldLevel +
+            "," + newCoordinates.getX() + "," + newCoordinates.getY() + "," + piece.level;
+    }
+
+    function deletePiece(piece) {
+        paintStackManager.unregister(piece);
+        mouseManager.unregister(piece);
+        pieces.splice(pieces.indexOf(piece), 1);
+    }
+
+    function isPieceTypeMaxedOut(pieceType, pieceColor) {
+        let sames = 0;
+        for (let i = 0; i < pieces.length; i++) {
+            let piece_ = pieces[i];
+            if (piece_.type === pieceType && piece_.color === pieceColor) {
+                sames++;
+            }
+        }
+        return sames === Piece.PIECE_COUNTS_BY_TYPE[pieceType];
+    }
+
+</script>
+</body>
+</html>
