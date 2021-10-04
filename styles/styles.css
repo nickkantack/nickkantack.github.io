@@ -295,10 +295,18 @@ p {
 	.caption {
 		font-size: 12px;
 	}
+	.picture {
+		width: 100%;
+		margin: auto;
+		margin-bottom: 15px;
+	}
 	#mountainKing {
 		width: 100%;
 	}
 	#acrylicPumpVideo {
+		width: 100%;
+	}
+	#hiveImage {
 		width: 100%;
 	}
 }
