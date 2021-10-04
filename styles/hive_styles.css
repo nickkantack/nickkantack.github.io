@@ -185,3 +185,9 @@ body {
     border-radius: 5px;
     padding: 5px;
 }
+
+@media (max-width: 800px) {
+    /*
+    Format the control bar to lay elements out horizontally instead of vertically
+     */
+}

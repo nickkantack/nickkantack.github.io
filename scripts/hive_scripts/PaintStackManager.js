@@ -74,6 +74,9 @@ let PaintStackManager = {
 
         // Set a listener for the window resizing that will trigger canvas rescaling and repainting
         window.addEventListener("resize", function() {
+            // TODO each piece object is holding its own pixel coordinates which do not change when the screen size
+            // changes. Would need to detect the shift needed to move the board.centerPoint to the center of the screen
+            // and then apply that shift to every piece.
             result.parentCanvas.width  = result.parentCanvas.offsetWidth;
             result.parentCanvas.height = result.parentCanvas.offsetHeight;
             result.paint();

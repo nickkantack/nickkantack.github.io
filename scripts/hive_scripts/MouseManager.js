@@ -71,7 +71,7 @@ let MouseManager = {
             }
         }
         // Also activate
-        result.parentElement.addEventListener('mousedown', function(e){
+        let executeMouseDown = function(e) {
             result.clicks++;
             result.mouseDown = true;
             let x = e.pageX - result.parentElement.offsetLeft;
@@ -97,10 +97,12 @@ let MouseManager = {
             if (result.clickAction !== null && result.objectBeingMoved !== null) {
                 result.clickAction(result.objectBeingMoved);
             }
-
-        });
+        }
+        result.parentElement.addEventListener('mousedown', executeMouseDown);
+        result.parentElement.addEventListener('touchstart', executeMouseDown);
         //-----------------------------------------------------------------------------
-        result.parentElement.addEventListener('mouseup', function(){
+
+        let executeMouseUp = function(e) {
             result.mouseDown = false;
 
             // If there is a callback for release, call it now
@@ -110,9 +112,12 @@ let MouseManager = {
 
             result.objectBeingMoved = null;
 
-        });
+        }
+
+        result.parentElement.addEventListener('mouseup', executeMouseUp);
+        result.parentElement.addEventListener('touchend', executeMouseUp);
         //-----------------------------------------------------------------------------
-        result.parentElement.addEventListener('mousemove', function(e){
+        let executeMouseMove = function(e) {
             if (result.mouseDown && result.objectBeingMoved != null){
                 // If there is a card held, move the card
                 let x = e.pageX - result.parentElement.offsetLeft;
@@ -124,7 +129,10 @@ let MouseManager = {
                 // Update the old mouse position
                 result.oldMousePosition = UiPoint.create(x, y);
             }
-        });
+        }
+
+        result.parentElement.addEventListener('mousemove', executeMouseMove);
+        result.parentElement.addEventListener('touchmove', executeMouseMove);
 
         return result;
 

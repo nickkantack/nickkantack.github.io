@@ -34,7 +34,7 @@ function repaintBank() {
     }
 
     // Now replace each piece if it's not maxed out
-    let bankPositionByPieceType = {
+    let bankPositionByPieceTypeWide = {
         "Q": UiPoint.create(9, 4),
         "H": UiPoint.create(11, 4),
         "A": UiPoint.create(10, 2),
@@ -44,6 +44,20 @@ function repaintBank() {
         "M": UiPoint.create(12, -2),
         "B": UiPoint.create(14, -2),
     }
+    let bankPositionByPieceTypeNarrow = {
+        "Q": UiPoint.create(-2, -11),
+        "H": UiPoint.create(0, -11),
+        "A": UiPoint.create(2, -11),
+        "S": UiPoint.create(4, -11),
+        "L": UiPoint.create(6, -11),
+        "P": UiPoint.create(8, -11),
+        "M": UiPoint.create(10, -11),
+        "B": UiPoint.create(12, -11),
+    }
+
+    // Set piece bank location based on screen width
+    let bankPositionByPieceType = screen.width > 800 ? bankPositionByPieceTypeNarrow : bankPositionByPieceTypeWide;
+
     for (let pieceType of Piece.PIECE_TYPES) {
         if (!isPieceTypeMaxedOut(pieceType, currentColor)) {
             let bankPoint = bankPositionByPieceType[pieceType];
