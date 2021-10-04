@@ -3,7 +3,7 @@ let mousePos = VectorFactory.create(0, 0);
 let selectedObject;
 let anObjectIsSelected = true;
 
-canvas.addEventListener('mousedown', function(e){
+let executeMouseDown = function(e) {
 	if (!mouseIsDown){
 		mouseIsDown = true;
 	}
@@ -26,16 +26,20 @@ canvas.addEventListener('mousedown', function(e){
 			}
 		}
 	}
-});
+}
+canvas.addEventListener('mousedown', executeMouseDown);
+canvas.addEventListener('touchstart', executeMouseDown);
 
-canvas.addEventListener('mouseup', function(e){
+let executeMouseUp = function(e) {
 	if (mouseIsDown){
 		mouseIsDown = false;
 	}
 	anObjectIsSelected = false;
-});
+}
+canvas.addEventListener('mouseup', executeMouseUp);
+canvas.addEventListener('touchend', executeMouseUp);
 
-canvas.addEventListener('mousemove', function(e){
+let executeMouseMove = function(e) {
 	if (mouseIsDown){
 		let rect = canvas.getBoundingClientRect();
 		let newMousePosition = VectorFactory.create(e.clientX - rect.left, e.clientY - rect.top);
@@ -47,4 +51,6 @@ canvas.addEventListener('mousemove', function(e){
 		}
 		repaint(ctx);
 	}
-});
+}
+canvas.addEventListener('mousemove', executeMouseMove);
+canvas.addEventListener('touchmove', executeMouseMove);
