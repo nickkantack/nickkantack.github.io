@@ -2,7 +2,9 @@ body {
     font-family: Georgia;
 }
 #canvas {
+    position: fixed;
     width: 100%;
+    top: 0;
     height: 95vh;
     touch-action: none;
 }
