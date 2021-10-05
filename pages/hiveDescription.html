@@ -5,6 +5,9 @@
     <title>Hive AI</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../styles/styles.css">
+    <script type="text/javascript" id="MathJax-script" async
+            src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+    </script>
 </head>
 <body>
 
@@ -50,18 +53,21 @@
                 </p>
                 <div class="sectionSubtitle">Why is building a good Hive AI so challenging?</div>
                 <p>
-                    One major challenge with developing a Hive agent is calculating the list of possible moves. In a game
-                    like chess or Go, calculating a list of all currently legal moves is straightforward and computationally
-                    cheap. The mechanics of piece motion in Hive and the evolution of the game board over time causes
-                    the delineation of possible moves to be computationally more intensive. To be clear, developing algorithms
-                    that determine legal moves in Hive can be done methodically, but making these algorithms <i>fast</i>
-                    so as to allow deeper AI evaluation is much more difficult. For instance, the "one Hive" rule stipulates
-                    that the only pieces that can move are those which are not currently critical to keeping all played
-                    tiles as one connected group. In short, if removing a piece would cut the hive into to completely
-                    disjoint groups, then that piece cannot move. Unfortunately, whether a piece is mobile according to this
-                    rule can change on each move, even moves that concern very far away pieces. Thus far, a majority of my
-                    development effort has involved developing, refining, and accelerating these algorithms to minimize their
-                    computational footprint and allow deeper tree searches to discover stronger moves.
+                    Hive has a relatively large branching factor (in the mid game, an average of about 70 according to
+                    experiments with my AI). One of the main reasons for so many legal moves is that a player can have
+                    a dozen hexes available to spawn new pieces and up to 8 types of pieces that could spawn in each
+                    (\(12 \times 8 =96\) legal spawns, with alternative moves available). By comparison, Go has at most
+                    361 legal moves (at the opening, when black can play in any of the \(19 \times 19 = 361\) points).
+                    Imagine if Go had 8 different types of stones a player could play. More initial moves
+                    would be available even if the board were only 7 points long (\(7 \times 7 \times 8 = 392\)).
+                </p>
+                <p>
+                    Compounding the branching factor is that determine which moves are legal requires much more computation
+                    for Hive than it does for other games. In Go, any open point is a legal move provided it satisfies
+                    Ko and is not a self-capture. For Hive, whether a piece can move involves first checking if the piece
+                    is structurally critical to the hive (moving it does not separate the hive), and that there is enough
+                    space for it to move. The former requires a consideration of the entire board, and the latter requires
+                    a recursive search of the local hive perimeter.
                 </p>
 
                 <div class="sectionTitle">My Hive AI Design</div>

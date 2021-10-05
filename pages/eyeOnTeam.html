@@ -18,65 +18,67 @@
         <button class='navButton' id='navResume'>Resume</button>
     </div>
 
-    <div class="lightPanel"></div>
+    <div class="centeredContent">
+        <div class="lightPanel"></div>
 
-    <div>
-        <video controls="controls" src="../videos/EOT_demo_house_2.mp4" type="video/mp4"></video>
-    </div>
+        <div class="centeredContent">
+            <video controls="controls" src="../videos/EOT_demo_house_2.mp4" type="video/mp4"></video>
+        </div>
 
-    <div class="lightPanel">
+        <div class="lightPanel">
 
-        <div class="sectionTitle">"Eye On Team" - X-ray vision for indoor teams</div>
+            <div class="sectionTitle">"Eye On Team" - X-ray vision for indoor teams</div>
 
-        <iframe width=50% height="300px" src="https://www.youtube.com/embed/bUXYAX7k_V0">
-        </iframe>
+            <iframe width=50% height="300px" src="https://www.youtube.com/embed/bUXYAX7k_V0">
+            </iframe>
 
-        <p>In August 2018 I received $50k in funding for a proposal to develop a system that would allow tactical
-            team members to maintain virtual line of sight with one another in indoor environments using augmented
-            reality. We used the Unity Game Engine to build an application for Microsoft's HoloLens that would
-            display 3D representations of teammate locations indoors. We developed peripheral hardware that performed
-            indoor node localization with RF as well as collected data about individual motion (dead reckoning)
-            to allow a fusion of location information to improve traking accuracy indoors.</p>
-        <p>
-            Results from this work were presented in January 2021 at the APL XR Symposium. This video shows talks
-            from day 1 of the symposium. My talk is first and describes the project in greater detail.
-        </p>
+            <p>In August 2018 I received $50k in funding for a proposal to develop a system that would allow tactical
+                team members to maintain virtual line of sight with one another in indoor environments using augmented
+                reality. We used the Unity Game Engine to build an application for Microsoft's HoloLens that would
+                display 3D representations of teammate locations indoors. We developed peripheral hardware that performed
+                indoor node localization with RF as well as collected data about individual motion (dead reckoning)
+                to allow a fusion of location information to improve traking accuracy indoors.</p>
+            <p>
+                Results from this work were presented in January 2021 at the APL XR Symposium. This video shows talks
+                from day 1 of the symposium. My talk is first and describes the project in greater detail.
+            </p>
 
-        <div class="sectionSubtitle">Why develop X-ray vision?</div>
-        <p>
-            A variety of tools and conditions (GPS, line of sight, long range communication, etc.) make it easy for
-            tactical teams (soldiers, police, firefighters, EMTs, etc.) to coordinate their positions in outdoor
-            environments. Indoors, many of these resources are absent or severely degraded. As a consequence,
-            <i>indoor tactical teams are fundamentally blind to each other's locations</i>.
+            <div class="sectionSubtitle">Why develop X-ray vision?</div>
+            <p>
+                A variety of tools and conditions (GPS, line of sight, long range communication, etc.) make it easy for
+                tactical teams (soldiers, police, firefighters, EMTs, etc.) to coordinate their positions in outdoor
+                environments. Indoors, many of these resources are absent or severely degraded. As a consequence,
+                <i>indoor tactical teams are fundamentally blind to each other's locations</i>.
 
-            This blindness creates risks to the team and their mission, risks that would decrease substantially if
-            teams could see through walls and obstacles. For instance:
-            <ul>
-                <li>
-                    Would friendly fire be less likely if you could see your teammate through the wall before they emerged?
-                </li>
-                <li>
-                    Would seeing a non-responsive teammate's location through floors allow more effective evacuation?
-                </li>
-            </ul>
-            We weren't sure, but we set out to develop these capabilities in AR to test whether they were of use to
-            tactical teams navigating indoor environments.
-        </p>
+                This blindness creates risks to the team and their mission, risks that would decrease substantially if
+                teams could see through walls and obstacles. For instance:
+                <ul>
+                    <li>
+                        Would friendly fire be less likely if you could see your teammate through the wall before they emerged?
+                    </li>
+                    <li>
+                        Would seeing a non-responsive teammate's location through floors allow more effective evacuation?
+                    </li>
+                </ul>
+                We weren't sure, but we set out to develop these capabilities in AR to test whether they were of use to
+                tactical teams navigating indoor environments.
+            </p>
 
-        <div class="sectionSubtitle">How can you see through walls with AR?</div>
-        <p>
-            Microsoft's HoloLens is an AR headset that performs simultaneous localization and mapping (SLAM) which allows
-            it to track its position and orientation in an indoor environment over time. With some additional data
-            processing and sensor fusion (see
-            <a href="../slides/Kantack_Node_Localization_Final.pptx">"Node Localization in an Obstacle Rich Environment"</a>
-            in <a href="literature.html">Literature</a> for more details on this) the HoloLens can maintain good position
-            estimation for several minutes across multiple floors and through multiple rooms. This capability, fused with
-            intuitive peripheral controls and a holographic UI, create what we call "virtual line of sight," or the ability
-            for team members to see holographic representations of their teammates in the correct directions in space.
-            We also explored additional features that went beyond mere line of sight. For more details, watch the
-            symposium presentation above!
-        </p>
-        <img class="centeredImage" src="../images/eotArchitecture.png"/>
+            <div class="sectionSubtitle">How can you see through walls with AR?</div>
+            <p>
+                Microsoft's HoloLens is an AR headset that performs simultaneous localization and mapping (SLAM) which allows
+                it to track its position and orientation in an indoor environment over time. With some additional data
+                processing and sensor fusion (see
+                <a href="../slides/Kantack_Node_Localization_Final.pptx">"Node Localization in an Obstacle Rich Environment"</a>
+                in <a href="literature.html">Literature</a> for more details on this) the HoloLens can maintain good position
+                estimation for several minutes across multiple floors and through multiple rooms. This capability, fused with
+                intuitive peripheral controls and a holographic UI, create what we call "virtual line of sight," or the ability
+                for team members to see holographic representations of their teammates in the correct directions in space.
+                We also explored additional features that went beyond mere line of sight. For more details, watch the
+                symposium presentation above!
+            </p>
+            <img class="centeredImage" src="../images/eotArchitecture.png"/>
+        </div>
     </div>
 
 </div>

@@ -39,10 +39,10 @@ li {
 	padding: 7px;
 }
 video {
-	max-width: 100%;
+	max-width: 90%;
 	max-height: 800px;
 	border-radius: 3px;
-	margin: 10px;
+	margin: auto;
 }
 iframe {
 	margin: 20px;
@@ -284,6 +284,12 @@ p {
 	button {
 		font-size: 18px;
 	}
+	iframe {
+		width: 100%;
+		margin: auto;
+		margin-top: 10px;
+		margin-bottom: 10px;
+	}
 	.pageTitle {
 		font-size: 22px;
 	}
@@ -305,6 +311,10 @@ p {
 		width: 100%;
 		margin: auto;
 		margin-bottom: 15px;
+	}
+	.rightFloatImage {
+		width: 90%;
+		max-width: 90%;
 	}
 	#mountainKing {
 		width: 100%;

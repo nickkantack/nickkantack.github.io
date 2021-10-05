@@ -25,26 +25,30 @@
 <canvas id="canvas"></canvas>
 <div id="controls">
     <div id="diagnostics">Controls</div>
-    <div id="moveTableDiv">
-        <table id="moveTable">
-            <colgroup>
-                <col style="width:20%">
-                <col style="width:30%">
-                <col style="width:30%">
-            </colgroup>
-            <tr><th>Move No.</th><th>P1</th><th>P2</th></tr>
-        </table>
+    <div id="tableAndButtonBar">
+        <div id="moveTableDiv">
+            <table id="moveTable">
+                <colgroup>
+                    <col style="width:20%">
+                    <col style="width:30%">
+                    <col style="width:30%">
+                </colgroup>
+                <tr><th>Move No.</th><th>P1</th><th>P2</th></tr>
+            </table>
+        </div>
+        <div id="buttonBar">
+            <button id="backup" onclick="backup()">
+                &#8592;
+            </button>
+            <button id="advance" onclick="advance()">
+                &#8594;
+            </button>
+        </div>
     </div>
-    <div id="buttonBar">
-        <button id="backup" onclick="backup()">
-            &#8592;
-        </button>
-        <button id="advance" onclick="advance()">
-            &#8594;
-        </button>
+    <div id="buttonDiv">
+        <button id="aiMove" onclick="askAiToMakeMove()">Let AI make next move</button>
+        <button id="pass" onclick="pass()">Pass</button>
     </div>
-    <button id="aiMove" onclick="askAiToMakeMove()">Let AI make next move</button>
-    <button id="pass" onclick="pass()">Pass</button>
     <div id="meter">
         Player 1 has an estimated win probability of
         <div id="prob">
@@ -115,6 +119,7 @@
     hive.setTreeSearchMaxDepth(2);
 
     let transitionScreenWidth = 1200;
+    let isSmallScreen = screen.width < transitionScreenWidth;
 
     function initialize(){
 
@@ -215,12 +220,12 @@
         if (startCoordinates === Point.OFFBOARD_POINT) {
             ctx.fillStyle = isSuggested ? "rgba(150, 150, 250, 0.5)" : "rgba(1, 200, 1, 0.5)";
             ctx.beginPath();
-            ctx.arc(endPoint.getX(), canvas.offsetHeight - endPoint.getY(), 20, 0, 2 * Math.PI);
+            ctx.arc(endPoint.getX(), canvas.offsetHeight - endPoint.getY(), isSmallScreen ? 35 : 20, 0, 2 * Math.PI);
             ctx.closePath();
             ctx.fill();
             // Text for which kind of piece
-            let leftPadPixels = 50 / 5;
-            let topPadPixels = 50 / 6;
+            let leftPadPixels = (isSmallScreen ? 80 : 50) / 5;
+            let topPadPixels = (isSmallScreen ? 80 : 50) / 6;
             ctx.fillStyle = isSuggested ? "rgba(250, 250, 250, 0.5)" : "rgba(0, 0, 0, 0)";
             ctx.fillText(Piece.getType(Move.getNewPieceString(move)), endPoint.getX() - leftPadPixels,
                 canvas.offsetHeight - endPoint.getY() + topPadPixels);
@@ -228,7 +233,7 @@
             let startPoint = board.getScreenCoordinatesFromIndices(parseInt(parseInt(Point.getA(startCoordinates))), parseInt(Point.getB(startCoordinates)));
 
             // Paint the ray
-            ctx.lineWidth = 4;
+            ctx.lineWidth = isSmallScreen ? 6 : 4;
             ctx.strokeStyle = isSuggested ? "rgba(150, 150, 250, 0.5)" : "rgba(1, 200, 1, 0.5)";
             ctx.beginPath();
             ctx.moveTo(startPoint.getX(), canvas.offsetHeight - startPoint.getY());

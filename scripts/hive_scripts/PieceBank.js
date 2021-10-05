@@ -45,18 +45,18 @@ function repaintBank() {
         "B": UiPoint.create(14, -2),
     }
     let bankPositionByPieceTypeNarrow = {
-        "Q": UiPoint.create(-2, -10),
-        "H": UiPoint.create(0, -10),
-        "A": UiPoint.create(2, -10),
-        "S": UiPoint.create(4, -10),
-        "L": UiPoint.create(6, -10),
-        "P": UiPoint.create(8, -10),
-        "M": UiPoint.create(10, -10),
-        "B": UiPoint.create(12, -10),
+        "Q": UiPoint.create(2, -11),
+        "H": UiPoint.create(1, -9),
+        "A": UiPoint.create(3, -9),
+        "S": UiPoint.create(5, -9),
+        "L": UiPoint.create(7, -9),
+        "P": UiPoint.create(8, -11),
+        "M": UiPoint.create(6, -11),
+        "B": UiPoint.create(4, -11),
     }
 
     // Set piece bank location based on screen width
-    let bankPositionByPieceType = screen.width < 800 ? bankPositionByPieceTypeNarrow : bankPositionByPieceTypeWide;
+    let bankPositionByPieceType = screen.width < transitionScreenWidth ? bankPositionByPieceTypeNarrow : bankPositionByPieceTypeWide;
 
     for (let pieceType of Piece.PIECE_TYPES) {
         if (!isPieceTypeMaxedOut(pieceType, currentColor)) {

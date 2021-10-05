@@ -38,6 +38,10 @@ body {
     margin-top: 20px;
     margin-bottom: 20px;
 }
+#tableAndButtonBar {
+    width: 100%;
+    margin: auto;
+}
 #moveTable {
     width: 100%;
     max-height: 400px;
@@ -54,6 +58,10 @@ body {
     width: 100%;
     margin: auto;
     height: 40px;
+}
+#buttonDiv {
+    width: 100%;
+    margin: auto;
 }
 button {
     width: 50%;
@@ -187,8 +195,29 @@ body {
     padding: 5px;
 }
 
-@media (max-width: 800px) {
-    /*
-    Format the control bar to lay elements out horizontally instead of vertically
-     */
+@media (max-width: 1200px) {
+    #controls {
+        width: fit-content;
+        margin: auto;
+    }
+    #tableAndButtonBar {
+        float: left;
+        width: 300px;
+    }
+    #moveTableDiv {
+        height: 250px;
+    }
+    #buttonDiv {
+        float: left;
+        width: 33%;
+        margin: 10px;
+    }
+    #meter {
+        float: left;
+        width: 33%;
+    }
+    #notificationPane {
+        float: left;
+        width: 33%;
+    }
 }

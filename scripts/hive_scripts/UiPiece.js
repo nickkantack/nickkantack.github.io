@@ -38,7 +38,7 @@ let UiPiece = {
 
                 // Write the string
                 ctx.fillStyle = this.color === 0 ? UiPiece.COLOR_1_TEXT : UiPiece.COLOR_2_TEXT;
-                ctx.font = "25px Verdana";
+                ctx.font = (screen.width < transitionScreenWidth ? "40" : "25") + "px Verdana";
                 ctx.fontWeight = "bold"
                 let leftPadPixels = this.sizePixels / 5;
                 let topPadPixels = this.sizePixels / 6;
