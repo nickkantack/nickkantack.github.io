@@ -45,14 +45,14 @@ function repaintBank() {
         "B": UiPoint.create(14, -2),
     }
     let bankPositionByPieceTypeNarrow = {
-        "Q": UiPoint.create(2, -11),
-        "H": UiPoint.create(1, -9),
-        "A": UiPoint.create(3, -9),
+        "Q": UiPoint.create(1, -10),
+        "H": UiPoint.create(-1, -9),
+        "A": UiPoint.create(2, -9),
         "S": UiPoint.create(5, -9),
-        "L": UiPoint.create(7, -9),
-        "P": UiPoint.create(8, -11),
-        "M": UiPoint.create(6, -11),
-        "B": UiPoint.create(4, -11),
+        "L": UiPoint.create(8, -9),
+        "P": UiPoint.create(7, -10),
+        "M": UiPoint.create(10, -10),
+        "B": UiPoint.create(4, -10),
     }
 
     // Set piece bank location based on screen width
