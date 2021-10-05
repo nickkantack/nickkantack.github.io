@@ -162,6 +162,7 @@ let Board = {
         // Adjust for screen size
         if (screen.width < transitionScreenWidth) {
             result.boardSize = 80;
+            result.seed = 8;
             result.xVector = UiPoint.create(1, 0).scale(80);
             result.yVector = UiPoint.create(0.5, Math.sqrt(3) / 2).setLength(80);
         }

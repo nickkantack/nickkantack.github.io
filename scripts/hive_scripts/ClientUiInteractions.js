@@ -61,6 +61,13 @@ function sendMoveToAi(moveString) {
                 newNotification("Passing is not an option provided there are other legal moves you could make.", true);
             } else {
                 newNotification("That is not a legal move.", true);
+                // Need to recreate the piece in the old location, since by now it has been destroyed in anticipation of
+                // being moved to a new location.
+                let oldPiece = Move.getOldPieceString(moveString);
+                let oldPoint = Piece.getPointString(oldPiece);
+                createAPiece(paintStackManager, mouseManager, Piece.getType(oldPiece), Piece.getPlayerIndex(oldPiece), Point.getA(oldPoint),
+                    Point.getB(oldPoint), Piece.getLevel(oldPiece));
+                repaint();
             }
             // TODO could prompt for whether to freeze the AI and allow editing, or to just tell the AI
             //  to consider the new board state.
