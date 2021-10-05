@@ -101,7 +101,7 @@ let MouseManager = {
         result.parentElement.addEventListener('mousedown', executeMouseDown);
         result.parentElement.addEventListener('touchstart', function (e) {
             e.preventDefault();
-            executeMouseDown(e);
+            executeMouseDown(e.touches[0]);
         });
         //-----------------------------------------------------------------------------
 
@@ -120,7 +120,7 @@ let MouseManager = {
         result.parentElement.addEventListener('mouseup', executeMouseUp);
         result.parentElement.addEventListener('touchend', function(e) {
             e.preventDefault();
-            executeMouseUp(e);
+            executeMouseUp(e.touches[0]);
         });
         //-----------------------------------------------------------------------------
         let executeMouseMove = function(e) {
@@ -140,7 +140,7 @@ let MouseManager = {
         result.parentElement.addEventListener('mousemove', executeMouseMove);
         result.parentElement.addEventListener('touchmove', function(e) {
             e.preventDefault();
-            executeMouseMove(e);
+            executeMouseMove(e.touches[0]);
         });
 
         return result;
