@@ -6,7 +6,6 @@ body {
     width: 100%;
     top: 0;
     height: 95vh;
-    touch-action: none;
 }
 #controls {
     position: absolute;

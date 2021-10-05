@@ -121,6 +121,8 @@
     let transitionScreenWidth = 1200;
     let isSmallScreen = screen.width < transitionScreenWidth;
 
+    function fixTouchMove( event ){}
+
     function initialize(){
 
         // Set up the paint stack manager
@@ -159,6 +161,11 @@
         createPieceBank(paintStackManager, mouseManager);
 
         paintStackManager.setPostPaint(paintAnnotations);
+
+        // Remove any previous listners as the page content is ajax loaded and body is never destroyed
+        document.body.removeEventListener( "touchstart", fixTouchMove );
+        // Event listner that doesn't do anything, but fixes missing eventmove
+        document.body.addEventListener( "touchstart", fixTouchMove );
 
         repaint();
     }
