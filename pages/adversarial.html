@@ -138,13 +138,19 @@
                 Therefore, we can apply the linearity of expectations once more to obtain the single statement
                 $$
                 E[\delta W_{ij}] = \frac{1}{n}\left(E[\alpha(1 - ^{i}y_{i})^{i}x_{j}]\right) +
-                \frac{n-1}{n}\left(\sum_{k\neq i}^{n}E[\alpha(0 - ^{k}y_{i})^{k}x_{j}]\right)
+                \frac{n-1}{n}\left(\sum_{k\neq i}^{n}E[\alpha(0 - ^{k}y_{i})^{k}x_{j}]\right)\tag{9}
                 $$
                 By the same argument presented after (7), we can identify \((1 - ^{i}y_{i})\) and \(^{i}x_{j}\) as independent
                 random variables (as well as \((1 - ^{k}y_{i})\) and \(^{k}x_{j}\)), and then write
                 $$
-                E[\delta W_{ij}] = \frac{1}{n}
+                E[\delta W_{ij}] = \frac{1}{n}\left(\alpha (1 - E[^{i}y_{i}])E[^{i}x_{j}]\right) +
+                \frac{1}{n}\sum_{k\neq i}^{n}\left(\alpha(0 - E[^{k}y_{i}])E[^{k}x_{j}]\right)\tag{10}
                 $$
+                If we apply the knowledge that \(E[^{k}y_{i}]=0\ \forall \ i, k\) then we can arrive at the result
+                $$
+                E[\delta W_{ij}] = \frac{\alpha}{n}E[^{i}x_{j}]\tag{11}
+                $$
+                
             </p>
 
         </div>

@@ -841,7 +841,7 @@ class Hive extends Game {
                         pieceType === Piece.MOSQUITO &&
                         (Piece.getLevel(pieceString) > 0 || neighboringTypes.hasOwnProperty(Piece.BEETLE))) {
                         let surroundingPoints = Hive.getSurroundingPoints(thisPiecePoint);
-                        let emptiesWithoutThisPiece = this.getEmptyBorderPointsOmitting(thisPiecePoint);
+                        let emptiesWithoutThisPiece = this.getEmptiesNRollsAway(thisPiecePoint, 1);
                         for (let pointString in surroundingPoints) {
                             if (emptiesWithoutThisPiece.hasOwnProperty(pointString) || this.getTopPieceAt(pointString) !== PieceGrid.NO_PIECE) {
                                 pointsToMoveTo[pointString] = "";
@@ -867,7 +867,7 @@ class Hive extends Game {
                     }
 
                     // Ladybug moves
-                    if (pieceType === Piece.LADYBUG) {
+                    if (pieceType === Piece.LADYBUG || (pieceType === Piece.MOSQUITO && neighboringTypes.hasOwnProperty(Piece.LADYBUG) && Piece.getLevel(pieceString) === 0)) {
                         let ladybugMoves = this.getLadyBugMoves(thisPiecePoint);
                         for (let pointString in ladybugMoves) {
                             pointsToMoveTo[pointString] = "";

@@ -62,7 +62,7 @@
                     would be available even if the board were only 7 points long (\(7 \times 7 \times 8 = 392\)).
                 </p>
                 <p>
-                    Compounding the branching factor is that determine which moves are legal requires much more computation
+                    Compounding the branching factor is that determining which moves are legal requires much more computation
                     for Hive than it does for other games. In Go, any open point is a legal move provided it satisfies
                     Ko and is not a self-capture. For Hive, whether a piece can move involves first checking if the piece
                     is structurally critical to the hive (moving it does not separate the hive), and that there is enough
@@ -72,16 +72,19 @@
 
                 <div class="sectionTitle">My Hive AI Design</div>
 
-            </div>
-
-            <div class="darkPanel">
-                <div class="sectionTitle">
-                    Uh oh! This content is not finished.
-                </div>
                 <p>
-                    I'm actively developing this site, and unfortunately I haven't yet had the time to complete this page.
-                    If you're interested, I'll hopefully have this content finished by the end of October 2021.
+                    The AI is built primarily as a NodeJS application. For the web UI linked above, the important components
+                    of the NodeJS project are ported over as javascript source files. The AI performs a breadth-first
+                    tree search (with alpha-beta pruning and a custom child-ordering algorithm to expedite the pruning)
+                    to a max depth, at which point undetermined game states receive estimated win probabilities using a
+                    small, 1 layer neural network.
+                    Currently, the AI can perform a complete search to a depth of 4 moves ahead in a reasonable amount of time
+                    (for the web UI linked above, an initial search to a depth of 2 is performed for the first move suggestions,
+                    and these suggestions are updated once a depth of 3 search finishes).
+                    I am currently in the process of refining the tree search and planning
+                    on offloading it to a GPU to allow evaluation at even greater move depths (with a goal of 6 moves deep).
                 </p>
+
             </div>
 
         </div>
