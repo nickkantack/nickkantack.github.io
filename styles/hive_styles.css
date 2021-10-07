@@ -249,18 +249,18 @@ body {
     }
     #tableAndButtonBar {
         float: left;
-        width: 33%;
+        width: 32%;
     }
     #moveTableDiv {
         height: 250px;
     }
     #buttonDiv {
         float: left;
-        width: 33%;
+        width: 32%;
         margin: 10px;
     }
     #meter {
         float: left;
-        width: 33%;
+        width: 32%;
     }
 }
