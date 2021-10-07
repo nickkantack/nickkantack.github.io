@@ -324,7 +324,7 @@ class Game {
             let isSpawnMove = Piece.getPointString(Move.getOldPieceString(move)) === Point.OFFBOARD_POINT;
             if (isSpawnMove) {
                 spawnPoint = Piece.getPointString(Move.getNewPieceString(move));
-                // shouldConsultCache = true;
+                shouldConsultCache = true;
             }
             let nextMoves;
             if (shouldConsultCache) {
@@ -438,7 +438,7 @@ class Game {
                             //  moves based on this spawn point. That check will do a regular makeMove and a getMoves
                             //  if no cache exists yet, otherwise it will do a new superLight makeMoves that doesn't call
                             //  updateCaches at all and pass the cached moves to the next kernel recursion.
-                            // shouldConsultCache = true;
+                            shouldConsultCache = true;
                         }
                     }
                 }
