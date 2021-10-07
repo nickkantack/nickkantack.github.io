@@ -20,9 +20,10 @@ body {
 }
 #instructions {
     position: absolute;
-    width: 300px;
+    width: 33%;
+    max-width: 300px;
     text-align: justify;
-    left: 310px;
+    left: 330px;
     top: 0px;
     background: #FFDD88;
     border: 3px solid #DDBB77;
@@ -42,6 +43,7 @@ body {
 #tableAndButtonBar {
     width: 100%;
     margin: auto;
+    display: inline-block;
 }
 #moveTable {
     width: 100%;
@@ -54,6 +56,7 @@ body {
     height: 300px;
     background: #666666;
     overflow-y: scroll;
+    position: relative;
 }
 #buttonBar {
     width: 100%;
@@ -63,6 +66,8 @@ body {
 #buttonDiv {
     width: 100%;
     margin: auto;
+    position: relative;
+    display: inline-block;
 }
 button {
     width: 50%;
@@ -92,8 +97,10 @@ button {
     margin-bottom: 20px;
 }
 #meter {
+    position: relative;
     padding: 10px;
     margin: auto;
+    display: inline-block;
 }
 #moveDepthExplanation {
     width: 100%;
@@ -246,6 +253,9 @@ body {
     #controls {
         width: 99%;
         margin: auto;
+    }
+    #instructions {
+        left: 30%;
     }
     #tableAndButtonBar {
         float: left;
