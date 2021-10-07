@@ -169,62 +169,16 @@ function getHiveCopy() {
     return hiveCopy;
 }
 
-function scheduleAiAppraisal() {
-
-    // TODO broadcast hive.moveHistory.length and have Game listen on the periodic await and to terminate the current
-    //  search if it is behind. This is a way to try to stop in-progress evaluation of old games staes in favor of
-    //  starting evaluation of the current state.
-
-    suggestedMovesByStrength = [];
-    repaint();
-
-    // TODO make a copy of hive to evaluate so that UI actions that change the hive don't conflict with the changes
-    //  to the hive made by Game.js. Use this copy in all of the promises below.
-    let hiveCopy;
-    let promise = new Promise((resolve, reject) => {
-        // Quick depth 2 search
-        hiveCopy = getHiveCopy();
-        hiveCopy.setTreeSearchMaxDepth(2);
-        setTimeout(async function() {
-            let resultHolder = [0];
-            await hiveCopy.getBestNMovesAsync(numberOfMovesToSuggest, resultHolder);
-            console.log("Low level: ");
-            console.log(resultHolder[0]);
-            resolve(resultHolder[0]);
-        }, 0);
-    });
-
-    setTimeout(() => {
-        promise.then(
-            function(topMoves) {
-                // Need to check if the hiveCopy and hive are at different states. If so, the UI has moved beyond
-                // the state we just evaluated, so these move suggestions are not viable.
-                if (hiveCopy.moveHistory.length === hive.moveHistory.length) {
-                    // Don't update the probability if a player has won
-                    if (hive.getWinningPlayerIndex() === Game.NO_WINNER_PLAYER_INDEX) {
-                        updateProb(hive.playerTurnIndex ? 1 - topMoves[0][1] : topMoves[0][1]);
-                        suggestedMovesByStrength = topMoves;
-                        repaint();
-                    }
-                }
-
-                doAsyncTreesearch3(false);
-
-            }, handlePromiseError
-        );
-    }, 0);
-}
-
-function doAsyncTreesearch3(terminal) {
+function doTreeSearch(terminal, n) {
     // Initiate a deeper search
     let hiveCopy = getHiveCopy();
     let deeperPromise = new Promise((resolve, reject) => {
-        hiveCopy.setTreeSearchMaxDepth(3);
+        hiveCopy.setTreeSearchMaxDepth(n);
         setTimeout(async function() {
             let resultHolder = [0];
             await hiveCopy.getBestNMovesAsync(numberOfMovesToSuggest, resultHolder);
             let topMoves = resultHolder[0];
-            console.log("Top level: " + topMoves);
+            console.log("Level: " + n);
             resolve(topMoves);
         }, 100);
     });
@@ -237,19 +191,38 @@ function doAsyncTreesearch3(terminal) {
                     if (hive.getWinningPlayerIndex() === Game.NO_WINNER_PLAYER_INDEX) {
                         updateProb(hive.playerTurnIndex ? 1 - topMoves2[0][1] : topMoves2[0][1]);
                         suggestedMovesByStrength = topMoves2;
+                        updateProgress(n);
                         repaint();
                     }
                 } else {
                     // We'll try one more time to do the 3-deep tree search, otherwise we'll give it up
                     // since the UI is changing too quickly.
                     if (!terminal) {
-                        doAsyncTreesearch3(true);
+                        // doTreeSearch(true, n);
                     }
 
+                }
+                if (n < 4) {
+                    doTreeSearch(false, n + 1);
                 }
             }, handlePromiseError
         );
     }, 0);
+}
+
+function scheduleAiAppraisal() {
+
+    // TODO broadcast hive.moveHistory.length and have Game listen on the periodic await and to terminate the current
+    //  search if it is behind. This is a way to try to stop in-progress evaluation of old games staes in favor of
+    //  starting evaluation of the current state.
+
+    updateProgress(0);
+
+    suggestedMovesByStrength = [];
+    repaint();
+
+    // This will chain to do subsequent searches up to n=4
+    doTreeSearch(false, 2);
 }
 
 function pass() {

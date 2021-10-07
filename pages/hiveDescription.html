@@ -78,9 +78,8 @@
                     tree search (with alpha-beta pruning and a custom child-ordering algorithm to expedite the pruning)
                     to a max depth, at which point undetermined game states receive estimated win probabilities using a
                     small, 1 layer neural network.
-                    Currently, the AI can perform a complete search to a depth of 4 moves ahead in a reasonable amount of time
-                    (for the web UI linked above, an initial search to a depth of 2 is performed for the first move suggestions,
-                    and these suggestions are updated once a depth of 3 search finishes).
+                    Currently, the AI can perform a complete search to a depth of 5 moves ahead in a reasonable amount of time
+                    (for the web UI linked above, successive depth searches are performed up to 4 moves ahead).
                     I am currently in the process of refining the tree search and planning
                     on offloading it to a GPU to allow evaluation at even greater move depths (with a goal of 6 moves deep).
                 </p>

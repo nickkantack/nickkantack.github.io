@@ -90,12 +90,22 @@ class Hive extends Game {
             return;
         }
 
-        // Out with the old
         let newPiece = Move.getNewPieceString(move);
         let oldPiece = Move.getOldPieceString(move);
-        delete this.pieces[newPiece];
         let newPoint = Piece.getPointString(newPiece);
         let oldPoint = Piece.getPointString(oldPiece);
+
+        // Support unmaking a wrong move even if the piece type is incorrect
+        /*
+        let currentPieceType = Piece.getType(newPiece);
+        let correctPieceType = Piece.getType(this.getTopPieceAt(newPoint));
+        move.replace(currentPieceType, correctPieceType);
+        newPiece.replace(currentPieceType, correctPieceType);
+        oldPiece.replace(currentPieceType, correctPieceType);
+         */
+
+        delete this.pieces[newPiece];
+
         this.pieceGrid.removeTopPieceAt(newPoint);
         if (oldPoint !== Point.OFFBOARD_POINT) {
             this.pieceGrid.putPieceAt(oldPiece, oldPoint);
@@ -107,6 +117,7 @@ class Hive extends Game {
             this.pieceCountsByPlayerByType[oldPlayerIndex][Piece.getType(oldPiece)] -= 1;
             this.pieceCountByPlayer[oldPlayerIndex] -= 1;
         }
+        /*
         if (move !== this.moveHistory[this.moveHistory.length - 1]) {
             console.log(this.moveHistory);
             console.log(move);
@@ -114,6 +125,7 @@ class Hive extends Game {
                 (this.moveHistory.length > 1 ? ("Last move was " + this.moveHistory[this.moveHistory.length - 1]) : "Move history was empty") +
                 ".");
         }
+         */
         this.moveHistory.splice(this.moveHistory.length - 1, 1);
 
         // Update the handles on the queens if this move moved a queen
@@ -132,10 +144,14 @@ class Hive extends Game {
         // this method to update caches if they do not intend to immediately make a new move.
     }
 
-    makeMove(moveString, isLight) {
+    makeMove(moveString, isLight, skipCacheUpdateEntirely) {
 
         if (typeof isLight === "undefined") {
             isLight = false;
+        }
+
+        if (typeof skipCacheUpdateEntirely === "undefined") {
+            skipCacheUpdateEntirely = false;
         }
 
         if (moveString === Hive.MUST_PASS) {
@@ -148,6 +164,19 @@ class Hive extends Game {
         let oldPiece = Move.getOldPieceString(moveString);
         let oldPoint = Piece.getPointString(oldPiece);
         let oldPieceType = Piece.getType(oldPiece);
+
+        // Because it greatly improves performance, we've tolerated the risk that a move would be passed in here
+        // that corresponds to a pillbug flip, but the piece type might not actually match that of the current piece.
+        // Essentially, we should interpret this as the move where the pillbug flips whichever piece type is currently
+        // in the old piece point. Therefore, we'll update the piece type here if needed.
+        /*
+        let correctPieceType = oldPieceType;
+        if (oldPoint === Point.OFFBOARD_POINT) {
+            correctPieceType = Piece.getType(this.getTopPieceAt(oldPoint));
+            oldPieceType = correctPieceType;
+        }
+         */
+
         delete this.pieces[oldPiece];
         if (oldPoint !== Point.OFFBOARD_POINT) {
             this.pieceGrid.removeTopPieceAt(oldPoint);
@@ -159,6 +188,8 @@ class Hive extends Game {
         // In with the new
         // Edit the new piece in the move to ensure its level puts it above the stack
         let newPieceUnvettedString = Move.getNewPieceString(moveString);
+        // In case this is a pillbug move mismatch, set the type
+        // newPieceUnvettedString.replace(oldPieceType, correctPieceType);
         let newPointString = Piece.getPointString(newPieceUnvettedString);
         // TODO this could be sped up if putPieceAt returned a piece count and you caught that here for level setting.
         this.pieceGrid.putPieceAt(newPieceUnvettedString, newPointString);
@@ -174,7 +205,9 @@ class Hive extends Game {
 
         this.playerTurnIndex = Math.abs(1 - this.playerTurnIndex);
 
-        this.updateCaches(isLight);
+        if (!skipCacheUpdateEntirely) {
+            this.updateCaches(isLight);
+        }
     }
     /*
     copy() {

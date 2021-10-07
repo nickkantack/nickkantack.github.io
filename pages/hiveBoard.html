@@ -62,6 +62,13 @@
 
             </div>
         </div>
+        <div id="moveDepthExplanation">After exploring to move depth</div>
+        <div id="depthTracker">
+            <div id="depthBar"></div>
+            <div id="depth2" class="depthNumber">2</div>
+            <div id="depth3" class="depthNumber">3</div>
+            <div id="depth4" class="depthNumber">4</div>
+        </div>
     </div>
     <div id="notificationPane">
         Messages
@@ -120,6 +127,8 @@
 
     let transitionScreenWidth = 1200;
     let isSmallScreen = screen.width < transitionScreenWidth;
+
+    let progressBar = document.getElementById("depthBar");
 
     function initialize(){
 
@@ -211,6 +220,32 @@
 
     function repaint() {
         repaintBank();
+    }
+
+    function updateProgress(newDepth) {
+        let width = "0%";
+        switch (newDepth) {
+            case 0:
+                width = "0%";
+                break;
+            case 2:
+                 width = "25%";
+                 break;
+            case 3:
+                width = "65%";
+                break;
+            case 4:
+                width = "80%";
+                break;
+        }
+        progressBar.style.width = width;
+        for (let i = 2; i < 5; i++) {
+            if (i <= Math.floor(newDepth)) {
+                document.getElementById("depth" + i).classList.add("finished");
+            } else {
+                document.getElementById("depth" + i).classList.remove("finished");
+            }
+        }
     }
 
     function paintMove(move, isSuggested, rank) {

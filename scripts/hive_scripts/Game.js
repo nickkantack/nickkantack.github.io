@@ -224,7 +224,7 @@ class Game {
      *
      * @returns the probability of the current player winning the passed in game state
      */
-    getWinProbabilityKernel(playerIndex, depth, maxDepth, uncleProbability) {
+    getWinProbabilityKernel(playerIndex, depth, maxDepth, uncleProbability, siblingMoves) {
 
         // console.log("I'm at depth " + depth + " with the current player being " + this.playerTurnIndex + " and the " +
         //     "player whose win probability we're estimating is " + playerIndex);
@@ -250,10 +250,6 @@ class Game {
             let isAPreferredToB = (a, b) => playerIndex === playerIndexBeforeTrialMoves ? a > b : b > a;
 
             let possibleMoves = this.getMoves();
-
-            if (possibleMoves.length === 1) {
-                console.log("Had to pass");
-            }
 
             let winningProbability = -1;
             for (let move in possibleMoves) {
@@ -319,10 +315,32 @@ class Game {
         let result = getLowestWinProbability();
         let lowestWinProbability = result[0];
         let lowestWinIndex = result[1];
+        let cachedNextMovesBySpawnPoint = {};
         for (let move in possibleMoves) {
-            this.makeMove(move);
+
+            // Handle redundant spawn point speedup
+            let shouldConsultCache = false;
+            let spawnPoint = "";
+            let isSpawnMove = Piece.getPointString(Move.getOldPieceString(move)) === Point.OFFBOARD_POINT;
+            if (isSpawnMove) {
+                spawnPoint = Piece.getPointString(Move.getNewPieceString(move));
+                // shouldConsultCache = true;
+            }
+            let nextMoves;
+            if (shouldConsultCache) {
+                if (cachedNextMovesBySpawnPoint.hasOwnProperty(spawnPoint)) {
+                    nextMoves = cachedNextMovesBySpawnPoint[spawnPoint];
+                    this.makeMove(move, false, true);
+                } else {
+                    this.makeMove(move, false, false);
+                    nextMoves = this.getMoves();
+                    cachedNextMovesBySpawnPoint[spawnPoint] = nextMoves;
+                }
+            } else {
+                this.makeMove(move, false, false);
+            }
             let resultHolder = [0];
-            await this.getWinProbabilityKernelAsync(indexOfPlayerContemplatingMove, 1, maxDepth, lowestWinProbability, resultHolder);
+            await this.getWinProbabilityKernelAsync(indexOfPlayerContemplatingMove, 1, maxDepth, lowestWinProbability, resultHolder, nextMoves);
             let candidateMoveWinProbability = resultHolder[0];
             if (candidateMoveWinProbability > lowestWinProbability) {
                 bestMoves[lowestWinIndex] = move;
@@ -363,7 +381,7 @@ class Game {
      *
      * @returns the probability of the current player winning the passed in game state
      */
-    async getWinProbabilityKernelAsync(playerIndex, depth, maxDepth, uncleProbability, mainResultHolder) {
+    async getWinProbabilityKernelAsync(playerIndex, depth, maxDepth, uncleProbability, mainResultHolder, siblingMoves) {
 
         // console.log("I'm at depth " + depth + " with the current player being " + this.playerTurnIndex + " and the " +
         //     "player whose win probability we're estimating is " + playerIndex);
@@ -388,31 +406,66 @@ class Game {
             let playerIndexBeforeTrialMoves = this.playerTurnIndex;
             let isAPreferredToB = (a, b) => playerIndex === playerIndexBeforeTrialMoves ? a > b : b > a;
 
-            let possibleMoves = this.getMoves();
-
-            if (possibleMoves.length === 1) {
-                console.log("Had to pass");
-            }
+            let possibleMoves = typeof siblingMoves !== "undefined" ? siblingMoves : this.getMoves();
 
             let winningProbability = -1;
             let moveCount = 0;
             let checkPeriod = 30;
+            let spawnPointsToIgnore = {};
+            let cachedNextMovesBySpawnPoint = {};
             for (let move in possibleMoves) {
+
                 moveCount++;
+                if (moveCount % checkPeriod === 0 && depth === maxDepth - 1) {
+                    await this.allowUpdate();
+                }
+
+                // Handle redundant spawn point speedup
+                let shouldConsultCache = false;
+                let spawnPoint = "";
+                let isSpawnMove = Piece.getPointString(Move.getOldPieceString(move)) === Point.OFFBOARD_POINT;
+                if (isSpawnMove) {
+                    spawnPoint = Piece.getPointString(Move.getNewPieceString(move));
+                    if (spawnPointsToIgnore.hasOwnProperty(spawnPoint)) {
+                        // We already have considered an outcome with this win probability
+                        continue;
+                    } else {
+                        // If it is this player's last move before max depth is reached
+                        if (depth > maxDepth - 2) {
+                            spawnPointsToIgnore[spawnPoint] = "";
+                        } else {
+                            // TODO here we would set a flag that tells the code below to check for a cache of other player
+                            //  moves based on this spawn point. That check will do a regular makeMove and a getMoves
+                            //  if no cache exists yet, otherwise it will do a new superLight makeMoves that doesn't call
+                            //  updateCaches at all and pass the cached moves to the next kernel recursion.
+                            // shouldConsultCache = true;
+                        }
+                    }
+                }
+
                 // If making this move will land at the max depth, then do a "light" makeMove that skips calculating legal
                 // subsequent moves.
-                this.makeMove(move, depth === maxDepth - 1);
+                let nextMoves;
+                if (shouldConsultCache) {
+                    if (cachedNextMovesBySpawnPoint.hasOwnProperty(spawnPoint)) {
+                        nextMoves = cachedNextMovesBySpawnPoint[spawnPoint];
+                        this.makeMove(move, depth === maxDepth - 1, true);
+                    } else {
+                        this.makeMove(move, depth === maxDepth - 1, false);
+                        nextMoves = this.getMoves();
+                        cachedNextMovesBySpawnPoint[spawnPoint] = nextMoves;
+                    }
+
+                } else {
+                    this.makeMove(move, depth === maxDepth - 1, false);
+                }
                 let resultHolder = [0];
-                await this.getWinProbabilityKernelAsync(playerIndex, depth + 1, maxDepth, winningProbability, resultHolder);
+                await this.getWinProbabilityKernelAsync(playerIndex, depth + 1, maxDepth, winningProbability, resultHolder, nextMoves);
                 let candidateWinningProbability = resultHolder[0];
                 if (winningProbability === -1 || isAPreferredToB(candidateWinningProbability, winningProbability)) {
                     winningProbability = candidateWinningProbability;
                 }
                 this.unmakeMove(move);
-
-                if (moveCount % checkPeriod === 0 && depth === maxDepth - 1) {
-                    await this.allowUpdate();
-                }
 
                 if (this.playerTurnIndex !== playerIndexWhenIStarted) {
                     console.log("I tried testing a move but came back with a different player index.");
