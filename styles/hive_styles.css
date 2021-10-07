@@ -244,7 +244,7 @@ body {
 
 @media (max-width: 1200px) {
     #controls {
-        width: fit-content;
+        width: 99%;
         margin: auto;
     }
     #tableAndButtonBar {
@@ -260,12 +260,7 @@ body {
         margin: 10px;
     }
     #meter {
-        float: right;
-        width: 33%;
-    }
-    #notificationPane {
         float: left;
         width: 33%;
-        margin: 10px;
     }
 }
