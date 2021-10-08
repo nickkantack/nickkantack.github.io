@@ -190,32 +190,30 @@ p {
 	float: right;
 }
 
-/* The slider itself */
 .slider {
-	-webkit-appearance: none;  /* Override default CSS styles */
+	-webkit-appearance: none;
 	appearance: none;
-	width: 100%; /* Full-width */
-	height: 18px; /* Specified height */
-	background: #d3d3FF; /* Grey background */
-	outline: none; /* Remove outline */
-	opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
-	-webkit-transition: .2s; /* 0.2 seconds transition on hover */
+	width: 100%;
+	height: 18px;
+	background: #FFFFFF;
+	outline: none;
+	opacity: 0.7;
+	-webkit-transition: .2s;
 	transition: opacity .2s;
 	border-radius: 12.5px;
 }
 
 /* Mouse-over effects */
 .slider:hover {
-	opacity: 1; /* Fully shown on mouse-over */
+	opacity: 1;
 }
 
-/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
 .slider::-webkit-slider-thumb {
 	-webkit-appearance: none;
 	appearance: none;
 	width: 35px;
 	height: 35px;
-	background: #669cf2;
+	background: #88AcFF;
 	cursor: pointer;
 	border-radius: 17.5px;
 	border: 4px solid #FFFFFF;
@@ -235,7 +233,7 @@ p {
 }
 #gameboard {
 
-	width: 60%;
+	width: 80%;
 	max-width: 400px;
 	border: 3px solid #0c2245;
 	margin: 15px;
@@ -244,7 +242,7 @@ p {
 }
 #gameboard2 {
 
-	width: 60%;
+	width: 80%;
 	min-width: 300px;
 	border: 3px solid #0c2245;
 	margin: 15px;
