@@ -339,8 +339,8 @@ class Game {
             } else {
                 this.makeMove(move, false, false);
             }
-            let resultHolder = [0];
-            await this.getWinProbabilityKernelAsync(indexOfPlayerContemplatingMove, 1, maxDepth, lowestWinProbability, resultHolder, nextMoves);
+            let resultHolder = [0, 0];
+            await this.getWinProbabilityKernelAsync(indexOfPlayerContemplatingMove, 1, maxDepth, lowestWinProbability, resultHolder, nextMoves, "");
             let candidateMoveWinProbability = resultHolder[0];
             if (candidateMoveWinProbability > lowestWinProbability) {
                 bestMoves[lowestWinIndex] = move;
@@ -381,7 +381,7 @@ class Game {
      *
      * @returns the probability of the current player winning the passed in game state
      */
-    async getWinProbabilityKernelAsync(playerIndex, depth, maxDepth, uncleProbability, mainResultHolder, siblingMoves) {
+    async getWinProbabilityKernelAsync(playerIndex, depth, maxDepth, uncleProbability, mainResultHolder, siblingMoves, extremalToCousinMove) {
 
         // console.log("I'm at depth " + depth + " with the current player being " + this.playerTurnIndex + " and the " +
         //     "player whose win probability we're estimating is " + playerIndex);
@@ -407,13 +407,27 @@ class Game {
             let isAPreferredToB = (a, b) => playerIndex === playerIndexBeforeTrialMoves ? a > b : b > a;
 
             let possibleMoves = typeof siblingMoves !== "undefined" ? siblingMoves : this.getMoves();
+            let possibleMovesList = Object.keys(possibleMoves);
 
             let winningProbability = -1;
             let moveCount = 0;
             let checkPeriod = 30;
             let spawnPointsToIgnore = {};
             let cachedNextMovesBySpawnPoint = {};
-            for (let move in possibleMoves) {
+            let currentToGrandchildExtremalMove = "";
+            let isToCousinMoveChecked = false;
+            for (let i = 0; i < possibleMovesList.length; i++) {
+
+                let move = possibleMovesList[i];
+
+                // Do the to-cousin extremal move first since it maximizes alpha-beta pruning time saving probability
+                if (i === 0 && !isToCousinMoveChecked) {
+                    isToCousinMoveChecked = true;
+                    if (possibleMoves.hasOwnProperty(move)) {
+                        move = extremalToCousinMove;
+                        i--;
+                    }
+                }
 
                 moveCount++;
                 if (moveCount % checkPeriod === 0 && depth === maxDepth - 1) {
@@ -459,11 +473,13 @@ class Game {
                 } else {
                     this.makeMove(move, depth === maxDepth - 1, false);
                 }
-                let resultHolder = [0];
-                await this.getWinProbabilityKernelAsync(playerIndex, depth + 1, maxDepth, winningProbability, resultHolder, nextMoves);
+                let resultHolder = [0, 0];
+                await this.getWinProbabilityKernelAsync(playerIndex, depth + 1, maxDepth, winningProbability, resultHolder, nextMoves, currentToGrandchildExtremalMove);
                 let candidateWinningProbability = resultHolder[0];
+                currentToGrandchildExtremalMove = resultHolder[1];
                 if (winningProbability === -1 || isAPreferredToB(candidateWinningProbability, winningProbability)) {
                     winningProbability = candidateWinningProbability;
+                    mainResultHolder[1] = move;
                 }
                 this.unmakeMove(move);
 
@@ -475,13 +491,14 @@ class Game {
                 if (uncleProbability !== -1 && isAPreferredToB(winningProbability, uncleProbability)) {
                     this.playerTurnIndex !== playerIndexWhenIStarted ? console.log("1 - I'm returning a changed state") : "";
                     mainResultHolder[0] = winningProbability;
+                    mainResultHolder[1] = move;
                     return;
                 }
                 this.playerTurnIndex !== playerIndexWhenIStarted ? console.log("After appraising move " + move + ", working with an altered state.") : "";
             }
             // TODO looks like we can get here with the player index permanently changed
             this.playerTurnIndex !== playerIndexWhenIStarted ? console.log("2 - I'm returning a changed state") : "";
-            mainResultHolder[0] =  winningProbability;
+            mainResultHolder[0] = winningProbability;
         }
     }
 
