@@ -1011,65 +1011,65 @@ class Hive extends Game {
 
             let otherPlayerIndex = 1 - playerIndex;
 
-            if (verbose) {
-                console.log("I am player " + playerIndex);
-            }
+            // if (verbose) {
+            //     console.log("I am player " + playerIndex);
+            // }
             let newPlayerValue = 0;
             // Queen liberties
             if (this.queensByPlayer[playerIndex] === Piece.UNINITIALIZED_QUEEN) {
                 // console.log("Since queen is uninitialized, adding value of " + valuePerLiberty * 5 + " for player " + playerIndex);
-                if (verbose) {
-                    console.log("Since my queen is uninitialized, I get no liberty based bonus");
-                }
+                // if (verbose) {
+                //     console.log("Since my queen is uninitialized, I get no liberty based bonus");
+                // }
             } else {
                 // console.log("Since queen is initialized, adding value of " +
                 //     valuePerLiberty * Math.pow(6 - queenLibertiesByPlayer[playerIndex], 2) + " for player " + playerIndex);
                 // The use of -= here is intentional, since having fewer than 5 liberties on the queen is modeled as a penalty,
                 // one which should be more severe the further from 5 the liberties count falls.
                 let increment = -valuePerLiberty * Math.pow(5 - queenLibertiesByPlayer[playerIndex], 2);
-                if (verbose) {
-                    console.log("Since my queen is placed and I have " + queenLibertiesByPlayer[playerIndex] + " liberties, I get a value change "
-                    + "of " + increment);
-                }
+                // if (verbose) {
+                //     console.log("Since my queen is placed and I have " + queenLibertiesByPlayer[playerIndex] + " liberties, I get a value change "
+                //     + "of " + increment);
+                // }
                 newPlayerValue += increment;
             }
 
             // Mobile piece counts
             let increment = valuePerMobilePiece * this.cachedMobilePieceCountByPlayer[playerIndex];
-            if (verbose) {
-                console.log("Since I have " + this.cachedMobilePieceCountByPlayer[playerIndex] + " mobile pieces, I get " + increment);
-            }
+            // if (verbose) {
+            //     console.log("Since I have " + this.cachedMobilePieceCountByPlayer[playerIndex] + " mobile pieces, I get " + increment);
+            // }
             newPlayerValue += increment;
 
             // Immobile pieces
             let immobilePieceCount = this.pieceCountByPlayer[playerIndex] - this.cachedMobilePieceCountByPlayer[playerIndex];
             increment = this.pieceCountByPlayer[playerIndex] - this.cachedMobilePieceCountByPlayer[playerIndex];
             increment *= valuePerImmobilePiece;
-            if (verbose) {
-                console.log("Since I have " + immobilePieceCount + " immobile pieces, I get " + increment);
-            }
+            // if (verbose) {
+            //     console.log("Since I have " + immobilePieceCount + " immobile pieces, I get " + increment);
+            // }
             newPlayerValue += increment;
 
             // Piece count advantage
             let pieceCountAdvantage = this.cachedPieceCountByPlayer[playerIndex] - this.cachedPieceCountByPlayer[otherPlayerIndex];
             increment = valuePerPieceCountAdvantage * pieceCountAdvantage / totalPieceCount;
-            if (verbose) {
-                console.log("Since I have " + pieceCountAdvantage + " more pieces than my opponent, I get " + increment);
-            }
+            // if (verbose) {
+            //     console.log("Since I have " + pieceCountAdvantage + " more pieces than my opponent, I get " + increment);
+            // }
             newPlayerValue += increment;
 
             // Spawn point count
             let playerSpawnPointCount = Object.keys(this.cachedEmptiesByPlayer[playerIndex]).length;
             increment = playerSpawnPointCount < 6 ? valuePerSpawnPoint * Math.sqrt(playerSpawnPointCount) : 0;
-            if (verbose) {
-                console.log("Since I have " + playerSpawnPointCount + " spawn points, I get " + increment);
-            }
+            // if (verbose) {
+            //     console.log("Since I have " + playerSpawnPointCount + " spawn points, I get " + increment);
+            // }
             newPlayerValue += increment;
             if (playerSpawnPointCount === 0) {
                 increment = noSpawnPointPenalty;
-                if (verbose) {
-                    console.log("Since I have no spawn points, applying a penalty " + increment);
-                }
+                // if (verbose) {
+                //     console.log("Since I have no spawn points, applying a penalty " + increment);
+                // }
                 newPlayerValue += increment;
             }
 
@@ -1083,9 +1083,9 @@ class Hive extends Game {
         let otherPlayerValue = playerValues[1 - winningPlayerIndex];
         let scale = 0.5;
         let prob = 1 / (1 + Math.exp(-scale * (playerWhoseProbWeWantValue - otherPlayerValue)));
-        if (prob === 0) {
-            console.log("Found a game state I've definitely lost");
-        }
+        // if (prob === 0) {
+        //     console.log("Found a game state I've definitely lost");
+        // }
         return prob;
 
     }

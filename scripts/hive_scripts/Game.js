@@ -355,20 +355,14 @@ class Game {
         // Sort the best moves on win probability, if desired
         let listToReturn = [];
         for (let i = 0; i < n; i++) {
-            listToReturn.push({ "move": bestMoves[i], "prob": winProbabilities[i] });
+            listToReturn.push([bestMoves[i], winProbabilities[i]]);
         }
         listToReturn.sort(function(a, b) {
-            return a.prob === b.prob ? 0 : a.prob > b.prob;
+            return a[1] === b[1] ? 0 : a[1] > b[1];
         });
 
-        // Make a list that has just the moves
-        bestMoves = [];
-        for (let i = 0; i < n; i++) {
-            let listLine = listToReturn[i];
-            bestMoves[i] = [listLine.move, listLine.prob];
-        }
         this.cleanup();
-        mainResultHolder[0] = bestMoves;
+        mainResultHolder[0] = listToReturn;
     }
 
     /**
@@ -416,6 +410,7 @@ class Game {
             let cachedNextMovesBySpawnPoint = {};
             let currentToGrandchildExtremalMove = "";
             let isToCousinMoveChecked = false;
+            let abortPerAlphaBetaPrune = false;
             for (let i = 0; i < possibleMovesList.length; i++) {
 
                 let move = possibleMovesList[i];
@@ -480,24 +475,19 @@ class Game {
                 if (winningProbability === -1 || isAPreferredToB(candidateWinningProbability, winningProbability)) {
                     winningProbability = candidateWinningProbability;
                     mainResultHolder[1] = move;
+                    if (uncleProbability !== -1 && isAPreferredToB(winningProbability, uncleProbability)) {
+                        abortPerAlphaBetaPrune = true;
+                    }
                 }
                 this.unmakeMove(move);
 
-                if (this.playerTurnIndex !== playerIndexWhenIStarted) {
-                    console.log("I tried testing a move but came back with a different player index.");
-                }
-
                 // Alpha beta pruning
-                if (uncleProbability !== -1 && isAPreferredToB(winningProbability, uncleProbability)) {
-                    this.playerTurnIndex !== playerIndexWhenIStarted ? console.log("1 - I'm returning a changed state") : "";
+                if (abortPerAlphaBetaPrune) {
                     mainResultHolder[0] = winningProbability;
                     mainResultHolder[1] = move;
                     return;
                 }
-                this.playerTurnIndex !== playerIndexWhenIStarted ? console.log("After appraising move " + move + ", working with an altered state.") : "";
             }
-            // TODO looks like we can get here with the player index permanently changed
-            this.playerTurnIndex !== playerIndexWhenIStarted ? console.log("2 - I'm returning a changed state") : "";
             mainResultHolder[0] = winningProbability;
         }
     }
