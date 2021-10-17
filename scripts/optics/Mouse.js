@@ -30,7 +30,7 @@ let executeMouseDown = function(e) {
 canvas.addEventListener('mousedown', executeMouseDown);
 canvas.addEventListener('touchstart', function(e) {
 	e.preventDefault();
-	executeMouseUp(e.touches[0]);
+	executeMouseDown(e.touches[0]);
 });
 
 let executeMouseUp = function(e) {
