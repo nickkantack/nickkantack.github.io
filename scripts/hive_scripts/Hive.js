@@ -21,7 +21,7 @@ class Hive extends Game {
      * A list of {@link Piece} that contains all the pieces on the board
      * @type {*[]}
      */
-    pieces = {};
+    pieces = [];
 
     /**
      * One dictionary per player, keys are piece type, values are the number played
@@ -37,14 +37,14 @@ class Hive extends Game {
      */
     pieceGrid = new PieceGrid();
 
-    cachedPossibleMoves = {};
-    cachedEmpties = {};
-    cachedEmptiesByPlayer = {};
-    cachedMobilePieceCountByPlayer = {};
-    cachedPieceCountByPlayer = {};
-    cachedPointsContainingPieces = {};
+    cachedPossibleMoves = [];
+    cachedEmpties = [];
+    cachedEmptiesByPlayer = [];
+    cachedMobilePieceCountByPlayer = [];
+    cachedPieceCountByPlayer = [];
+    cachedPointsContainingPieces = [];
     cachedPiecePointsTouchingEmpty = {};
-    cachedPiecesThatArentBridges = {};
+    cachedPiecesThatArentBridges = [];
     /**
      * Use the cache below as infrequently as possible. It is really a helper to calculate the one above.
      * @type {{}}
@@ -59,14 +59,14 @@ class Hive extends Game {
     reset () {
         this.queensByPlayer = [Piece.UNINITIALIZED_QUEEN, Piece.UNINITIALIZED_QUEEN];
         this.moveHistory = [];
-        this.pieces = {};
+        this.pieces = [];
         this.playerTurnIndex = 0;
         this.pieceGrid = new PieceGrid();
         this.pieceCountByPlayer = [0, 0];
-        this.pieceCountsByPlayerByType = [{}, {}];
+        this.pieceCountsByPlayerByType = [[], []];
         for (let i = 0; i < 2; i++) {
-            for (let pieceType of Piece.PIECE_TYPES) {
-                this.pieceCountsByPlayerByType[i][pieceType] = 0;
+            for (let j = Piece.PIECE_TYPES.length - 1; j >= 0; j--) {
+                this.pieceCountsByPlayerByType[i][Piece.PIECE_TYPES[j]] = 0;
             }
         }
         this.updateCaches();
@@ -104,14 +104,14 @@ class Hive extends Game {
         oldPiece.replace(currentPieceType, correctPieceType);
          */
 
-        delete this.pieces[newPiece];
+        this.listDelete(this.pieces, newPiece);
 
         this.pieceGrid.removeTopPieceAt(newPoint);
         if (oldPoint !== Point.OFFBOARD_POINT) {
             this.pieceGrid.putPieceAt(oldPiece, oldPoint);
             // This is intentional. Place in the pieceGrid first (auto sets the level), THEN take from the piece grid
             // to add to the pieces list.
-            this.pieces[this.pieceGrid.getTopPieceAt(oldPoint)] = "";
+            this.pieces.push(this.pieceGrid.getTopPieceAt(oldPoint));
         } else {
             let oldPlayerIndex = Piece.getPlayerIndex(oldPiece);
             this.pieceCountsByPlayerByType[oldPlayerIndex][Piece.getType(oldPiece)] -= 1;
@@ -164,20 +164,7 @@ class Hive extends Game {
         let oldPiece = Move.getOldPieceString(moveString);
         let oldPoint = Piece.getPointString(oldPiece);
         let oldPieceType = Piece.getType(oldPiece);
-
-        // Because it greatly improves performance, we've tolerated the risk that a move would be passed in here
-        // that corresponds to a pillbug flip, but the piece type might not actually match that of the current piece.
-        // Essentially, we should interpret this as the move where the pillbug flips whichever piece type is currently
-        // in the old piece point. Therefore, we'll update the piece type here if needed.
-        /*
-        let correctPieceType = oldPieceType;
-        if (oldPoint === Point.OFFBOARD_POINT) {
-            correctPieceType = Piece.getType(this.getTopPieceAt(oldPoint));
-            oldPieceType = correctPieceType;
-        }
-         */
-
-        delete this.pieces[oldPiece];
+        this.listDelete(this.pieces, oldPiece);
         if (oldPoint !== Point.OFFBOARD_POINT) {
             this.pieceGrid.removeTopPieceAt(oldPoint);
         } else {
@@ -188,8 +175,6 @@ class Hive extends Game {
         // In with the new
         // Edit the new piece in the move to ensure its level puts it above the stack
         let newPieceUnvettedString = Move.getNewPieceString(moveString);
-        // In case this is a pillbug move mismatch, set the type
-        // newPieceUnvettedString.replace(oldPieceType, correctPieceType);
         let newPointString = Piece.getPointString(newPieceUnvettedString);
         // TODO this could be sped up if putPieceAt returned a piece count and you caught that here for level setting.
         this.pieceGrid.putPieceAt(newPieceUnvettedString, newPointString);
@@ -197,13 +182,22 @@ class Hive extends Game {
         let newPieceVettedString = this.pieceGrid.getTopPieceAt(newPointString);
         moveString = Move.setNewPieceString(moveString, newPieceVettedString);
         this.moveHistory.push(moveString);
-        this.pieces[newPieceVettedString] = "";
+        this.pieces.push(newPieceVettedString);
         // Update the handles on the queens if this move moved a queen
         if (oldPieceType === Piece.QUEEN) {
             this.queensByPlayer[this.playerTurnIndex] = newPieceVettedString;
         }
 
         this.playerTurnIndex = Math.abs(1 - this.playerTurnIndex);
+
+        for (let piece of this.pieces) {
+            if (piece.indexOf("undefined") > -1) {
+                console.log("As a result of move " + moveString + " now have undefined pieces.");
+                console.log(this.pieces);
+                console.log(this.moveHistory);
+                throw new Error();
+            }
+        }
 
         if (!skipCacheUpdateEntirely) {
             this.updateCaches(isLight);
@@ -240,7 +234,7 @@ class Hive extends Game {
         // TODO consult the cached liberties of the queen, don't recalculate them here
         let isPlayerQueenSurrounded = [true, true];
         for (let playerIndex = 0; playerIndex < 2; playerIndex++) {
-            let surroundingPoints = Object.keys(Hive.getSurroundingPoints(Piece.getPointString(this.queensByPlayer[playerIndex])));
+            let surroundingPoints = Hive.getSurroundingPoints(Piece.getPointString(this.queensByPlayer[playerIndex]));
             for (let i = 0; i < Hive.SURROUNDING_POINTS_COUNT; i++) {
                 if (this.pieceGrid.getTopPieceAt(surroundingPoints[i]) === PieceGrid.NO_PIECE) {
                     isPlayerQueenSurrounded[playerIndex] = false;
@@ -293,8 +287,8 @@ class Hive extends Game {
         // Make sure any pieces flagged as definite bridges are removed from the cached of piece's that aren't
         // console.log("Finally, removing these definite bridge pieces");
         // console.log(this.cachedPiecesThatAreBridges);
-        for (let bridgePiece in this.cachedPiecesThatAreBridges) {
-            delete this.cachedPiecesThatArentBridges[bridgePiece];
+        for (let i = this.cachedPiecesThatAreBridges.length - 1; i >= 0; i--) {
+            this.listDelete(this.cachedPiecesThatArentBridges, this.cachedPiecesThatAreBridges[i]);
         }
 
         // console.log("Ending algorithm with these non-bridges");
@@ -302,7 +296,7 @@ class Hive extends Game {
 
         // If any piece in pieces is a top piece and not in the visited pieces, oneHive is broken
         for (let piece of this.pieces) {
-            if (!piecesVisited.hasOwnProperty(piece) && piece !== this.getTopPieceAt(Piece.getPointString(piece))) {
+            if (!(piece in piecesVisited) && piece !== this.getTopPieceAt(Piece.getPointString(piece))) {
                 return false;
             }
         }
@@ -322,19 +316,17 @@ class Hive extends Game {
      */
     getEmptyBorderPoints() {
 
-        let empties = {};
-        let emptiesPlayer0 = {};
-        let emptiesPlayer1 = {};
+        let empties = [];
+        let emptiesPlayer0 = [];
+        let emptiesPlayer1 = [];
         let piecesVisited = [];
         this.cachedPiecePointsTouchingEmpty = {};
-        this.cachedPiecesThatArentBridges = {};
-        this.cachedPiecesThatAreBridges = {};
+        this.cachedPiecesThatArentBridges = [];
+        this.cachedPiecesThatAreBridges = [];
 
-        let keys = Object.keys(this.pieces);
-
-        if (keys.length > 0) {
+        if (this.pieces.length > 0) {
             // Just need any piece to start from (but not the comment below)
-            let seedPieceString = keys[0];
+            let seedPieceString = this.pieces[0];
 
             // Make sure we start with the TOP piece at this point, since this algorithm should only visit top pieces.
             seedPieceString = this.getTopPieceAt(Piece.getPointString(seedPieceString));
@@ -349,14 +341,14 @@ class Hive extends Game {
         // Make sure any pieces flagged as definite bridges are removed from the cached of piece's that aren't
         // console.log("Finally, removing these definite bridge pieces");
         // console.log(this.cachedPiecesThatAreBridges);
-        for (let bridgePiece in this.cachedPiecesThatAreBridges) {
-            delete this.cachedPiecesThatArentBridges[bridgePiece];
+        for (let i = this.cachedPiecesThatAreBridges.length - 1; i >= 0; i--) {
+            this.listDelete(this.cachedPiecesThatArentBridges, this.cachedPiecesThatAreBridges[i]);
         }
 
         // console.log("Ending algorithm with these non-bridges");
         // console.log(this.cachedPiecesThatArentBridges);
 
-        return [empties, emptiesPlayer0, emptiesPlayer1, Object.keys(piecesVisited).length];
+        return [empties, emptiesPlayer0, emptiesPlayer1, piecesVisited.length];
 
     }
 
@@ -385,8 +377,8 @@ class Hive extends Game {
         if (piecesVisited.length === 1) {
             // console.log("This is my starting piece");
             let childCount = 0;
-            for (let point in surroundingPointStrings) {
-                let piece = this.pieceGrid.getTopPieceAt(point);
+            for (let i = surroundingPointStrings.length - 1; i >= 0; i--) {
+                let piece = this.pieceGrid.getTopPieceAt(surroundingPointStrings[i]);
                 if (piece !== PieceGrid.NO_PIECE) {
                     childCount++;
                 }
@@ -397,33 +389,34 @@ class Hive extends Game {
             }
         }
         let foundAnyUnvisitedChild = false;
-        for (let point in surroundingPointStrings) {
+        for (let i = surroundingPointStrings.length - 1; i >= 0; i--) {
+            let point = surroundingPointStrings[i];
             let piece = this.pieceGrid.getTopPieceAt(point);
             if (piece === PieceGrid.NO_PIECE) {
                 // Regardless of whether this empty has been encountered before, cache that this piece is touching this
                 // empty.
-                if (this.cachedPiecePointsTouchingEmpty.hasOwnProperty(point)) {
+                if (point in this.cachedPiecePointsTouchingEmpty) {
                     this.cachedPiecePointsTouchingEmpty[point].push(seedPiecePointString);
                 } else {
                     this.cachedPiecePointsTouchingEmpty[point] = [seedPiecePointString];
                 }
                 // Now do things based on whether the empty is a new one.
-                if (!empties.hasOwnProperty(point)) {
-                    empties[point] = "";
+                if (!empties.includes(point)) {
+                    empties.push(point);
                     // This could be any empty for the player who owns seedPiece, but it CANNOT be an empty for the player
                     // that does not own seedPiece.
                     if (Piece.getPlayerIndex(seedPieceString) === 0) {
-                        emptiesPlayer0[point] = "";
+                        emptiesPlayer0.push(point);
                     } else {
-                        emptiesPlayer1[point] = "";
+                        emptiesPlayer1.push(point);
                     }
                 } else {
                     // Then this empty has previously been counted. See if it should be removed
                     // from either player list on account of the player that owns seedPiece
                     if (Piece.getPlayerIndex(seedPieceString) === 0) {
-                        delete emptiesPlayer1[point];
+                        this.listDelete(emptiesPlayer1, point);
                     } else {
-                        delete emptiesPlayer0[point];
+                        this.listDelete(emptiesPlayer0, point);
                     }
                 }
             } else {
@@ -453,10 +446,10 @@ class Hive extends Game {
                         if (thisIsStartingPointAndItHasOnlyOneChild) {
                             // console.log("Since this is the starting piece and it only has one child, this does not"
                             // + " disqualify it from being a non bridge, so I can now add it as a non-bridge");
-                            this.cachedPiecesThatArentBridges[seedPieceString] = "";
+                            this.cachedPiecesThatArentBridges.push(seedPieceString);
                         } else if (discountThreshold !== Hive.PRACTICALLY_INFINITY || seedPieceString !== piecesVisited[0]) {
                             // console.log("Probably should mark this piece (" + seedPieceString + ") as a definite bridge now.");
-                            this.cachedPiecesThatAreBridges[seedPieceString] = "";
+                            this.cachedPiecesThatAreBridges.push(seedPieceString);
                         }
                         // Else, do nothing since it will be revealed as a bridge later in this algorithm after the
                         // discount is applied.
@@ -493,7 +486,7 @@ class Hive extends Game {
         // to its parent.
         if (myOldestRevisit < accountForDiscount(thisPieceVisitIndex) || !foundAnyUnvisitedChild) {
             // console.log("At the end, I (" + seedPieceString + ") had a non-parent path to an ancestor " + myOldestRevisit + " or no children, so I'm not a bridge.");
-            this.cachedPiecesThatArentBridges[seedPieceString] = "";
+            this.cachedPiecesThatArentBridges.push(seedPieceString);
         }
         return myOldestRevisit;
     }
@@ -523,14 +516,14 @@ class Hive extends Game {
         }
 
         // Our recursion is not desired for only two piece. If all other conditions are met, both are moveable.
-        if (Object.keys(this.pieces).length === 2) {
+        if (this.pieces.length === 2) {
             // console.log("Can move because there are only two pieces");
             return true;
         }
         // Starting with one of this piece's neighbors (and ignoring this piece) determine if all remaining pieces
         // on the board are connected.
         // console.log("Can move? It's down to whether it's a bridge: " + this.cachedPiecesThatArentBridges.hasOwnProperty(piece));
-        return this.cachedPiecesThatArentBridges.hasOwnProperty(piece);
+        return this.cachedPiecesThatArentBridges.includes(piece);
 
     }
 
@@ -539,7 +532,7 @@ class Hive extends Game {
         // Some empties might only be borders while the piece at the start point is unmoved. If there is a piece at the
         // start point, it needs to be removed temporarily for calculation of empties
         let empties = this.getEmptyBorderPointsOmitting(startPoint);
-        let emptiesARollAway = {};
+        let emptiesARollAway = [];
 
         this.getEmptiesARollAwayNewKernel(startPoint, emptiesARollAway, empties, 0, 0, true, startPoint);
 
@@ -548,16 +541,16 @@ class Hive extends Game {
 
     getEmptyBorderPointsOmitting(pointString) {
         // Use the cached empties touching pieces to build a dictionary of pieces
-        let empties = {};
+        let empties = [];
         for (const candidateEmpty in this.cachedPiecePointsTouchingEmpty) {
             let touchingPieces = this.cachedPiecePointsTouchingEmpty[candidateEmpty];
             // If multiple pieces touch this empty, removing the piece at the specified point won't remove this empty
             if (touchingPieces.length > 1) {
-                empties[candidateEmpty] = "";
+                empties.push(candidateEmpty);
             }
             // If there is only one touching piece but it's some other piece than the one we're omitting, this empty will stay
             if (touchingPieces.length > 0 && !(touchingPieces[0] === pointString)) {
-                empties[candidateEmpty] = "";
+                empties.push(candidateEmpty);
             }
         }
         return empties;
@@ -585,8 +578,7 @@ class Hive extends Game {
         let previousPointIndex = -1; // Will be updated before it will be expected to be a point
         let clockwiseStartPointIndex = -1;
         let counterclockwiseStartPointIndex = -1;
-        let surroundingPoints = Hive.getSurroundingPoints(point);
-        let surroundingPointsList = Object.keys(surroundingPoints);
+        let surroundingPointsList = Hive.getSurroundingPoints(point);
         for (let i = 0; i < Hive.SURROUNDING_POINTS_COUNT + 2; i++) {
             let index = i < Hive.SURROUNDING_POINTS_COUNT ? i : i - Hive.SURROUNDING_POINTS_COUNT; // Allowing wrap around
             let point = surroundingPointsList[index];
@@ -638,10 +630,10 @@ class Hive extends Game {
         }
         let nextRollPoint = clockwise ? result[1] : result[2];
         // Check if the next roll point is unvisited and not the origin point
-        if (!emptiesARollAway.hasOwnProperty(nextRollPoint) && nextRollPoint !== originPoint) {
+        if (!emptiesARollAway.includes(nextRollPoint) && nextRollPoint !== originPoint) {
             // If this connection is through a pinch point, continue (don't jump to it)
             if (maxDepth === 0 || currentDepth === maxDepth) {
-                emptiesARollAway[nextRollPoint] = "";
+                emptiesARollAway.push(nextRollPoint);
             }
             if (maxDepth === 0 || currentDepth < maxDepth) {
                 this.getEmptiesARollAwayNewKernel(nextRollPoint, emptiesARollAway, empties, maxDepth, currentDepth, clockwise, originPoint);
@@ -651,23 +643,18 @@ class Hive extends Game {
 
     getEmptiesNRollsAway(startPoint, n) {
         let empties = this.getEmptyBorderPointsOmitting(startPoint);
-        let emptiesARollAwayClockwise = {};
+        let emptiesARollAwayClockwise = [];
         this.getEmptiesARollAwayNewKernel(startPoint, emptiesARollAwayClockwise, empties, n, 0, true, startPoint);
-        let emptiesARollAwayCounterclockwise = {};
+        let emptiesARollAwayCounterclockwise = [];
         this.getEmptiesARollAwayNewKernel(startPoint, emptiesARollAwayCounterclockwise, empties, n, 0, false, startPoint);
-        let result = {};
-        // TODO below is not the correct way to pack the results into the result object
-        for (const pointString in emptiesARollAwayCounterclockwise) {
-            result[pointString] = "";
+        if (typeof emptiesARollAwayClockwise[0] === "undefined" || emptiesARollAwayCounterclockwise[0] === "undefined") {
+            return [];
         }
-        for (const pointString in emptiesARollAwayClockwise) {
-            result[pointString] = "";
-        }
-        return result;
+        return [emptiesARollAwayClockwise[0], emptiesARollAwayCounterclockwise[0]];
     }
 
     getEmptiesAJumpAway(point, empties) {
-        let emptiesAJumpAway = {};
+        let emptiesAJumpAway = [];
         let shifts = [
             Point.build(1, 0),
             Point.build(-1, 0),
@@ -676,14 +663,15 @@ class Hive extends Game {
             Point.build(0, 1),
             Point.build(0, -1),
         ];
-        for (let shift of shifts) {
+        for (let i = shifts.length - 1; i >= 0; i--) {
+            let shift = shifts[i];
             let pointOfConsideration = point;
             for (let step = 0; step < 100; step++) {
                 pointOfConsideration = Point.shift(pointOfConsideration, shift);
-                let hitAnEmpty = empties.hasOwnProperty(pointOfConsideration);
+                let hitAnEmpty = empties.includes(pointOfConsideration);
                 if (hitAnEmpty) {
                     if (step > 0) {
-                        emptiesAJumpAway[pointOfConsideration] = "";
+                        emptiesAJumpAway.push(pointOfConsideration);
                         break;
                     }
                     if (step === 0) {
@@ -722,7 +710,7 @@ class Hive extends Game {
 
     getLadyBugMoves(point) {
         let empties = this.getEmptyBorderPointsOmitting(point);
-        let ladyBugMoves = {};
+        let ladyBugMoves = [];
         this.getLadyBugMovesKernel(point, point.toString(), empties, ladyBugMoves, 0, point);
         return ladyBugMoves;
     }
@@ -730,19 +718,20 @@ class Hive extends Game {
     getLadyBugMovesKernel(seedPoint, seedPointString, empties, ladybugMoves, depth, ignorePoint) {
         depth++;
         let surroundingPoints = Hive.getSurroundingPoints(seedPoint);
-        for (let point in surroundingPoints) {
+        for (let i = surroundingPoints.length - 1; i >= 0; i--) {
+            let point = surroundingPoints[i];
             let piece = this.getTopPieceAt(point);
             let pointString = point.toString();
             let validStep = false;
             if (depth < 3 && piece !== PieceGrid.NO_PIECE && point !== ignorePoint) {
                 validStep = true;
             }
-            if (depth === 3 && piece === PieceGrid.NO_PIECE && empties.hasOwnProperty(pointString) && point !== ignorePoint) {
+            if (depth === 3 && piece === PieceGrid.NO_PIECE && empties.includes(pointString) && point !== ignorePoint) {
                 validStep = true;
             }
             if (validStep) {
-                if (depth === 3 && !ladybugMoves.hasOwnProperty(pointString)) {
-                    ladybugMoves[pointString] = "";
+                if (depth === 3 && !ladybugMoves.includes(pointString)) {
+                    ladybugMoves.push(pointString);
                 }
                 this.getLadyBugMovesKernel(point, pointString, empties, ladybugMoves, depth, ignorePoint);
             }
@@ -756,27 +745,27 @@ class Hive extends Game {
         }
 
         // Update possible moves
-        let placeablePoints = {};
-        let placeableTypes = {};
+        let placeablePoints = [];
+        let placeableTypes = [];
         if (!isLight) {
-            this.cachedPossibleMoves = {};
-            placeablePoints = {};
+            this.cachedPossibleMoves = [];
+            placeablePoints = [];
             placeableTypes = this.getPlaceableTypes();
         }
         let playerTurnIndex = this.playerTurnIndex;
 
-        this.cachedEmpties = {};
-        this.cachedEmptiesByPlayer = [{}, {}];
+        this.cachedEmpties = [];
+        this.cachedEmptiesByPlayer = [[], []];
         this.cachedMobilePieceCountByPlayer = [0, 0];
         let numberOfPointsContainingPieces = 0;
 
         let pieceCount = this.pieceCountByPlayer[0] + this.pieceCountByPlayer[1];
         if (pieceCount === 0) {
             // This is the opening. The only placeable point is the origin
-            placeablePoints["0,0"] = "";
+            placeablePoints.push("0,0");
         } else if (pieceCount === 1) {
             // This is the second player opening. The only placeable point is shifted 1, 0 from the origin
-            placeablePoints["1,0"] = "";
+            placeablePoints.push("1,0");
         } else {
             // The placeable points are dictated by the border hexes.
             let result = this.getEmptyBorderPoints();
@@ -789,26 +778,26 @@ class Hive extends Game {
 
         // Add all of the placement moves
         if (!isLight) {
-            for (const type in placeableTypes) {
-                for (const pointString in placeablePoints) {
+            for (let j = placeablePoints.length - 1; j >= 0; j--) {
+                for (let i = placeableTypes.length - 1; i >= 0; i--) {
                     // let point = Point.fromString(pointString);
                     // let oldPiece = new Piece(type, Point.getOffboardPoint(), this.playerTurnIndex);
                     // let newPiece = new Piece(type, point, this.playerTurnIndex);
                     // let move = new Move(oldPiece, newPiece);
                     // let moveString = move.toString();
                     // Try direct string construction since it's liable to be faster
-                    let moveString = type + "," + this.playerTurnIndex + ",99,99,0," + pointString + ",0";
-                    this.cachedPossibleMoves[moveString] = "";
+                    let moveString = placeableTypes[i] + "," + this.playerTurnIndex + ",99,99,0," + placeablePoints[j] + ",0";
+                    this.cachedPossibleMoves.push(moveString);
                 }
             }
         }
 
         // Count pieces for winning probability estimation
         this.cachedPieceCountByPlayer = [0, 0];
-        for (let pieceString in this.pieces) {
+        for (let i = this.pieces.length - 1; i >= 0; i--) {
             // let piece = Piece.fromString(pieceString);
             // Avoid object creation when a string parse will do, for speed reasons
-            this.cachedPieceCountByPlayer[Piece.getPlayerIndex(pieceString)]++;
+            this.cachedPieceCountByPlayer[Piece.getPlayerIndex(this.pieces[i])]++;
         }
 
         // If the queen is not yet placed for this player, there are no crawl moves allowed
@@ -816,9 +805,10 @@ class Hive extends Game {
 
         if (isQueenPlaced) {
             // Add all of the crawl moves
-            for (const pieceString in this.pieces) {
+            for (let pieceIndex = this.pieces.length - 1; pieceIndex >= 0; pieceIndex--) {
 
-                let pointsToMoveTo = {};
+                let pieceString = this.pieces[pieceIndex];
+                let pointsToMoveTo = [];
 
                 let pieceType = Piece.getType(pieceString);
                 let thisPiecePoint = Piece.getPointString(pieceString);
@@ -834,16 +824,16 @@ class Hive extends Game {
                 }
 
                 // Store a list of neighboring piece types in case this is a mosquito
-                let neighboringTypes = {};
+                let neighboringTypes = [];
                 if (!isLight) {
                     if (pieceType === Piece.MOSQUITO) {
                         let surroundingPoints = Hive.getSurroundingPoints(Piece.getPointString(pieceString));
-                        for (let point in surroundingPoints) {
-                            let neighborPiece = this.getTopPieceAt(point);
+                        for (let i = surroundingPoints.length - 1; i >= 0; i--) {
+                            let neighborPiece = this.getTopPieceAt(surroundingPoints[i]);
                             if (neighborPiece !== PieceGrid.NO_PIECE) {
                                 let type = Piece.getType(neighborPiece);
-                                if (!neighboringTypes.hasOwnProperty(type)) {
-                                    neighboringTypes[type] = "";
+                                if (!neighboringTypes.includes(type)) {
+                                    neighboringTypes.push(type);
                                 }
                             }
                         }
@@ -862,127 +852,138 @@ class Hive extends Game {
                     }
 
                     // Ant moves
-                    if (pieceType === Piece.ANT || (pieceType === Piece.MOSQUITO && neighboringTypes.hasOwnProperty(Piece.ANT) && Piece.getLevel(pieceString) === 0)) {
+                    if (pieceType === Piece.ANT || (pieceType === Piece.MOSQUITO && neighboringTypes.includes(Piece.ANT) && Piece.getLevel(pieceString) === 0)) {
                         let emptiesOneRollAway = this.getEmptiesARollAway(thisPiecePoint);
-                        for (let pointString in emptiesOneRollAway) {
-                            pointsToMoveTo[pointString] = "";
+                        for (let i = emptiesOneRollAway.length - 1; i >= 0; i--) {
+                            pointsToMoveTo.push(emptiesOneRollAway[i]);
                         }
                     }
 
                     // beetle moves
                     if (pieceType === Piece.BEETLE ||
                         pieceType === Piece.MOSQUITO &&
-                        (Piece.getLevel(pieceString) > 0 || neighboringTypes.hasOwnProperty(Piece.BEETLE))) {
+                        (Piece.getLevel(pieceString) > 0 || neighboringTypes.includes(Piece.BEETLE))) {
                         let surroundingPoints = Hive.getSurroundingPoints(thisPiecePoint);
                         let emptiesWithoutThisPiece = this.getEmptiesNRollsAway(thisPiecePoint, 1);
-                        for (let pointString in surroundingPoints) {
-                            if (emptiesWithoutThisPiece.hasOwnProperty(pointString) || this.getTopPieceAt(pointString) !== PieceGrid.NO_PIECE) {
-                                pointsToMoveTo[pointString] = "";
+                        for (let i = surroundingPoints.length - 1; i >= 0; i--) {
+                            let pointString = surroundingPoints[i];
+                            if (emptiesWithoutThisPiece.includes(pointString) || this.getTopPieceAt(pointString) !== PieceGrid.NO_PIECE) {
+                                pointsToMoveTo.push(pointString);
                             }
                         }
                     }
 
                     // Spider moves
                     if (pieceType === Piece.SPIDER ||
-                        (pieceType === Piece.MOSQUITO && neighboringTypes.hasOwnProperty(Piece.SPIDER) && !neighboringTypes.hasOwnProperty(Piece.ANT) && Piece.getLevel(pieceString) === 0)) {
+                        (pieceType === Piece.MOSQUITO && neighboringTypes.includes(Piece.SPIDER) && !neighboringTypes.includes(Piece.ANT) && Piece.getLevel(pieceString) === 0)) {
                         let emptiesOneRollAway = this.getEmptiesNRollsAway(thisPiecePoint, 3);
-                        for (let pointString in emptiesOneRollAway) {
-                            pointsToMoveTo[pointString] = "";
+                        for (let i = emptiesOneRollAway.length - 1; i >= 0; i--) {
+                            pointsToMoveTo.push(emptiesOneRollAway[i]);
                         }
                     }
 
                     // Grasshopper moves
-                    if (pieceType === Piece.GRASSHOPPER || (pieceType === Piece.MOSQUITO && neighboringTypes.hasOwnProperty(Piece.GRASSHOPPER) && Piece.getLevel(pieceString) === 0)) {
+                    if (pieceType === Piece.GRASSHOPPER || (pieceType === Piece.MOSQUITO && neighboringTypes.includes(Piece.GRASSHOPPER) && Piece.getLevel(pieceString) === 0)) {
                         let emptiesAJumpAway = this.getEmptiesAJumpAway(thisPiecePoint, this.cachedEmpties);
-                        for (let pointString in emptiesAJumpAway) {
-                            pointsToMoveTo[pointString] = "";
+                        for (let i = emptiesAJumpAway.length - 1; i >= 0; i--) {
+                            pointsToMoveTo.push(emptiesAJumpAway[i]);
                         }
                     }
 
                     // Ladybug moves
-                    if (pieceType === Piece.LADYBUG || (pieceType === Piece.MOSQUITO && neighboringTypes.hasOwnProperty(Piece.LADYBUG) && Piece.getLevel(pieceString) === 0)) {
+                    if (pieceType === Piece.LADYBUG || (pieceType === Piece.MOSQUITO && neighboringTypes.includes(Piece.LADYBUG) && Piece.getLevel(pieceString) === 0)) {
                         let ladybugMoves = this.getLadyBugMoves(thisPiecePoint);
-                        for (let pointString in ladybugMoves) {
-                            pointsToMoveTo[pointString] = "";
+                        for (let i = ladybugMoves.length - 1; i >= 0; i--) {
+                            pointsToMoveTo.push(ladybugMoves[i]);
                         }
                     }
 
                     // Queen moves and pillbug moves that aren't flipping another piece
                     if (pieceType === Piece.QUEEN || Piece.getType(pieceString) === Piece.PILLBUG ||
-                        (pieceType === Piece.MOSQUITO && !neighboringTypes.hasOwnProperty(Piece.ANT) &&
-                            (neighboringTypes.hasOwnProperty(Piece.QUEEN) || neighboringTypes.hasOwnProperty(Piece.PILLBUG) && Piece.getLevel(pieceString) === 0))) {
+                        (pieceType === Piece.MOSQUITO && !neighboringTypes.includes(Piece.ANT) &&
+                            (neighboringTypes.includes(Piece.QUEEN) || neighboringTypes.includes(Piece.PILLBUG) && Piece.getLevel(pieceString) === 0))) {
                         let emptiesOneRollAway = this.getEmptiesNRollsAway(thisPiecePoint, 1);
-                        for (let pointString in emptiesOneRollAway) {
-                            pointsToMoveTo[pointString] = "";
+                        for (let i = emptiesOneRollAway.length - 1; i >= 0; i--) {
+                            pointsToMoveTo.push(emptiesOneRollAway[i]);
                         }
                     }
                 }
 
                 // Create moves from the points
-                for (let pointString in pointsToMoveTo) {
+                for (let i = pointsToMoveTo.length - 1; i >= 0; i--) {
+                    let pointString = pointsToMoveTo[i];
                     let move = Move.build(pieceString, pointString);
                     // Make sure the new piece in the move has a level that puts it on top
                     let newPiece = Move.getNewPieceString(move);
                     newPiece = Piece.setLevel(newPiece, this.pieceGrid.getPiecesAt(pointString).length);
                     move = Move.setNewPieceString(move, newPiece);
-                    this.cachedPossibleMoves[move] = "";
+                    this.cachedPossibleMoves.push(move);
                 }
 
                 // Pillbug flips (moving a neighboring piece to a neighboring empty)
-                if (Piece.getLevel(pieceString) === 0 && (pieceType === Piece.PILLBUG || (pieceType === Piece.MOSQUITO && neighboringTypes.hasOwnProperty(Piece.PILLBUG)))) {
-                    let neighboringPiecesThatDidntJustMove = {};
-                    let neighboringEmpties = {}
+                if (Piece.getLevel(pieceString) === 0 && (pieceType === Piece.PILLBUG || (pieceType === Piece.MOSQUITO && neighboringTypes.includes(Piece.PILLBUG)))) {
+                    let neighboringPiecesThatDidntJustMove = [];
+                    let neighboringEmpties = [];
                     let surroundingPointStrings = Hive.getSurroundingPoints(thisPiecePoint);
-                    for (let pointString in surroundingPointStrings) {
+                    for (let i = surroundingPointStrings.length - 1; i >= 0; i--) {
+                        let pointString = surroundingPointStrings[i];
                         let neighboringPieceString = this.getTopPieceAt(pointString);
                         if (neighboringPieceString === PieceGrid.NO_PIECE) {
-                            neighboringEmpties[pointString] = "";
+                            neighboringEmpties.push(pointString);
                         } else {
                             if (this.moveHistory.length === 0 || neighboringPieceString !== Move.getNewPieceString(this.moveHistory[this.moveHistory.length - 1])) {
-                                neighboringPiecesThatDidntJustMove[neighboringPieceString] = "";
+                                neighboringPiecesThatDidntJustMove.push(neighboringPieceString);
                             }
                         }
                     }
 
-                    for (let neighboringPieceString in neighboringPiecesThatDidntJustMove) {
+                    for (let i = neighboringPiecesThatDidntJustMove.length - 1; i >= 0; i--) {
+                        let neighboringPieceString = neighboringPiecesThatDidntJustMove[i];
                         // Remember, this.cachedPiecesThatAreBridges is not guaranteed to have all bridges, but
                         // this.cachedPiecesThatArentBridges is guaranteed to have all non-bridges
-                        if (!this.cachedPiecesThatArentBridges.hasOwnProperty(neighboringPieceString)) {
+                        if (!this.cachedPiecesThatArentBridges.includes(neighboringPieceString)) {
                             continue;
                         }
-                        for (let emptyPointString in neighboringEmpties) {
+                        for (let j = neighboringEmpties.length - 1; j >= 0; j--) {
+                            let emptyPointString = neighboringEmpties[j];
                             // Need to make sure the neighboring piece is not a bridge
                             let move = Move.buildString(
                                 neighboringPieceString,
                                 Piece.setPointString(neighboringPieceString, emptyPointString)
                             );
-                            this.cachedPossibleMoves[move] = "";
+                            this.cachedPossibleMoves.push(move);
                         }
                     }
                 }
             }
         }
 
+        // Remove duplicates
+        let seen = {};
+        this.cachedPossibleMoves = this.cachedPossibleMoves.filter(function(item) {
+            return seen.hasOwnProperty(item) ? false : (seen[item] = true)
+        });
+
         // If there are no legal moves, manually add the MUST_PASS move
-        if (Object.keys(this.cachedPossibleMoves).length === 0) {
-            this.cachedPossibleMoves[Hive.MUST_PASS] = "";
+        if (this.cachedPossibleMoves.length === 0) {
+            this.cachedPossibleMoves = [Hive.MUST_PASS];
         }
     }
 
     getPlaceableTypes() {
 
-        let placeableTypes = {};
+        let placeableTypes = [];
 
         let playerTurnIndex = this.playerTurnIndex;
         let queenIsUninitialized = this.queensByPlayer[playerTurnIndex] === Piece.UNINITIALIZED_QUEEN;
         if (queenIsUninitialized && this.pieceCountByPlayer[playerTurnIndex] === 3) {
-            placeableTypes[Piece.QUEEN] = "";
+            placeableTypes.push(Piece.QUEEN);
         } else {
             for (let i = 0; i < Piece.PIECE_TYPES.length; i++) {
                 let pieceType = Piece.PIECE_TYPES[i];
                 let maxCount = Piece.PIECE_COUNTS[i];
                 if (this.pieceCountsByPlayerByType[playerTurnIndex][pieceType] < maxCount) {
-                    placeableTypes[pieceType] = "";
+                    placeableTypes.push(pieceType);
                 }
             }
         }
@@ -995,7 +996,7 @@ class Hive extends Game {
             verbose = false;
         }
 
-        let valuePerLiberty = 1;
+        let valuePerLiberty = 2;
         let valuePerMobilePiece = 1;
         let valuePerImmobilePiece = -1;
         let valuePerPieceCountAdvantage = 7.5;
@@ -1016,6 +1017,7 @@ class Hive extends Game {
             // }
             let newPlayerValue = 0;
             // Queen liberties
+            let libertyDifference = queenLibertiesByPlayer[playerIndex] - queenLibertiesByPlayer[otherPlayerIndex];
             if (this.queensByPlayer[playerIndex] === Piece.UNINITIALIZED_QUEEN) {
                 // console.log("Since queen is uninitialized, adding value of " + valuePerLiberty * 5 + " for player " + playerIndex);
                 // if (verbose) {
@@ -1026,7 +1028,7 @@ class Hive extends Game {
                 //     valuePerLiberty * Math.pow(6 - queenLibertiesByPlayer[playerIndex], 2) + " for player " + playerIndex);
                 // The use of -= here is intentional, since having fewer than 5 liberties on the queen is modeled as a penalty,
                 // one which should be more severe the further from 5 the liberties count falls.
-                let increment = -valuePerLiberty * Math.pow(5 - queenLibertiesByPlayer[playerIndex], 2);
+                let increment = valuePerLiberty * libertyDifference;
                 // if (verbose) {
                 //     console.log("Since my queen is placed and I have " + queenLibertiesByPlayer[playerIndex] + " liberties, I get a value change "
                 //     + "of " + increment);
@@ -1059,7 +1061,7 @@ class Hive extends Game {
             newPlayerValue += increment;
 
             // Spawn point count
-            let playerSpawnPointCount = Object.keys(this.cachedEmptiesByPlayer[playerIndex]).length;
+            let playerSpawnPointCount = this.cachedEmptiesByPlayer[playerIndex].length;
             increment = playerSpawnPointCount < 6 ? valuePerSpawnPoint * Math.sqrt(playerSpawnPointCount) : 0;
             // if (verbose) {
             //     console.log("Since I have " + playerSpawnPointCount + " spawn points, I get " + increment);
@@ -1086,6 +1088,12 @@ class Hive extends Game {
         // if (prob === 0) {
         //     console.log("Found a game state I've definitely lost");
         // }
+        if (prob === 1 || prob === 0) {
+            console.log("Found won state");
+            console.log(this.pieces);
+            console.log(scale * (playerWhoseProbWeWantValue - otherPlayerValue));
+            throw new Error();
+        }
         return prob;
 
     }
@@ -1097,8 +1105,8 @@ class Hive extends Game {
                 continue;
             }
             let surroundingPoints = Hive.getSurroundingPoints(Piece.getPointString(this.queensByPlayer[playerIndex]));
-            for (let point in surroundingPoints) {
-                if (this.pieceGrid.getTopPieceAt(point) === PieceGrid.NO_PIECE) {
+            for (let i = surroundingPoints.length - 1; i >= 0; i--) {
+                if (this.pieceGrid.getTopPieceAt(surroundingPoints[i]) === PieceGrid.NO_PIECE) {
                     result[playerIndex]++;
                 }
             }
@@ -1121,7 +1129,7 @@ class Hive extends Game {
         this.pieceGrid.putPieceAt(piece, point);
         // This order is important, since the line above will determine the level of the piece, which should be determined
         // before the piece is added to the hive's list of pieces.
-        this.pieces[this.pieceGrid.getTopPieceAt(point)] = "";
+        this.pieces.push(this.pieceGrid.getTopPieceAt(point));
         if (type === Piece.QUEEN) {
             this.queensByPlayer[playerIndex] = piece;
         }
@@ -1130,20 +1138,27 @@ class Hive extends Game {
     }
 
     static getSurroundingPoints(centerPointString) {
-        let points = {};
         let a = Point.getA(centerPointString);
         let b = Point.getB(centerPointString);
-        points[(a + 1) + "," + b] = "";
-        points[(a + 1) + "," + (b - 1)] = "";
-        points[a + "," + (b - 1)] = "";
-        points[(a - 1) + "," + b] = "";
-        points[(a - 1) + "," + (b + 1)] = "";
-        points[a + "," + (b + 1)] = "";
-        return points;
+        return [
+            (a + 1) + "," + b,
+            (a + 1) + "," + (b - 1),
+            a + "," + (b - 1),
+            (a - 1) + "," + b,
+            (a - 1) + "," + (b + 1),
+            a + "," + (b + 1)
+        ];
     }
 
     cleanup() {
         this.updateCaches();
+    }
+
+    listDelete(list, item) {
+        let index = list.indexOf(item);
+        if (index > -1) {
+            list.splice(index, 1);
+        }
     }
 
 }

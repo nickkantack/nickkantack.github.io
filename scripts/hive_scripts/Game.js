@@ -170,45 +170,21 @@ class Game {
         let maxDepth = this.treeSearchMaxDepth;
         let indexOfPlayerContemplatingMove = this.playerTurnIndex;
         let possibleMoves = this.getMoves();
-        let possibleMovesString = "";
-        for (let move in possibleMoves) {
-            possibleMovesString += move + "<br/>";
-        }
-        // debug.innerHTML = possibleMovesString;
-        // alert("Check again");
         if (Object.keys(possibleMoves).length === 0) {
             console.log("Call to Game.getBestMove() when there are no possible moves to make. Returning default.");
             return [null, null];
         }
         let bestMove = null;
         let winProbability = -1;
-        for (let move in possibleMoves) {
-            // let piecesString = "";
-            // for (let piece in hive.pieces)
-            //     piecesString += piece + "<br/>";
+        for (let i = possibleMoves.length - 1; i >= 0; i--) {
+            let move =possibleMoves[i];
             this.makeMove(move);
-            let playerIndexBeforeRecursion = this.playerTurnIndex;
             let candidateMoveWinProbability = this.getWinProbabilityKernel(indexOfPlayerContemplatingMove, 1, maxDepth, winProbability);
-            if (playerIndexBeforeRecursion !== this.playerTurnIndex) {
-                console.log("Returned from recursion with a new player index");
-            }
             if (candidateMoveWinProbability > winProbability) {
                 winProbability = candidateMoveWinProbability;
                 bestMove = move;
             }
-            if (this.playerTurnIndex === indexOfPlayerContemplatingMove) {
-                console.log("Looks like I made a move (" + move + ") without the player index rolling");
-                // let possibleMovesString = "";
-                // for (let move in possibleMoves) {
-                //     possibleMovesString += move + "<br/>";
-                // }
-                // possibleMovesString += "<br/><br/>Pieces<br/>" + piecesString;
-                // alert(possibleMovesString);
-            }
             this.unmakeMove(move);
-            // if (this.playerTurnIndex !== indexOfPlayerContemplatingMove) {
-            //     alert("Oh No! Unmaking a move didn't set the correct player index");
-            // }
         }
         this.cleanup();
         return [bestMove, winProbability];
@@ -224,12 +200,10 @@ class Game {
      *
      * @returns the probability of the current player winning the passed in game state
      */
-    getWinProbabilityKernel(playerIndex, depth, maxDepth, uncleProbability, siblingMoves) {
+    getWinProbabilityKernel(playerIndex, depth, maxDepth, uncleProbability) {
 
         // console.log("I'm at depth " + depth + " with the current player being " + this.playerTurnIndex + " and the " +
         //     "player whose win probability we're estimating is " + playerIndex);
-
-        let playerIndexWhenIStarted = this.playerTurnIndex;
 
         if (this.isGameOver() || depth === maxDepth) {
             let probabilityOfWinning = 0;
@@ -240,7 +214,6 @@ class Game {
             if (winningPlayerIndex === playerIndex) {
                 probabilityOfWinning = 1;
             }
-            this.playerTurnIndex !== playerIndexWhenIStarted ? console.log("3 - I'm returning a changed state") : "";
             return probabilityOfWinning;
         } else {
             // Handle non-max depth recursion
@@ -252,7 +225,8 @@ class Game {
             let possibleMoves = this.getMoves();
 
             let winningProbability = -1;
-            for (let move in possibleMoves) {
+            for (let i = possibleMoves.length - 1; i >= 0; i--) {
+                let move = possibleMoves[i];
                 // If making this move will land at the max depth, then do a "light" makeMove that skips calculating legal
                 // subsequent moves.
                 this.makeMove(move, depth === maxDepth - 1);
@@ -261,20 +235,11 @@ class Game {
                     winningProbability = candidateWinningProbability;
                 }
                 this.unmakeMove(move);
-
-                if (this.playerTurnIndex !== playerIndexWhenIStarted) {
-                    console.log("I tried testing a move but came back with a different player index.");
-                }
-
                 // Alpha beta pruning
                 if (uncleProbability !== -1 && isAPreferredToB(winningProbability, uncleProbability)) {
-                    this.playerTurnIndex !== playerIndexWhenIStarted ? console.log("1 - I'm returning a changed state") : "";
                     return winningProbability;
                 }
-                this.playerTurnIndex !== playerIndexWhenIStarted ? console.log("After appraising move " + move + ", working with an altered state.") : "";
             }
-            // TODO looks like we can get here with the player index permanently changed
-            this.playerTurnIndex !== playerIndexWhenIStarted ? console.log("2 - I'm returning a changed state") : "";
             return winningProbability;
         }
     }
@@ -308,7 +273,7 @@ class Game {
         let maxDepth = this.treeSearchMaxDepth;
         let indexOfPlayerContemplatingMove = this.playerTurnIndex;
         let possibleMoves = this.getMoves();
-        if (Object.keys(possibleMoves).length === 0) {
+        if (possibleMoves.length === 0) {
             console.log("Call to Game.getBestMove() when there are no possible moves to make. Returning default.");
             return [null, null];
         }
@@ -316,25 +281,38 @@ class Game {
         let lowestWinProbability = result[0];
         let lowestWinIndex = result[1];
         let cachedNextMovesBySpawnPoint = {};
-        for (let move in possibleMoves) {
+        let lastSpawnPointChecked = "";
+        let lastLegalMovesCache = [];
+        let foundFirstNonSpawnMove = false;
+        for (let i = possibleMoves.length - 1; i >= 0; i--) {
 
-            // Handle redundant spawn point speedup
-            let shouldConsultCache = false;
-            let spawnPoint = "";
-            let isSpawnMove = Piece.getPointString(Move.getOldPieceString(move)) === Point.OFFBOARD_POINT;
-            if (isSpawnMove) {
-                spawnPoint = Piece.getPointString(Move.getNewPieceString(move));
-                shouldConsultCache = true;
-            }
+            let move = possibleMoves[i];
             let nextMoves;
-            if (shouldConsultCache) {
-                if (cachedNextMovesBySpawnPoint.hasOwnProperty(spawnPoint)) {
-                    nextMoves = cachedNextMovesBySpawnPoint[spawnPoint];
-                    this.makeMove(move, false, true);
+            // Handle redundant spawn point speedup
+            if (!foundFirstNonSpawnMove) {
+                let shouldConsultCache = false;
+                let spawnPoint = "";
+                let isSpawnMove = Piece.getPointString(Move.getOldPieceString(move)) === Point.OFFBOARD_POINT;
+                if (isSpawnMove) {
+                    spawnPoint = Piece.getPointString(Move.getNewPieceString(move));
+                    shouldConsultCache = true;
+                } else {
+                    // Setting this flag will skip spawn move related speedups for the remainder of moves, since
+                    // moves are given in order with all spawn moves before all non-spawn moves
+                    foundFirstNonSpawnMove = true;
+                }
+                if (shouldConsultCache) {
+                    if (spawnPoint === lastSpawnPointChecked) {
+                        nextMoves = lastLegalMovesCache;
+                        this.makeMove(move, false, true);
+                    } else {
+                        this.makeMove(move, false, false);
+                        nextMoves = this.getMoves();
+                        lastLegalMovesCache = nextMoves;
+                        lastSpawnPointChecked = spawnPoint;
+                    }
                 } else {
                     this.makeMove(move, false, false);
-                    nextMoves = this.getMoves();
-                    cachedNextMovesBySpawnPoint[spawnPoint] = nextMoves;
                 }
             } else {
                 this.makeMove(move, false, false);
@@ -401,24 +379,23 @@ class Game {
             let isAPreferredToB = (a, b) => playerIndex === playerIndexBeforeTrialMoves ? a > b : b > a;
 
             let possibleMoves = typeof siblingMoves !== "undefined" ? siblingMoves : this.getMoves();
-            let possibleMovesList = Object.keys(possibleMoves);
 
             let winningProbability = -1;
             let moveCount = 0;
             let checkPeriod = 30;
-            let spawnPointsToIgnore = {};
+            let spawnPointsToIgnore = [];
             let cachedNextMovesBySpawnPoint = {};
             let currentToGrandchildExtremalMove = "";
             let isToCousinMoveChecked = false;
             let abortPerAlphaBetaPrune = false;
-            for (let i = 0; i < possibleMovesList.length; i++) {
+            for (let i = 0; i < possibleMoves.length; i++) {
 
-                let move = possibleMovesList[i];
+                let move = possibleMoves[i];
 
                 // Do the to-cousin extremal move first since it maximizes alpha-beta pruning time saving probability
                 if (i === 0 && !isToCousinMoveChecked) {
                     isToCousinMoveChecked = true;
-                    if (possibleMoves.hasOwnProperty(move)) {
+                    if (possibleMoves.includes(extremalToCousinMove)) {
                         move = extremalToCousinMove;
                         i--;
                     }
@@ -435,13 +412,13 @@ class Game {
                 let isSpawnMove = Piece.getPointString(Move.getOldPieceString(move)) === Point.OFFBOARD_POINT;
                 if (isSpawnMove) {
                     spawnPoint = Piece.getPointString(Move.getNewPieceString(move));
-                    if (spawnPointsToIgnore.hasOwnProperty(spawnPoint)) {
+                    if (spawnPointsToIgnore.includes(spawnPoint)) {
                         // We already have considered an outcome with this win probability
                         continue;
                     } else {
                         // If it is this player's last move before max depth is reached
                         if (depth > maxDepth - 2) {
-                            spawnPointsToIgnore[spawnPoint] = "";
+                            spawnPointsToIgnore.push(spawnPoint);
                         } else {
                             // TODO here we would set a flag that tells the code below to check for a cache of other player
                             //  moves based on this spawn point. That check will do a regular makeMove and a getMoves
@@ -451,7 +428,10 @@ class Game {
                         }
                     }
                 }
-
+                if (move === "") {
+                    console.log("blank move");
+                    console.log(possibleMoves);
+                }
                 // If making this move will land at the max depth, then do a "light" makeMove that skips calculating legal
                 // subsequent moves.
                 let nextMoves;

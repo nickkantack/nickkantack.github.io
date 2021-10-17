@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hive AI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles/styles.css">
+    <script type="text/javascript" id="MathJax-script" async
+            src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+    </script>
+</head>
+<body>
+
+<div class='mainPanel'>
+
+    <div class='pageTitle'>Hanabi</div>
+
+    <div id='navBar' class='navBar'>
+        <button class='navButton' id='navHome'>Home</button>
+        <button class='navButton' id='navProjects'>Projects</button>
+        <button class='navButton' id='navLiterature'>Literature</button>
+        <button class='navButton' id='navResume'>Resume</button>
+    </div>
+
+    <div class="centeredContent">
+
+        <div class="lightPanel">
+
+            <div class="sectionTitle">
+                Hanabi and the Learning to Read Minds Challenge
+            </div>
+            <p>
+                In 2019, DeepMind marked Hanabi as <a href="https://arxiv.org/abs/1902.00506">
+                a new frontier for AI research</a>. <a href="https://en.wikipedia.org/wiki/Hanabi_(card_game)">Hanabi</a>
+                is a collaborative card game where players can see other players' cards, but not their own. In order to
+                make valid plays, players much exchange clues with one another about which cards they hold, but these
+                clues are regulated, costly, and contain partial information. Consequently, Hanabi is a game of nuance;
+                successful Hanabi players can take subtle hints from how other players behave, and effectively picking
+                up on these hints is often the key to success.
+            </p>
+            <div class="sectionSubtitle">Why Is Hanabi an AI Frontier?</div>
+            <p>
+                Several Hanabi agents exist that <a href="https://venturebeat.com/2019/12/06/facebooks-hanabi-playing-ai-achieves-state-of-the-art-results/">
+                excel at the game</a>, but only when pair with an identical copy of themselves (called "self-play"). This is a huge advantage,
+                since any agent playing with a copy of itself is guaranteed to know any conventions, nuances, or implications
+                behind the actions of their twin. But how do these agents play with different teammates, teammates they
+                may have never met before? This was the central question of APL's Learning to Read Minds research effort (paper in development),
+                an effort which uncovered that these self-play bots perform very poorly when paired with non-identical teammates
+                (as well as when paired with a human teammate). Importantly, this reveals that AIs that excel a a task
+                like Hanabi might be ill-suited to collaborate with humans, and this raises the need for alternative training
+                methods in order to develop AIs that can collaborate effectively with human teammates.
+            </p>
+            <div class="sectionSubtitle">The APL Hanabi Challenge</div>
+            <p>
+                In the summer of 2021, the Johns Hopkins Applied Physics Laboratory (APL) held a challenge that tasked
+                staff to develop AI agents that would play well with human teammates in Hanabi. These agents would have
+                to compete with each other as well as bots developed by
+                <a href="https://arxiv.org/abs/2004.13291">DeepMind</a>,
+                <a href="https://arxiv.org/abs/1912.02288">Facebook</a>, and
+                <a href="https://github.com/lightvector/fireflower">academia</a>.
+                In all, 8 agents competed for the highest scores when playing with a human teammate. My agent, "Cyclone,"
+                emerged as the winner of the challenge by a comfortable margin.
+            </p>
+
+            <p>
+                The key to Cyclone's success was a training process that allowed Cyclone to discover a play style that
+                was complementary to the human play style. To accomplish this, I set the initial goal of developing Cyclone
+                to play as much like a human as possible. This involved coding Cyclone to attend to factors in the game
+                that humans are known to attend to (e.g. the number of info tokens). Then, Cyclone searched for the weights
+                for these factors that maximized the accuracy with which Cyclone could predict the move a human would make
+                in a game state (ultimately with an accuracy of about 70%).
+            </p>
+            <p>
+                At this pan play style.
+            </p>oint, Cyclone could emulate human decision making with fairly high (70%) accuracy. This created
+            an opportunity to simulate a human teammate with which Cyclone could play many (more than 500,000) games during which
+            the non-simulated-human version of Cyclone explored different weights on the latent factors that led to
+            higher scores for the Cyclone pair. In this way, Cyclone was able to discover a play style that was likely
+            to complement the hum
+
+            <div class="sectionSubtitle"></div>
+
+        </div>
+
+    </div>
+</div>
+
+<script src="../scripts/procedurals.js"></script>
+</body>
+</html>

@@ -32,7 +32,7 @@ function sendMoveToAi(moveString) {
                 // TODO consider some UI indication that the AI is thinking
                 for (let bundle of suggestedMovesByStrength) {
                     let move = bundle[0];
-                    if (hive.getMoves().hasOwnProperty(move)) {
+                    if (hive.getMoves().includes(move)) {
                         moveString = move;
                         moveFound = true;
                         break;
@@ -47,16 +47,9 @@ function sendMoveToAi(moveString) {
                 console.log("Found a good cached move");
             }
         }
-        if (!hive.getMoves().hasOwnProperty(moveString)) {
+        if (!hive.getMoves().includes(moveString)) {
             byHuman = true;
-            let listString = "";
-            for (let move in hive.getMoves()) {
-                listString += move + "</br>";
-            }
-            let pieceString = "";
-            for (let piece in hive.pieces) {
-                pieceString += piece + "\n";
-            }
+            console.log(moveString);
             if (moveString === Hive.MUST_PASS) {
                 newNotification("Passing is not an option provided there are other legal moves you could make.", true);
             } else {
@@ -158,7 +151,7 @@ function makeMove(moveString, byHuman) {
 
 function getHiveCopy() {
     let hiveCopy = new Hive();
-    for (let piece in hive.pieces) {
+    for (let piece of hive.pieces) {
         hiveCopy.forcePiece(piece);
     }
     hiveCopy.playerTurnIndex = hive.playerTurnIndex;
