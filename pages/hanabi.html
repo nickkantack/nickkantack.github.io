@@ -71,14 +71,39 @@
                 in a game state (ultimately with an accuracy of about 70%).
             </p>
             <p>
-                At this pan play style.
-            </p>oint, Cyclone could emulate human decision making with fairly high (70%) accuracy. This created
-            an opportunity to simulate a human teammate with which Cyclone could play many (more than 500,000) games during which
-            the non-simulated-human version of Cyclone explored different weights on the latent factors that led to
-            higher scores for the Cyclone pair. In this way, Cyclone was able to discover a play style that was likely
-            to complement the hum
+                At this point, Cyclone could emulate human decision making with fairly high (70%) accuracy. This created
+                an opportunity to simulate a human teammate with which Cyclone could play many (more than 500,000) games during which
+                the non-simulated-human version of Cyclone explored different weights on the latent factors that led to
+                higher scores for the Cyclone pair. In this way, Cyclone was able to discover a play style that was likely
+                to complement the human play style.
+            </p>
 
             <div class="sectionSubtitle"></div>
+
+            <img class="centeredImage" src="../images/humanness.png" />
+
+            <div class="caption">Figure 1. The "humanness" of Cyclone increased for the most part during development,
+            until an important transition towards the end of development (version 7 to 8) where Cyclone was finally
+            allowed to deviate from emulating human play in order to find a play style that complemented human play.</div>
+
+            <img class="centeredImage" src="../images/selfScore.png" />
+
+            <div class="caption">Figure 2. The self-play scores of Cyclone increased for the most part during development.
+            The self play score for version 7 is noticeably lower because from version 6 to 7 Cyclone was seeking better
+            accuracy in predicting human decisions as opposed to seeking a higher self-play score. Interestingly, Cyclone's
+            self play score from version 6 to version 8 is lower, yet version 8 achieves higher scores when playing with
+            humans than version 6. This indicates that version 8 of Cyclone isn't playing Hanabi <i>better</i> than version 6,
+            rather that version 8 is playing Hanabi in a more human complimentary way than version 6.</div>
+
+            <div class="sectionSubtitle">What Does All This Mean?</div>
+            <p>
+                I'll be updating this page soon as we publish all of our findings from the Hanabi challenge, but one
+                important conclusion here is that developing AI that collaborates with human teammates requires an optimization
+                process that is able to effectively simulate (i.e. <i>understand</i>) human decision making. Herein lie
+                significant intersections with explainability and interpretability of AI systems, and these challenges
+                which face modern AI systems will remain enduring landmarks to the current and future frontiers of AI
+                research.
+            </p>
 
         </div>
 

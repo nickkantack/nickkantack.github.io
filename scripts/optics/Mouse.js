@@ -28,7 +28,10 @@ let executeMouseDown = function(e) {
 	}
 }
 canvas.addEventListener('mousedown', executeMouseDown);
-canvas.addEventListener('touchstart', executeMouseDown);
+canvas.addEventListener('touchstart', function(e) {
+	e.preventDefault();
+	executeMouseUp(e.touches[0]);
+});
 
 let executeMouseUp = function(e) {
 	if (mouseIsDown){
@@ -37,7 +40,10 @@ let executeMouseUp = function(e) {
 	anObjectIsSelected = false;
 }
 canvas.addEventListener('mouseup', executeMouseUp);
-canvas.addEventListener('touchend', executeMouseUp);
+canvas.addEventListener('touchend', function(e) {
+	e.preventDefault();
+	executeMouseUp(e.touches[0]);
+});
 
 let executeMouseMove = function(e) {
 	if (mouseIsDown){
@@ -53,4 +59,7 @@ let executeMouseMove = function(e) {
 	}
 }
 canvas.addEventListener('mousemove', executeMouseMove);
-canvas.addEventListener('touchmove', executeMouseMove);
+canvas.addEventListener('touchmove', function(e) {
+	e.preventDefault();
+	executeMouseMove(e.touches[0]);
+});

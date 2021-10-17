@@ -178,9 +178,9 @@ p {
 	display: inline-block;
 }
 .caption {
+	text-align: justify;
 	font-style: italic;
 	font-size: 16px;
-	text-align: center;
 	margin-bottom: 20px;
 }
 .headshot {
