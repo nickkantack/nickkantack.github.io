@@ -231,7 +231,8 @@ class Hive extends Game {
             return Game.NO_WINNER_PLAYER_INDEX;
         }
 
-        // TODO consult the cached liberties of the queen, don't recalculate them here
+        // TODO can this be sped up? Queen liberty cache is not always updated at this time.
+        this.getQueenLibertiesByPlayerIndex();
         let isPlayerQueenSurrounded = [true, true];
         for (let playerIndex = 0; playerIndex < 2; playerIndex++) {
             let surroundingPoints = Hive.getSurroundingPoints(Piece.getPointString(this.queensByPlayer[playerIndex]));
@@ -864,11 +865,21 @@ class Hive extends Game {
                         pieceType === Piece.MOSQUITO &&
                         (Piece.getLevel(pieceString) > 0 || neighboringTypes.includes(Piece.BEETLE))) {
                         let surroundingPoints = Hive.getSurroundingPoints(thisPiecePoint);
-                        let emptiesWithoutThisPiece = this.getEmptiesNRollsAway(thisPiecePoint, 1);
-                        for (let i = surroundingPoints.length - 1; i >= 0; i--) {
-                            let pointString = surroundingPoints[i];
-                            if (emptiesWithoutThisPiece.includes(pointString) || this.getTopPieceAt(pointString) !== PieceGrid.NO_PIECE) {
-                                pointsToMoveTo.push(pointString);
+                        let isAtopAnotherPiece = this.pieceGrid.getPiecesAt(thisPiecePoint).length > 1;
+                        if (isAtopAnotherPiece) {
+                            // Then the beetle can move to any neighboring point and is supported by the piece it
+                            // is currently above
+                            for (let i = surroundingPoints.length - 1; i >= 0; i--) {
+                                pointsToMoveTo.push(surroundingPoints[i]);
+                            }
+                        } else {
+                            // The beetle can move to any point that's any empty when the beetle is omitted.
+                            let omittingEmpties = this.getEmptyBorderPointsOmitting(thisPiecePoint);
+                            for (let i = surroundingPoints.length - 1; i >= 0; i--) {
+                                let currentPoint = surroundingPoints[i];
+                                if (this.getTopPieceAt(currentPoint) !== PieceGrid.NO_PIECE || omittingEmpties.includes(currentPoint)) {
+                                    pointsToMoveTo.push(currentPoint);
+                                }
                             }
                         }
                     }
@@ -901,7 +912,7 @@ class Hive extends Game {
                     // Queen moves and pillbug moves that aren't flipping another piece
                     if (pieceType === Piece.QUEEN || Piece.getType(pieceString) === Piece.PILLBUG ||
                         (pieceType === Piece.MOSQUITO && !neighboringTypes.includes(Piece.ANT) &&
-                            (neighboringTypes.includes(Piece.QUEEN) || neighboringTypes.includes(Piece.PILLBUG) && Piece.getLevel(pieceString) === 0))) {
+                            (neighboringTypes.includes(Piece.QUEEN) || neighboringTypes.includes(Piece.PILLBUG)) && Piece.getLevel(pieceString) === 0)) {
                         let emptiesOneRollAway = this.getEmptiesNRollsAway(thisPiecePoint, 1);
                         for (let i = emptiesOneRollAway.length - 1; i >= 0; i--) {
                             pointsToMoveTo.push(emptiesOneRollAway[i]);

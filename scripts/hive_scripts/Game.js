@@ -245,7 +245,7 @@ class Game {
     }
 
     isGameOver() {
-        return (Object.keys(this.getMoves()).length === 0) || (this.getWinningPlayerIndex() !== Game.NO_WINNER_PLAYER_INDEX);
+        return this.getWinningPlayerIndex() !== Game.NO_WINNER_PLAYER_INDEX;
     }
 
     async getBestNMovesAsync(n, mainResultHolder) {
