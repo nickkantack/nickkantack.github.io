@@ -22,6 +22,14 @@ function sendMoveToAi(moveString) {
         // console.log(hive.getMoves());
         hive.updateCaches();
         let byHuman = false;
+
+        // If the game is over, disallow further moves
+        let winningPlayerIndex = hive.getWinningPlayerIndex();
+        if (winningPlayerIndex !== Hive.NO_WINNER_PLAYER_INDEX) {
+            newNotification("The game is over. Player " + (winningPlayerIndex + 1) + " won.", true);
+            recreatePieceDestroyedOnAttemptedMove(moveString);
+        }
+
         if (moveString === "MAKE_MOVE_FOR_ME") {
             // alert("Before making the move, the current player index was " + hive.playerTurnIndex);
 
@@ -56,11 +64,7 @@ function sendMoveToAi(moveString) {
                 newNotification("That is not a legal move.", true);
                 // Need to recreate the piece in the old location, since by now it has been destroyed in anticipation of
                 // being moved to a new location.
-                let oldPiece = Move.getOldPieceString(moveString);
-                let oldPoint = Piece.getPointString(oldPiece);
-                createAPiece(paintStackManager, mouseManager, Piece.getType(oldPiece), Piece.getPlayerIndex(oldPiece), Point.getA(oldPoint),
-                    Point.getB(oldPoint), Piece.getLevel(oldPiece));
-                repaint();
+                recreatePieceDestroyedOnAttemptedMove(moveString);
             }
             // TODO could prompt for whether to freeze the AI and allow editing, or to just tell the AI
             //  to consider the new board state.
@@ -224,4 +228,12 @@ function pass() {
 
 function handlePromiseError(error) {
     console.log("Received error from AI appraisal promise. " + error);
+}
+
+function recreatePieceDestroyedOnAttemptedMove(moveString) {
+    let oldPiece = Move.getOldPieceString(moveString);
+    let oldPoint = Piece.getPointString(oldPiece);
+    createAPiece(paintStackManager, mouseManager, Piece.getType(oldPiece), Piece.getPlayerIndex(oldPiece), Point.getA(oldPoint),
+        Point.getB(oldPoint), Piece.getLevel(oldPiece));
+    repaint();
 }

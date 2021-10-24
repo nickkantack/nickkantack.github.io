@@ -252,6 +252,8 @@ p {
 
 #mountainKing {
 	float: right;
+	margin: 15px;
+	margin-top: 0px;
 	width: 50%;
 }
 
