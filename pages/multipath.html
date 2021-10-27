@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Indoor Multipath</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles/styles.css">
+    <script type="text/javascript" id="MathJax-script" async
+            src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+    </script>
+</head>
+<body>
+
+<div class='mainPanel'>
+
+    <div class='pageTitle'>Indoor Multipath</div>
+
+    <div id='navBar' class='navBar'>
+        <button class='navButton' id='navHome'>Home</button>
+        <button class='navButton' id='navProjects'>Projects</button>
+        <button class='navButton' id='navLiterature'>Literature</button>
+        <button class='navButton' id='navResume'>Resume</button>
+    </div>
+
+    <div class="centeredContent">
+
+        <div class="lightPanel">
+
+            <div class="centeredContent">
+                <video controls="controls" src="../videos/multipath_pentagonal_room.mp4" type="video/mp4"></video>
+            </div>
+
+            <div class="caption">
+                Figure 1. A video demonstrating a simulation I made to help answer a question: "What does a degenerate lattice
+                of multipath ghosts look like for a room geometry that does not tessellate?"
+            </div>
+
+            <div class="sectionTitle">
+                Indoor Multipath
+            </div>
+
+            <p>
+                Multipath is the general phenomenon in which radiation from a transmitter can take multiple propagation
+                paths to reach the receiver. Multipath is very familiar in the context of sound propagation (if you've
+                ever heard an echo), but it is also familiar to those who work with radio frequency (RF) propagation,
+                especially if you do so indoors.
+            </p>
+            <p>
+                I first tangled with multipath during my <a href="eyeOnTeam.html">X-ray vision</a> project, since I was
+                trying to use wireless communication between nodes in an indoor environment to map the nodes' positions.
+                In open space, the received signal strength between transmitting nodes can accurately indicate the node-to-node
+                distances, and this can allow for accurate mapping of the nodes in space through a variety of algorithmic
+                techniques (mostly based on <a href="https://en.wikipedia.org/wiki/Multidimensional_scaling">
+                Multidimensional Scaling</a>). However, when indoors, the received signal strength no longer tends to be
+                a good predictor for distance, since floors, walls, and obstacles create a wide array of multipath trajectories
+                which make the received signal strength a complicated function of not only the separation of the transmitters,
+                but also the obstacle geometry around them.
+            </p>
+            <p>
+                I've <a href="../pdf/Node_Localization_in_an_Obstacle_Rich_Environment.pdf">explored ways around this</a>
+                for certain applications where additional boundary conditions come to the rescue. However, I started to
+                wonder:
+            </p>
+
+            <div class="caption">
+                Is there a general way to extract information about the environment (i.e. reflectors) from the multipath
+                scrambled signal strength?
+            </div>
+
+            <div class="sectionSubtitle">
+                Multipath as an infinite, wall-less, lattice of transmitters
+            </div>
+            <p>
+                When talking about multipath, the concept of a multipath ghost often comes up, an idea similar to an image
+                charge in electrostatics, or a reflection in a mirror. Reflected radiation can create the illusion that
+                two signals originating from the same transmitter actually originated from two different transmitters.
+                In reality, one of these apparent transmitters is a reflection of the real one (Figure 2).
+            </p>
+
+            <img class="centeredImage" src="../images/single_ghost.png" />
+
+            <div class="caption">
+                Figure 2. In this simple example, the red receiver effectively sees two transmitters. The real transmitter
+                is visible through direct line of sight, while there appears to be another transmitter on the other side
+                of the wall. In reality, the signal from the real transmitter is bouncing off the wall and arriving at
+                the receiver from a non-line of sight direction. Importantly, the receiver cannot tell that there is
+                only one transmitter (unless some special information is known), much in the same way that a human cannot
+                tell that a mirror is not a window to another room without additional information (e.g. seeing yourself
+                in the would-be window).
+            </div>
+
+            <p>
+                If we consider only the reflections originating from a single bounce off walls of a square room, we can
+                draw the apparent constellation of ghost transmitters along with the true transmitter (Figure 3). However,
+                if we allow up to two bounces before reaching the transmitter, our constellation grows considerably (Figure 4).
+                In this way, a tesselation of multipath ghosts can be constructed to infinite order. For any
+                realistic multipath situation, it can make sense to truncate the order to some finite limit (very little
+                transmitter power survives 1,000,000 bounces, for instance).
+            </p>
+
+            <img class="centeredImage" src="../images/ghost_const_1.png" />
+
+            <div class="caption">
+                Figure 3. The constellation of first order (one bounce away) multipath ghosts induced by the four walls
+                of the room. Importantly, the receiver cannot tell the difference between being in a room with one receiver
+                or open space with five receivers.
+            </div>
+
+            <img class="centeredImage" src="../images/2nd_order_hops.png" />
+
+            <div class="caption">
+                Figure 4. The constellation of first and second order multipath ghosts. Note that there are \(4\) first
+                order ghosts, and \(8\) second order ghosts. This tessellated view of the multipath ghosts makes it easy
+                to see how a ghost's order is determined by how many walls (or reflections of walls) are crossed on the
+                way to the receiver. It is also easy to see that there are, in general, \(4n\) multipath ghosts of order
+                \(n\).
+            </div>
+
+            <div class="sectionSubtitle">
+                Simulating Multipath
+            </div>
+
+            <p>
+                I wrote a Javascript simulation to leverage the equivalence between enclosed transmitters and open-air
+                transmitter lattices in order to calculate the average radiated power throughout a room.
+            </p>
+
+            <div class="centeredContent">
+                <video controls="controls" src="../videos/multipath_square_room.mp4" type="video/mp4"></video>
+            </div>
+
+            <div class="caption">
+                Figure 5. In this video, I move the transmitter around the square room to observe how the positions
+                of the ghost transmitters change. The red field indicates the average radiated power throughout the room,
+                revealing where the superposition of ghost transmitters induces hot spots and dead zones within the
+                radiated field intensity.
+            </div>
+
+            <p>
+                Rectangular rooms are a particular nice scenario for analyzing multipath since the ghost transmitters
+                form a nice, periodic lattice in space (since the room geometry tessellates in space). However, on paper
+                I was flummoxed when trying to observe the ghost transmitter pattern in a room geometry that does <b>not</b>
+                tessellate, such as a pentagon. Indeed, my simulation was able to reveal that the ghost transmitters
+                have a more nuanced structure when working with these non-tessellating room geometries (Figure 1 at the
+                top of the page).
+            </p>
+
+            <p>
+                To explore this in greater depth, I added a feature to my simulation that allowed me to draw irregular
+                room shapes (Figure 6). The approach of modeling multipath in a room as an open-air aggregate field
+                from a lattice of transmitters seemed to consistently produce the expected results even for these irregular
+                room geometries. After exploring this simulation, I began to wonder whether it might be possible to
+                determine the room geometry from the received signal at the receiver.
+            </p>
+
+            <div class="centeredContent">
+                <video controls="controls" src="../videos/multipath_custom_room.mp4" type="video/mp4"></video>
+            </div>
+
+            <div class="caption">
+                Figure 6. In this video, I begin by drawing a custom room geometry before analyzing the ghost transmitters
+                and calculating average radiated power throughout the room.
+            </div>
+
+            <div class="sectionSubtitle">
+                Inferring Room Geometry from Received Signal
+            </div>
+
+            <p>
+                Let's examine whether a receiver might be able to determine the surrounding room geometry by examining the
+                received transmitter power as a function of angle of arrival (in 2D, just azimuth). To start, let's introduce
+                a formalism for the scenarios previously examined.
+            </p>
+
+            <img class="centeredImage" src="../images/ghost_formalism.png"/>
+
+            <div class="caption">
+                Figure 7. A vector \(\vec{w}_{1}\) originates from the receiver and impinges wall \(1\) at its nearest
+                point to the receiver. \(\vec{p}_{0}\) is some know vector from the receiver to the transmitter (a pretty
+                strong assumption, but we'll make it for now). \(\vec{p}_{1,w_{1}}\) is the vector from the receiver to
+                the first order ghost transmitter produced by wall \(1\). An angle \(\theta\) separates the arrival angle
+                of the transmitter and the arrival angle of the ghost transmitter.
+            </div>
+
+            <p>
+                Suppose that \(\vec{w}_{1}\) was known. Then it would be possible to calculate \(\vec{p}_{1,w_{1}}\).
+                $$
+                \vec{p}_{1,w_{1}} = \vec{p}_{0} + \frac{(\vec{w}_{1} - \vec{p}_{0})^{T}\vec{w}_{1}}{|\vec{w}_{1}|^{2}}\vec{w}_{1}
+                $$
+                With this knowledge, it would be possible to calculate \(\theta\) from
+                $$
+                \cos\theta = \frac{|\vec{p}_{1,w_{1}}|^{2} + |\vec{p}_{0}|^{2} - |\vec{w}_{1} - \vec{p}_{0}|^{2}}
+                {2|\vec{p}_{0}||\vec{p}_{1,w_{1}}|}
+                $$
+                For each wall \(\vec{w}_{i}\), we would calculate a corresponding \(\theta_{i}\) where a ghost transmitter
+                peak would be observed in azimuth. This would raise expectations of observing something like the following.
+            </p>
+
+            <img class="centeredImage" src="../images/power_v_azimuth.png" style="max-width: 100%"/>
+
+            <div class="caption">
+                Figure 8. The received power as a function of azimuth for the line-of-sight direction as well as the four
+                directions for the four ghost transmitters. Here, we've assumed that all ghost transmitters have approximately
+                equal received powers. For perfect reflectors and space loss, this would not be true. However, in an indoor
+                environment with significant signal attenuation on reflection (and dissimilar reflection coefficients for
+                different obstacles) this approximation can be fairly realistic.
+            </div>
+
+            <p>
+                In a recursive fashion, we can consider the higher order ghost transmitters that come from each first order
+                ghost transmitter. In doing so, we observer that higher order ghost transmitters are necessarily further
+                from the receiver (larger \(\vec{w}\) and \(\vec{p}_{0}\)) while the separation between the ghost transmitters
+                and the reflection boundary (\(|\vec{w}_{1} - \vec{p}_{1,w_{1}}|\)) remains bounded by twice the width of the
+                room. On these grounds,
+                $$
+                \lim_{n \rightarrow \infty} \frac{|\vec{w}_{1} - \vec{p}_{n, w_{1}}|}{|\vec{p}_{n, w_{1}}|}=0,\
+                \lim_{n \rightarrow \infty} \frac{|\vec{p}_{n, w_{1}}|}{|\vec{p}_{n}|}=1
+                $$
+                which implies that
+                $$
+                \lim_{n \rightarrow \infty}\theta=0
+                $$
+                This leads to the important conclusion that very high order ghost transmitters become closely concentrated
+                around their lower order counterparts to the point of becoming indistinguishable.
+            </p>
+
+            <p>
+                We might now ask, is the location (in azimuth) of the peaks sufficient information for us to determine
+                the vectors \(\vec{w}_{i}\) used to generate them? Unfortunately, <b>it is not.</b> As a simple example,
+                examine the following alternative room geometry for the azimuth locations from Figure 3.
+            </p>
+
+            <img class="centeredImage" src="../images/ghost_const_2.png"/>
+
+            <div class="caption">
+                Figure 9. The red boundary shows an alternative room geometry that would produce peaks in the same azimuth
+                locations as the original square boundary. The distances to the ghost transmitters has changed in this
+                alternative geometry, but we are operating under the realistic assumption that we cannot easily infer
+                distance from the received signal strength.
+            </div>
+
+            <p>
+                We might think to resort to the higher order ghost transmitters to distinguish between these two constellations.
+                Indeed, <i>in the ideal case</i> this allows us to differentiate these rooms, but <i>in practice</i> it is
+                extremely difficult to leverage this level of information. Therefore, it is necessary to access additional
+                sources of information in order to extract information about the room.
+            </p>
+
+            <div class="sectionSubtitle">
+                How Can We Determine the Geometry of the Room?
+            </div>
+
+            <p>
+                In the example so far, we have worked with a stationary receiver. However, <b>if the receiver is allowed to move</b>
+                about the room, it becomes much more practical to infer room geometry from the power vs. azimuth spectrum.
+            </p>
+
+            <div class="centeredContent">
+                <div class="darkPanel">
+                    <div class="sectionTitle">
+                        Uh oh! This content is not finished.
+                    </div>
+                    <p>
+                        I'm actively developing this site, and unfortunately I haven't yet had the time to complete this page.
+                        If you're interested, I'll hopefully have this content finished by early November 2021.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<script src="../scripts/procedurals.js"></script>
+</body>
+</html>
