@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Hive AI</title>
+    <title>Hanabi</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../styles/styles.css">
     <script type="text/javascript" id="MathJax-script" async
@@ -25,6 +25,17 @@
     <div class="centeredContent">
 
         <div class="lightPanel">
+
+            <img class="centeredImage" src="../images/human_play.png"/>
+
+            <div class="caption">
+                My Hanabi agent, "Cyclone" (top bar), won the Johns Hopkins Applied Physics Laboratory's (APL) Learning
+                to Read Minds challenge by achieving the highest scores when paired with human teammates. This was an
+                exciting result, because human-play scores above 16 points had not been reported in literature at the
+                time of the competition. This figure is from
+                <a ref="https://arxiv.org/pdf/2111.01726.pdf">our paper</a>
+                detailing the agent's design, development, and performance.
+            </div>
 
             <div class="sectionTitle">
                 Hanabi and the Learning to Read Minds Challenge
@@ -59,7 +70,7 @@
                 <a href="https://arxiv.org/abs/1912.02288">Facebook</a>, and
                 <a href="https://github.com/lightvector/fireflower">academia</a>.
                 In all, 8 agents competed for the highest scores when playing with a human teammate. My agent, "Cyclone,"
-                emerged as the winner of the challenge by a comfortable margin.
+                emerged as the winner of the challenge by a comfortable margin (mean score 4 points higher than 2nd place).
             </p>
 
             <p>
@@ -84,7 +95,9 @@
 
             <div class="caption">Figure 1. The "humanness" of Cyclone increased for the most part during development,
             until an important transition towards the end of development (version 7 to 8) where Cyclone was finally
-            allowed to deviate from emulating human play in order to find a play style that complemented human play.</div>
+            allowed to deviate from emulating human play in order to find a play style that complemented human play.
+            Figure is from <a ref="https://arxiv.org/pdf/2111.01726.pdf">our paper</a>.
+            </div>
 
             <img class="centeredImage" src="../images/selfScore.png" />
 
@@ -93,17 +106,39 @@
             accuracy in predicting human decisions as opposed to seeking a higher self-play score. Interestingly, Cyclone's
             self play score from version 6 to version 8 is lower, yet version 8 achieves higher scores when playing with
             humans than version 6. This indicates that version 8 of Cyclone isn't playing Hanabi <i>better</i> than version 6,
-            rather that version 8 is playing Hanabi in a more human complimentary way than version 6.</div>
+            rather that version 8 is playing Hanabi in a more human complimentary way than version 6.
+            Figure is from <a ref="https://arxiv.org/pdf/2111.01726.pdf">our paper</a>.
+            </div>
 
-            <div class="sectionSubtitle">What Does All This Mean?</div>
+            <div class="sectionSubtitle">Results</div>
             <p>
-                I'll be updating this page soon as we publish all of our findings from the Hanabi challenge, but one
-                important conclusion here is that developing AI that collaborates with human teammates requires an optimization
-                process that is able to effectively simulate (i.e. <i>understand</i>) human decision making. Herein lie
-                significant intersections with explainability and interpretability of AI systems, and these challenges
-                which face modern AI systems will remain enduring landmarks to the current and future frontiers of AI
-                research.
+                My agent achieved an average score with a human teammate (16.5) that outperformed the top human teammate Hanabi
+                agents in literature (average score of 15.8) [1][2]. Not only did the agent achieve high scores when paired with
+                a human teammate, but this arrangement (Cyclone + a human) achieved higher scores than the best self-play Cyclone
+                agent. This reveals that asymmetric strategies across team members can not only lead to better <i>ad hoc</i>
+                teaming results, but that asymmetric strategies may themselves outperform symmetric strategies.  This opens
+                an exciting door to new optimization methods that go beyond the traditional self-play paradigm of recent
+                reinforcement learning agent accomplishments.
             </p>
+
+            <img class="centeredImage" src="../images/cross_play.png"/>
+
+            <div class="caption">
+                This cross play matrix shows the average score obtained by different combinations of Cyclone agent version
+                (and humans). Note that the human complementary version of Cyclone achieved a higher average score with
+                a human teammate than human-human pairs achieved (indicating that Cyclone is better at teaming with humans
+                <i>than</i> humans). Additionally, this matrix shows that certain asymmetric teams achieved better performance
+                than any self-play team, indicating that self-play optimization methods might be limited in their ability
+                to produce high quality performance for <i>ad hoc</i> teaming scenarios.
+            </div>
+
+            <div class="sectionSubtitle">References</div>
+            <p>[1] Hengyuan Hu, Adam Lerer, Alex Peysakhovich, and Jackob Foerster,
+                <a href="https://arxiv.org/abs/2003.02979">"'Other-play' for zero-shot coordination", 2021</a></p>
+            <p>[2] Ho Chit Siu, Jaime D. Pena, Edenna Chen, Yutai Zhou, Victor J. Lopez, Kyle Palko, Kimerlee C. Chang,
+            and Ross E. Allen,
+                <a href="https://arxiv.org/abs/2107.07630">"Evaulation of human-AI teams for learned and rule-based
+                    agents in Hanabi"</a>, 2021</p>
 
         </div>
 
