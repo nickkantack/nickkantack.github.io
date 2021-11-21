@@ -428,10 +428,6 @@ class Game {
                         }
                     }
                 }
-                if (move === "") {
-                    console.log("blank move");
-                    console.log(possibleMoves);
-                }
                 // If making this move will land at the max depth, then do a "light" makeMove that skips calculating legal
                 // subsequent moves.
                 let nextMoves;
