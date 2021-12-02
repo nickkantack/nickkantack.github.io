@@ -24,6 +24,22 @@
 
         <div class="lightPanel">
 
+            <img class="centeredImage" src="../images/weights_after_200.png" />
+
+            <div class="caption">
+                Figure 1. The average weights across 200 sample neural networks is shown.
+                These weight values are surprisingly well predicted by a new proxy statistic, the "significance" of
+                each pixel (Equation 12)(Figure 2).
+                Furthermore, the similarity to the pixel significances is roughly equal to that of Figure 3,
+                indicating that the variance in resulting weights is relatively low.
+            </div>
+
+            <p>
+                For code to run this experiment yourself, see the
+                <a href="https://github.com/nickkantack/NoBoxNeuralNetAttack">Github repository</a>
+                for this project.
+            </p>
+
             <div class="sectionTitle">Adversarial Attacks on Neural Networks</div>
 
             <p>
@@ -37,20 +53,32 @@
                 Neural networks are trained on data that are just a sampling of the total population. Consequently,
                 a neural network's performance can be considerably fragile. Data from the training set are accurately
                 classified, but marginally different samples are grossly misclassified. Designing adversarial attacks
-                is a process of generating samples that are as marginal as possible but which produce as gross of
+                is a process of generating sample variations that are as marginal as possible but which produce as gross of
                 misclassification as possible.
             </p>
             <p>
-                Adversarial samples are generated using one of two typical approaches.
+                Adversarial samples are generated using one of two typical approaches. The "white box" approach leverages
+                knowledge about the internal workings of the neural network (primarily through knowledge of the weights).
+                It can be very straightforward to build successful white box attacks (as a developer might do to test the
+                robustness of a model), but an adversary will seldom have access to the weights of the network. The "black
+                box" approach is more common when attacking a network about which one has limited knowledge. A common
+                technique to gain some information about the network's internal workings is to perform "queries" on the
+                network. These queries are nothing more than presenting the network with inputs and observing the network's
+                output. Queries can be a powerful way to garner information about the network, but query access can also
+                be severely limited.
+            </p>
+            <p>
+                An interesting question arises: <i>Can effective adversarial samples be constructed without knowledge
+                of the target network's inner workings?</i>
             </p>
 
-            <div class="sectionTitle">"No Box" Attacks</div>
+            <div class="sectionTitle">Theory of "No Box" Attacks</div>
 
             <p>
                 It is possible to develop a method of generating adversarial attacks for neural networks that we cannot
-                observe or query, perhaps even networks that do not yet exist? Provided we can make some reasonable
+                observe or query, perhaps even networks that do not yet exist! Provided we can make some reasonable
                 assumptions about the structure of the to-be target network and have some understanding of the sample
-                space from which its training samples will be drawn, this is possible. To do this, we can construct a
+                space from which its training samples will be drawn, this can even be straightforward. To do this, we can construct a
                 plausible model for the target network and treat its weights as random variables that evolve during the
                 training process. If we are able to calculate the distribution of networks we expect to attack, we can
                 craft a sort of white box attack that promises to be effective against a significant portion of the
@@ -62,17 +90,19 @@
                 in connection to the rank of data, see my course paper
                 <a href="../pdf/Kantack_Matrix_factorization_gradient_descent.pdf">"Gradient descent and matrix factorization"</a>),
                 we'll nonetheless examine it because it admits a particularly lucid portrayal of the approach.
-                Let's consider the application of optical character recongition (OCR). Suppose we are in the business of Captcha
+                Let's consider the application of optical character recognition (OCR). Suppose we are in the business of Captcha
                 design. "No Box" adversarial samples of letters might be well suited to our needs, since we are trying to
                 generate samples that will be misclassified by a host of OCR systems to which we have no access (and of which
-                many do not yet exist).
+                many do not yet exist). Let's restrict the task to classifying images of numerical digits.
                 With this formalism, we are targeting a network of the structure
                 $$
                 \vec{y} = \text{tanh}\left(W\vec{x} + \vec{b}\right)\tag{1}
                 $$
                 where \(\vec{y}\) is a \(10 \times 1\) vector with a one-hot encoding that gives the strength of activation
-                for each possible character (assumed to be a capital, English letter), \(W\) is a \(10 \times 784\) vector of
-                weights, \(\vec{x}\) is a \(784 \times 1\) vector of pixel activations, and \(\vec{b}\) is a \(784 \times 1\)
+                for each possible character (assumed to be a digit), \(W\) is a \(10 \times m^{2}\) vector of
+                weights, \(\vec{x}\) is a \(m^{2} \times 1\) vector of pixel activations (for \(m \times m\) pixels), and \(\vec{b}\) is a
+                \(m^{2}
+                \times 1\)
                 bias vector. We'll assume that the network is trained via stochastic gradient descent. In this case, we can
                 express the update, \(\delta W\), that \(W\) would receive in response to a batch of one input, \(\vec{x}\).
                 $$
@@ -98,7 +128,7 @@
                 This is fairly common practice when initializing a network. From this, we can begin to find the distribution
                 of the elements of the output vector \(\vec{y}\). Noting
                 $$
-                y_{i} = \sum_{k=1}^{784}W_{ik}x_{k}\tag{5}
+                y_{i} = \sum_{k=1}^{m^{2}}W_{ik}x_{k}\tag{5}
                 $$
                 Let us define the variable \(^{i}g_{k}=W_{ik}x_{k}\), noting that it is the product of two <i>independent</i>
                 (at initialization) random variables. Since we've assumed \(\text{E}[W_{ij}]=0\), we can conclude that
@@ -112,7 +142,7 @@
                 If these figures can be estimated, then \(\text{Var}[^{i}g_{k}]\) can be estimated. Therefore, we
                 now can describe the statistics of the random variable \(y_{i}\).
                 $$
-                \text{E}[y_{i}]=0,\ \ \text{Var}[y_{i}] = \sum_{k=1}^{784}\text{Var}\left(^{i}g_{k}\right)\tag{7}
+                \text{E}[y_{i}]=0,\ \ \text{Var}[y_{i}] = \sum_{k=1}^{m^{2}}\text{Var}\left(^{i}g_{k}\right)\tag{7}
                 $$
                 where I will reiterate again that \(\text{Var}[^{i}g_{k}]\) is dependent on the class of \(\vec{x}\), and so the
                 class of \(\vec{x}\) should be factored in when estimating the statistics of \(\vec{y}\).
@@ -120,7 +150,7 @@
             <p>
                 Let's do a sanity check here. After initialization, \(y_{i}\) is nothing more than a weighted sum of zero mean
                 random variables \(W_{ij}\) (with the weights being \(\vec{x}\)). Therefore, from the linearity of expectations
-                we would expect that \(E[y_{i}]\), which indeed we have proven.
+                we would expect that \(E[y_{i}]=0\), which indeed we have proven.
             </p>
             <div class="sectionSubtitle">
                 The statistics of \(\delta W_{ij}\)
@@ -150,21 +180,86 @@
                 $$
                 E[\delta W_{ij}] = \frac{\alpha}{n}E[^{i}x_{j}]\tag{11}
                 $$
-
+                With an expectation for each of the weights in the network, we've now reduced the "no-box" attack generation
+                to something of a "white-box" approach where we can leverage some (probabilistic) knowledge about the target
+                network to craft effective attacks. Before we proceed with "white-box" techniques using this model, we
+                should examine whether these theoretical predictions actually hold in experiment.
             </p>
 
-        </div>
+            <div class="sectionSubtitle">Pixel significance</div>
 
-        <div class="centeredContent">
-            <div class="darkPanel">
-                <div class="sectionTitle">
-                    Uh oh! This content is not finished.
-                </div>
-                <p>
-                    I'm actively developing this site, and unfortunately I haven't yet had the time to complete this page.
-                    If you're interested, I'll hopefully have this content finished by early November 2021.
-                </p>
+            <p>
+                Using what we've proven above, let's define a notion of <b>significance</b>, \(^{i}\lambda_{j}\), which is
+                the measure of how heavily a network is expected to rely on input \(x_{j}\) when identifying a member of class
+                \(i\). Let us adopt the definition
+                $$
+                \boxed{^{i}\lambda_{j} = E[^{i}x_{j}] - \frac{1}{n} \sum_{k=1}^{n}E[^{k}x_{j}]}\tag{12}
+                $$
+                We have the hypothesis that if \(^{i}\lambda_{j}\) is large, \(W_{ij}\) will tend to be large. Significant
+                pixels are those which tend to be only strongly activated for a small number of digits. For a simple example,
+                imagine there was a pixel that only 5's could activate (this is not actually the case). The network would
+                quickly learn that this pixel is the only pixel that needs to be consulted to determine if the image is a 5
+                (if the pixel in question is the \(i\)th pixel, the network would be rewarded for having a huge \(W(5, i)\)).
+                In the following section, a simple experiment reveals how pixel significance is a strong predictor for the
+                resulting weights.
+            </p>
+
+            <div class="sectionTitle">"No-Box" Experiments</div>
+            <p>
+                We can set up a simple experiment in which we initialize many networks, perform some training, and examine
+                the resulting weights. This allows us to test whether pixel significance as defined above is a useful predictor
+                of network weights. For this experiment, we'll use the NIST digit dataset natively supported in
+                <a href="https://keras.io/api/datasets/mnist/">Keras</a>. Since the weights matrix \(W\) is \(10 \times 28^{2}\),
+                a nice way to visualize the expectations is to reshape the rows of \(E[W]\) into images.
+            </p>
+
+            <img class="centeredImage" src="../images/pixel_significances.png"/>
+
+            <div class="caption">
+                Figure 2. All pixel significances are shown, grouped by class and converted to an image. These figures are
+                generated with a Python script performing the calculation (12) for digits in the Keras NIST digit dataset.
             </div>
+
+            <p>
+                It is possible to make a lot of intuitive sense of the distribution of pixel significances (Figure 1.).
+                Note that the highest
+                significance (brightest spots) occur in regions where a digit's unique features typically are (features that
+                exist in spaces where most other digits do not have any features). Regions of low significance (dark spots)
+                are those where a digit tends not to have features, but where many other digits tend to have features. These
+                results align closely with the definition of significance above (12), which can be envisioned as a two step
+                process of stamping the average pixel activations for a class, then "unstamping" the average pixel activations
+                across all classes.
+            </p>
+            <p>
+                I built a Python script that performs many trials of initializing a neural network of architecture (1) with
+                weights by (5). After 10 epochs of trainin across the 60,000 image dataset, I stored the learned weights.
+                After many trials, an average can be shown for the weights that arise (Figure 2). After only 20 sample networks,
+                similarities with the pixel significances are already apparent.
+            </p>
+
+            <img class="centeredImage" src="../images/weights_after_20.png" />
+
+            <div class="caption">
+                Figure 3. The average weights across 20 sample neural networks is shown. Note the similarity to the predicted
+                pixel significances in Figure 1.
+            </div>
+
+            <p>
+                I repeated this experiment averaging across 200 initialized neural networks (Figure 3).
+            </p>
+
+            <div class="sectionSubtitle">Results and Discussion</div>
+
+            <p>
+                I've presented a theoretical argument for a notion of input significance for neural networks, and how they
+                can be leveraged to make accurate predictions about the weights that might arise in a neural network during
+                training. Significantly, these predictions do not depend on access to the neural network. This technique
+                allows white-box attacks to be crafted merely by the underlying statistics of the input space. There is much
+                more to explore here, especially how input significance emerges in deep learning networks. However, this
+                simple experiment show that a great deal of knowledge about neural networks can be easily retrieved from
+                analysis of the input space.
+            </p>
+
         </div>
     </div>
 
