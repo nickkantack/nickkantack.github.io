@@ -1007,11 +1007,11 @@ class Hive extends Game {
             verbose = false;
         }
 
-        let valuePerLiberty = 2;
-        let valuePerMobilePiece = 1;
-        let valuePerImmobilePiece = -1;
-        let valuePerPieceCountAdvantage = 7.5;
-        let valuePerSpawnPoint = 0.5;
+        let valuePerLiberty = 1.36;
+        let valuePerMobilePiece = 0.38;
+        let valuePerImmobilePiece = -0.54;
+        let valuePerPieceCountAdvantage = 3;
+        let valuePerSpawnPoint = 0.2;
         let noSpawnPointPenalty = -10;
 
         let playerValues = [0, 0];
