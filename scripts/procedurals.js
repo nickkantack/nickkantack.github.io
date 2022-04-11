@@ -7,8 +7,8 @@ function E(a){
 E("navHome").addEventListener("click", function(){ window.location.replace("./home.html"); });
 E("navResume").addEventListener("click", function(){
 	let a = document.createElement("a");
-	a.href="../pdf/CV.pdf";
-	a.download = "CV.pdf";
+	a.href="../pdf/resume.pdf";
+	a.download = "resume.pdf";
 	document.body.appendChild(a);
 	a.click();
 });
