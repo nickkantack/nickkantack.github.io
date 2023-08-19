@@ -1,42 +1,36 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<script src='jquery.js'></script>
 	<style>
 		#gameboard {
-		
 			position: absolute;
 			width: 80%;
 			left: 10%;
 			border: 3px solid #000000;
-			
 		}
 	</style>
 </head>
-<body>
+<body onload="initialize()">
 	<canvas id='gameboard'>Cannot display the canvas</canvas>
 	<center><p id='debug'></p></center>
 	<script>
-		var c;
-		var ctx;
-		var timer;
-		var timer2;
-		var score = 0;
-		var player;
-		var playing = false;
-		var enemies = [];
-		var enemiesRadius = 100;
-		var enemiesRadiusBleed = 0.02;
-		var enemiesRadiusMin = 10;
-		var probMax = 1;
-		var probIncrement = 0.001;
-		var prob = 0.05;
-		var AIactive = false;
-		//------------------------------------------------------------------------------------------------------------------
-		$(initialize);
+		let c;
+		let ctx;
+		let timer;
+		let timer2;
+		let score = 0;
+		let player;
+		let playing = false;
+		let enemies = [];
+		let enemiesRadius = 100;
+		let enemiesRadiusBleed = 0.02;
+		let enemiesRadiusMin = 10;
+		let probMax = 1;
+		let probIncrement = 0.001;
+		let prob = 0.05;
+		let AIactive = false;
 		//------------------------------------------------------------------------------------------------------------------
 		function initialize(){
-		
 			c = document.getElementById('gameboard');
 			ctx = c.getContext('2d');
 			
@@ -47,27 +41,21 @@
 			
 			timer = setInterval(tick, 50);
 			timer2 = setInterval(eliminateEnemies, 50);
-			
 		}
 		//------------------------------------------------------------------------------------------------------------------
 		function tick(){
-			
 			if (playing){
-			
 				//Adjust constants
 				score++;
-				$('#debug').text(score);
+				document.getElementById("debug").innerHTML = score;
 				if (enemiesRadius - enemiesRadiusBleed >= enemiesRadiusMin){enemiesRadius -= enemiesRadiusBleed;}
 				if (prob + probIncrement <= probMax){prob += probIncrement;}
 				//possible generate a new enemy
 				if (Math.random() > 1 - prob){
-					var X = 0;
-					var Y = 0;
-					
-					var corner = parseInt(Math.random() * 4);
-
+					let X = 0;
+					let Y = 0;
+					let corner = parseInt(Math.random() * 4);
 					switch(corner){
-					
 						case 0:
 							X = -enemiesRadius + Math.random() * (c.width + 2 * enemiesRadius);
 							Y = -enemiesRadius;
@@ -84,79 +72,54 @@
 							X = -enemiesRadius;
 							Y = c.height + enemiesRadius - Math.random() * (c.height + 2 * enemiesRadius);
 						break;
-					
 					}
-					
-					var enemy = Enemy.create(X, Y);
+					let enemy = Enemy.create(X, Y);
 					enemies.push(enemy);
 				}
 				
 				//move enemies
-				for (var i = 0; i < enemies.length; i++){
-					
-					var distance = Math.sqrt(Math.pow((player.X - enemies[i].X) , 2) + Math.pow((player.Y - enemies[i].Y), 2));
+				for (let i = 0; i < enemies.length; i++){
+					let distance = Math.sqrt(Math.pow((player.X - enemies[i].X) , 2) + Math.pow((player.Y - enemies[i].Y), 2));
 					enemies[i].X += enemies[i].speed * (player.X - enemies[i].X) / distance;
 					enemies[i].Y += enemies[i].speed * (player.Y - enemies[i].Y) / distance;
-					
 				}
-			
 				repaint();
-			
 			}
-		
 		}
 		//------------------------------------------------------------------------------------------------------------------
 		function eliminateEnemies(){
-		
 			//Eliminate colliding enemies
-			for (var i = 0; i < enemies.length; i++){
-				for (var j = i + 1; j < enemies.length; j++){
-				
+			for (let i = 0; i < enemies.length; i++){
+				for (let j = i + 1; j < enemies.length; j++){
 					if (Math.sqrt(Math.pow(enemies[i].X - enemies[j].X, 2) + Math.pow(enemies[i].Y - enemies[j].Y, 2)) < 2 * enemiesRadius){
-					
 						enemies.splice(j, 1);
 						enemies.splice(i, 1);
-						
 						i--;
-		
 					}
-				
 				}
 			}
-		
 		}
 		//------------------------------------------------------------------------------------------------------------------
-		function startNewGame(X, Y){
-		
-			player = Player.create(X, Y);
-		
-		}
+		function startNewGame(X, Y){ player = Player.create(X, Y); }
 		//------------------------------------------------------------------------------------------------------------------
-		$('#gameboard').mousedown(function(e){
-		
+		document.getElementById('gameboard').addEventListener("mousedown", function(e){
 			if (!playing){
-			
 				playing = true;
-				var offset = $('#gameboard').offset();
-				startNewGame(e.pageX - offset.left, e.pageY - offset.top);
+				let canvas = document.getElementById("gameboard");
+				startNewGame(e.pageX - canvas.offsetLeft, e.pageY - canvas.OffsetTop);
 				enemies = [];
-				
 			}
-		
 		});
 		//------------------------------------------------------------------------------------------------------------------
-		$('#gameboard').mousemove(function(e){
-		
+		document.getElementById('gameboard').addEventListener("mousemove", function(e){
 			if (playing){
-				var offset = $('#gameboard').offset();
-				player.X = e.pageX - offset.left;
-				player.Y = e.pageY - offset.top;
+				let canvas = document.getElementById("gameboard");
+				player.X = e.pageX - canvas.offsetLeft;
+				player.Y = e.pageY - canvas.offsetTop;
 			}
-		
 		});
 		//------------------------------------------------------------------------------------------------------------------
 		function repaint(){
-		
 			ctx.fillStyle = '#FFFFFF';
 			ctx.fillRect(0, 0, c.width, c.height);
 			ctx.fillStyle = '#FF0000';
@@ -166,58 +129,35 @@
 			
 			//paint enemies
 			ctx.fillStyle = '#00FF00';
-			for (var i = 0; i < enemies.length; i++){
+			for (let i = 0; i < enemies.length; i++){
 				ctx.beginPath();
 				ctx.arc(enemies[i].X, enemies[i].Y, enemiesRadius, 0, 2 * Math.PI);
 				ctx.fill();
 			}
-		
 		}
-		//------------------------------------------------------------------------------------------------------------------
-		//------------------------------------------------------------------------------------------------------------------
 		
-		
-		//------------------------------------------------------------------------------------------------------------------
 		//------------------------------------------------------------------------------------------------------------------
 		//CLASSES
 		//------------------------------------------------------------------------------------------------------------------
-		//------------------------------------------------------------------------------------------------------------------
-		
-		var Player = {
-		
+		let Player = {
 			create: function(X, Y){
-			
-				var result = {
+				let result = {
 					X: X,
 					Y: Y,
 					radius: 10
 				}
-				
 				return result;
-			
 			}
-		
 		}
-		
-		//------------------------------------------------------------------------------------------------------------------
-		//------------------------------------------------------------------------------------------------------------------
-		
-		var Enemy = {
-		
+		let Enemy = {
 			create: function (X, Y){
-			
-				var result = {
-				
+				let result = {
 					X: X,
 					Y: Y,
 					speed: 8
-				
 				}
-				
 				return result;
-			
 			}
-		
 		}
 		
 	</script>

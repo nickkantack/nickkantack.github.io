@@ -1,360 +1,361 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>Nick Kantack - Resume</title>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<link rel="stylesheet" href="../styles/styles.css">
-	</head>
-	<body onload='initialize()'>
-		
-		<div class='mainPanel'>
-		
-			<div class='pageTitle'>Emergence Cooperation Simulation</div>
-			
-			<div id='navBar' class='navBar'>
-			<button class='navButton' id='navHome'>Home</button>
-			<button class='navButton' id='navProjects'>Projects</button>
-			<button class='navButton' id='navLiterature'>Literature</button>
-			<button class='navButton' id='navResume'>Resume</button>
-			</div>
-			
-			<div class='centeredContent'>
-			
-				Below is a simulation of a swarm of agents (red dots) who are all attempting to reach a goal location.
-				The agents have no concept of cooperation, yet the agent's individually selfish behavior has the
-				appearance and effect of cooperation. Below the simulation I explore some interesting implications
-				from this simulation.
-				<br/>
-			
-				<center><canvas id='gameboard'>Cannot display simulation</canvas></center>
-				<!------------------------------------------------------------------------------------------------->
-				<div class='darkPanel'>
-					<div class='sectionTitle'>
-						Simulation Controls
-					</div>
-						<p id='swarmPopReadout'>Swarm Population: 50</p>
-						<input type="range" min="1" max="100" value="50" class="slider" id="swarmPopulation" onchange="sliderChange()">
-						<p id='distractionProbReadout' style='margin-top: 5px;'>Distraction Probability: 0.003</p>
-						<input type="range" min="0" max="1000" value="3" class="slider" id="distractionProbability" onchange="sliderChange()">
-						<p id='refocusProbReadout' style='margin-top: 5px;'>Refocus Probability: 0.020</p>
-						<input type="range" min="0" max="1000" value="10" class="slider" id="refocusProbability" onchange="sliderChange()">
-					<br/>
-					
+
+<head>
+	<title>Nick Kantack - Resume</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="../styles/styles.css">
+	<script src="../scripts/procedurals.js"></script>
+</head>
+
+<body onload='initialize()'>
+
+	<div class='mainPanel'>
+
+		<div class='pageTitle'>Emergence Cooperation Simulation</div>
+
+    	<div id='navBar' class='navBar'><script>renderNavBar()</script></div>
+
+		<div class='centeredContent'>
+
+			Below is a simulation of a swarm of agents (red dots) who are all attempting to reach a goal location.
+			The agents have no concept of cooperation, yet the agent's individually selfish behavior has the
+			appearance and effect of cooperation. Below the simulation I explore some interesting implications
+			from this simulation.
+			<br />
+
+			<center><canvas id='gameboard'>Cannot display simulation</canvas></center>
+			<!------------------------------------------------------------------------------------------------->
+			<div class='darkPanel'>
+				<div class='sectionTitle'>
+					Simulation Controls
 				</div>
-				<!------------------------------------------------------------------------------------------------->
-				<div class='lightPanel'>
-					<div class='sectionTitle'>
-						Design and Motivation
-					</div>
-					
-					<p>
+				<p id='swarmPopReadout'>Swarm Population: 50</p>
+				<input type="range" min="1" max="100" value="50" class="slider" id="swarmPopulation"
+					onchange="sliderChange()">
+				<p id='distractionProbReadout' style='margin-top: 5px;'>Distraction Probability: 0.003</p>
+				<input type="range" min="0" max="1000" value="3" class="slider" id="distractionProbability"
+					onchange="sliderChange()">
+				<p id='refocusProbReadout' style='margin-top: 5px;'>Refocus Probability: 0.020</p>
+				<input type="range" min="0" max="1000" value="10" class="slider" id="refocusProbability"
+					onchange="sliderChange()">
+				<br />
+
+			</div>
+			<!------------------------------------------------------------------------------------------------->
+			<div class='lightPanel'>
+				<div class='sectionTitle'>
+					Design and Motivation
+				</div>
+
+				<p>
 					The purpose of this simulation is to illustrate how ostensibly cooperative behavior can emerge
-						from a population of agents who are fundamentally non-cooperative, perhaps even ignorant of
-						each other's behavior or existence.
-					</p>
-					
-					<p>
+					from a population of agents who are fundamentally non-cooperative, perhaps even ignorant of
+					each other's behavior or existence.
+				</p>
+
+				<p>
 					This simulation demonstrates a simple yet thought provoking concept. The agents in this simulation
-						are not aware of one another. Each agent perceives the other as an obstacle in its environment.
-						However, they are still able to, as a whole, coordinate to reach a common goal.
-						<i>Cooperation, in this case, is seemingly rooted in the physical environment, not the
-							individual agent neurology.</i>
-					</p>
-					
-					<p>
+					are not aware of one another. Each agent perceives the other as an obstacle in its environment.
+					However, they are still able to, as a whole, coordinate to reach a common goal.
+					<i>Cooperation, in this case, is seemingly rooted in the physical environment, not the
+						individual agent neurology.</i>
+				</p>
+
+				<p>
 					We often try to understand swarm cooperation as originating in the swarm member's neurology.
-						For instance, we think of ants as having roles, knowing them, and executing them for the
-						good of the colony. However, imagine if ants were fundamentally unaware of the colony and
-						perceived other ants as mere obstacles, yet their individual neurology was structured in
-						a way which produced cooperative behavior without their consent. The results of simulations
-						like this challenge our understanding of cooperation. If pons that don't intend to cooperate
-						might ultimately cooperate, then what does it really mean to cooperate? This is a deep question,
-						but its answer will likely play an instrumental role in the design of successful,
-						coordinating, autonomous networks in the future.
-					</p>
-					
-				</div>
-				<!------------------------------------------------------------------------------------------------->
+					For instance, we think of ants as having roles, knowing them, and executing them for the
+					good of the colony. However, imagine if ants were fundamentally unaware of the colony and
+					perceived other ants as mere obstacles, yet their individual neurology was structured in
+					a way which produced cooperative behavior without their consent. The results of simulations
+					like this challenge our understanding of cooperation. If pons that don't intend to cooperate
+					might ultimately cooperate, then what does it really mean to cooperate? This is a deep question,
+					but its answer will likely play an instrumental role in the design of successful,
+					coordinating, autonomous networks in the future.
+				</p>
+
 			</div>
-
-			<button class="generalButton" onclick="location.href='./emergence_2.html'">More on emergence!</button>
-			
+			<!------------------------------------------------------------------------------------------------->
 		</div>
-			<script>
-				var c;
-				var ctx;
-				var timer;
-				
-				var numberOfPons = 50;
-				var pons = [];
-				
-				var addPointProb = 0.001;
-				var refocusProb = 0.1;
-				var maxPathPoints = 10;
-				
-				var groupDestinationActive = true;
-				var groupDestination;
-				
-				var gravity = 2;
-				//var stickyWalls = true;
-				var satisfied = false;
-				
-				//------------------------------------------------------------------------------------------------------------------
-				//------------------------------------------------------------------------------------------------------------------
-				function initialize(){
-				
-					c = document.getElementById('gameboard');
-					ctx = c.getContext('2d');
-					
-					//Define a square gameboard
-					c.height = c.width;
-					c.width  = c.offsetWidth;
-					c.height = c.offsetWidth;
-					
-					if (groupDestinationActive){
-							groupDestination = Vectors.create(c.width / 2, c.height / 4);
-					}
-					
-					// Initialize pons
-					pons = [];
-					for (var i = 0; i < numberOfPons; i++){
-						pons.push(Pon.create(Math.random() * c.width, Math.random() * c.height));
-					}
-					
-					timer = setInterval(tick, 10);
-					
-				}
-				//------------------------------------------------------------------------------------------------------------------
-				function tick(){
-				
-					// Apply gravity
-					for (var i = 0; i < pons.length; i++){
-						pons[i].freefall = true; // This is the default which will be challenged
-						pons[i].supported = false; // This is the default which will be challenged
-						if (pons[i].location.y == c.height - pons[i].radius){
-							pons[i].supported = true; // Then the pon is supported by the ground
-							pons[i].freefall = false;
-						}
-						else{
-							pons[i].location.y += gravity; // Apply gravity
-						}
-					}
-					
-					// Apply wall correction and support if the walls are sticky
-					/*
-					if (stickyWalls){
-						for (var i = 0; i < pons.length; i++){
-							// Left wall
-							if (pons[i].location.x == 0 + pons[i].radius){
-								pons[i].supported = true; // Then the pon is supported by the ground
-								pons[i].freefall = false;
-							}
-							// Right wall
-							if (pons[i].location.x == c.width - pons[i].radius){
-								pons[i].supported = true; // Then the pon is supported by the ground
-								pons[i].freefall = false;
-							}
-						}
-					}
-					*/
-					
-					// Propagate support throughout the network
-					var changeMade = true;
-					while(changeMade){
-						changeMade = false;
-						for (var i = 0; i < pons.length - 1; i++){
-						
-							for (var j = i + 1; j < pons.length; j++){
 
-								// The following condition should only be met for conflicts which support would prevent
-								if (pons[i].location.dist(pons[j].location) < (pons[i].radius + pons[j].radius)){
-								
-									if (pons[i].supported && !pons[j].supported){
-										changeMade = true;
-										pons[j].supported = true;
-										pons[j].freefall = false;
-										// Move pons[j] up as needed
-										pons[j].location.y = pons[i].location.y - Math.sqrt(Math.pow(pons[i].radius + pons[j].radius, 2) - Math.pow(pons[i].location.x - pons[j].location.x, 2));
-									}
-									
-									if (pons[j].supported && !pons[i].supported){
-										changeMade = true;
-										pons[i].supported = true;
-										pons[i].freefall = false;
-										// Move pons[i] up as needed
-										pons[i].location.y = pons[j].location.y - Math.sqrt(Math.pow(pons[i].radius + pons[j].radius, 2) - Math.pow(pons[j].location.x - pons[i].location.x, 2));
-									}
-								}
+		<button class="generalButton" onclick="location.href='./emergence_2.html'">More on emergence!</button>
+
+	</div>
+	<script>
+		var c;
+		var ctx;
+		var timer;
+
+		var numberOfPons = 50;
+		var pons = [];
+
+		var addPointProb = 0.001;
+		var refocusProb = 0.1;
+		var maxPathPoints = 10;
+
+		var groupDestinationActive = true;
+		var groupDestination;
+
+		var gravity = 2;
+		//var stickyWalls = true;
+		var satisfied = false;
+
+		//------------------------------------------------------------------------------------------------------------------
+		//------------------------------------------------------------------------------------------------------------------
+		function initialize() {
+
+			c = document.getElementById('gameboard');
+			ctx = c.getContext('2d');
+
+			//Define a square gameboard
+			c.height = c.width;
+			c.width = c.offsetWidth;
+			c.height = c.offsetWidth;
+
+			if (groupDestinationActive) {
+				groupDestination = Vectors.create(c.width / 2, c.height / 4);
+			}
+
+			// Initialize pons
+			pons = [];
+			for (var i = 0; i < numberOfPons; i++) {
+				pons.push(Pon.create(Math.random() * c.width, Math.random() * c.height));
+			}
+
+			timer = setInterval(tick, 10);
+
+		}
+		//------------------------------------------------------------------------------------------------------------------
+		function tick() {
+
+			// Apply gravity
+			for (var i = 0; i < pons.length; i++) {
+				pons[i].freefall = true; // This is the default which will be challenged
+				pons[i].supported = false; // This is the default which will be challenged
+				if (pons[i].location.y == c.height - pons[i].radius) {
+					pons[i].supported = true; // Then the pon is supported by the ground
+					pons[i].freefall = false;
+				}
+				else {
+					pons[i].location.y += gravity; // Apply gravity
+				}
+			}
+
+			// Apply wall correction and support if the walls are sticky
+			/*
+			if (stickyWalls){
+				for (var i = 0; i < pons.length; i++){
+					// Left wall
+					if (pons[i].location.x == 0 + pons[i].radius){
+						pons[i].supported = true; // Then the pon is supported by the ground
+						pons[i].freefall = false;
+					}
+					// Right wall
+					if (pons[i].location.x == c.width - pons[i].radius){
+						pons[i].supported = true; // Then the pon is supported by the ground
+						pons[i].freefall = false;
+					}
+				}
+			}
+			*/
+
+			// Propagate support throughout the network
+			var changeMade = true;
+			while (changeMade) {
+				changeMade = false;
+				for (var i = 0; i < pons.length - 1; i++) {
+
+					for (var j = i + 1; j < pons.length; j++) {
+
+						// The following condition should only be met for conflicts which support would prevent
+						if (pons[i].location.dist(pons[j].location) < (pons[i].radius + pons[j].radius)) {
+
+							if (pons[i].supported && !pons[j].supported) {
+								changeMade = true;
+								pons[j].supported = true;
+								pons[j].freefall = false;
+								// Move pons[j] up as needed
+								pons[j].location.y = pons[i].location.y - Math.sqrt(Math.pow(pons[i].radius + pons[j].radius, 2) - Math.pow(pons[i].location.x - pons[j].location.x, 2));
+							}
+
+							if (pons[j].supported && !pons[i].supported) {
+								changeMade = true;
+								pons[i].supported = true;
+								pons[i].freefall = false;
+								// Move pons[i] up as needed
+								pons[i].location.y = pons[j].location.y - Math.sqrt(Math.pow(pons[i].radius + pons[j].radius, 2) - Math.pow(pons[j].location.x - pons[i].location.x, 2));
 							}
 						}
 					}
-				
-					// Move everyone toward their destination if they are not in freefall
-					for (var i = 0; i < pons.length; i++){
-						if (!pons[i].freefall){
-							pons[i].ambulate();
-						}
-					}
-				
-					// Correct for collisions
-					changeMade = true;
-					while(changeMade){
-						changeMade = false;
-						for (var i = 0; i < pons.length - 1; i++){
-							for (var j = i + 1; j < pons.length; j++){
-								if (pons[i].location.dist(pons[j].location) + 1 < (pons[i].radius + pons[j].radius)){
-									changeMade = true;
-									var collisionPoint = pons[i].location.add(pons[j].location.sub(pons[i].location).scale(pons[i].radius / (pons[i].radius + pons[j].radius)));
-									var partVector = pons[i].location.sub(pons[j].location);
-									pons[i].location.become(collisionPoint.add(partVector.ofLength(pons[i].radius)));
-									pons[j].location.become(collisionPoint.sub(partVector.ofLength(pons[j].radius)));
-								}
-							}
-						}
-					}
-					
-					// Apply boundary constraints
-					for (var i = 0; i < pons.length; i++){
-						// Floor correction
-						if (pons[i].location.y > c.height - pons[i].radius){
-							pons[i].location.y = c.height - pons[i].radius;
-						}
-						// Right wall
-						if (pons[i].location.x > c.width - pons[i].radius){
-							pons[i].location.x = c.width - pons[i].radius;
-						}
-						// left wall
-						if (pons[i].location.x < pons[i].radius){
-							pons[i].location.x = pons[i].radius;
-						}
-					}
-					
-					// Apply wall correction
-					
-					repaint();
-				
 				}
-				//------------------------------------------------------------------------------------------------------------------
-				function sliderChange(){
-					if (pons.length > E('swarmPopulation').value){
-						pons.splice(E('swarmPopulation').value, pons.length - E('swarmPopulation').value);
-					}
-					if (pons.length < E('swarmPopulation').value){
-						for (var i = pons.length; i < E('swarmPopulation').value; i++){
-							pons.push(Pon.create(Math.random() * c.width, Math.random() * c.height));
+			}
+
+			// Move everyone toward their destination if they are not in freefall
+			for (var i = 0; i < pons.length; i++) {
+				if (!pons[i].freefall) {
+					pons[i].ambulate();
+				}
+			}
+
+			// Correct for collisions
+			changeMade = true;
+			while (changeMade) {
+				changeMade = false;
+				for (var i = 0; i < pons.length - 1; i++) {
+					for (var j = i + 1; j < pons.length; j++) {
+						if (pons[i].location.dist(pons[j].location) + 1 < (pons[i].radius + pons[j].radius)) {
+							changeMade = true;
+							var collisionPoint = pons[i].location.add(pons[j].location.sub(pons[i].location).scale(pons[i].radius / (pons[i].radius + pons[j].radius)));
+							var partVector = pons[i].location.sub(pons[j].location);
+							pons[i].location.become(collisionPoint.add(partVector.ofLength(pons[i].radius)));
+							pons[j].location.become(collisionPoint.sub(partVector.ofLength(pons[j].radius)));
 						}
 					}
-					addPointProb = E('distractionProbability').value / 1000;
-					refocusProb = E('refocusProbability').value / 1000;
-					// Update readouts
-					E('swarmPopReadout').innerHTML = 'Swarm Population: ' + E('swarmPopulation').value;
-					E('distractionProbReadout').innerHTML = 'Distraction Probability: ' + (E('distractionProbability').value / 1000).toFixed(3);
-					E('refocusProbReadout').innerHTML = 'Refocus Probability: ' + (E('refocusProbability').value / 1000).toFixed(3);
 				}
-				//------------------------------------------------------------------------------------------------------------------
-				//------------------------------------------------------------------------------------------------------------------
-				//------------------------------------------------------------------------------------------------------------------
-				//------------------------------------------------------------------------------------------------------------------
-				function repaint(){
-					
-					// Repaint background
-					ctx.fillStyle = '#FFFFFF';
-					ctx.fillRect(0, 0, c.width, c.height);
-					
-					// Repaint pons
-					for (var i = 0; i < pons.length; i++){
-						pons[i].paint();
-					}
-					
-					// Paint group destination if applicable
-					if (groupDestinationActive){
-						ctx.strokeStyle = '#0000FF';
-						ctx.fillStyle = '#0000FF';
+			}
+
+			// Apply boundary constraints
+			for (var i = 0; i < pons.length; i++) {
+				// Floor correction
+				if (pons[i].location.y > c.height - pons[i].radius) {
+					pons[i].location.y = c.height - pons[i].radius;
+				}
+				// Right wall
+				if (pons[i].location.x > c.width - pons[i].radius) {
+					pons[i].location.x = c.width - pons[i].radius;
+				}
+				// left wall
+				if (pons[i].location.x < pons[i].radius) {
+					pons[i].location.x = pons[i].radius;
+				}
+			}
+
+			// Apply wall correction
+
+			repaint();
+
+		}
+		//------------------------------------------------------------------------------------------------------------------
+		function sliderChange() {
+			if (pons.length > E('swarmPopulation').value) {
+				pons.splice(E('swarmPopulation').value, pons.length - E('swarmPopulation').value);
+			}
+			if (pons.length < E('swarmPopulation').value) {
+				for (var i = pons.length; i < E('swarmPopulation').value; i++) {
+					pons.push(Pon.create(Math.random() * c.width, Math.random() * c.height));
+				}
+			}
+			addPointProb = E('distractionProbability').value / 1000;
+			refocusProb = E('refocusProbability').value / 1000;
+			// Update readouts
+			E('swarmPopReadout').innerHTML = 'Swarm Population: ' + E('swarmPopulation').value;
+			E('distractionProbReadout').innerHTML = 'Distraction Probability: ' + (E('distractionProbability').value / 1000).toFixed(3);
+			E('refocusProbReadout').innerHTML = 'Refocus Probability: ' + (E('refocusProbability').value / 1000).toFixed(3);
+		}
+		//------------------------------------------------------------------------------------------------------------------
+		//------------------------------------------------------------------------------------------------------------------
+		//------------------------------------------------------------------------------------------------------------------
+		//------------------------------------------------------------------------------------------------------------------
+		function repaint() {
+
+			// Repaint background
+			ctx.fillStyle = '#FFFFFF';
+			ctx.fillRect(0, 0, c.width, c.height);
+
+			// Repaint pons
+			for (var i = 0; i < pons.length; i++) {
+				pons[i].paint();
+			}
+
+			// Paint group destination if applicable
+			if (groupDestinationActive) {
+				ctx.strokeStyle = '#0000FF';
+				ctx.fillStyle = '#0000FF';
+				ctx.beginPath();
+				ctx.arc(parseInt(groupDestination.x), parseInt(groupDestination.y), 5, 0, 2 * Math.PI);
+				ctx.stroke();
+				// Label the goal
+				ctx.font = '15px Cambria';
+				ctx.fillText('Goal', parseInt(groupDestination.x) - 15, parseInt(groupDestination.y) - 15);
+			}
+
+		}
+		//------------------------------------------------------------------------------------------------------------------
+		//------------------------------------------------------------------------------------------------------------------
+
+
+		//------------------------------------------------------------------------------------------------------------------
+		//------------------------------------------------------------------------------------------------------------------
+		//CLASSES
+		//------------------------------------------------------------------------------------------------------------------
+		//------------------------------------------------------------------------------------------------------------------
+
+		var Pon = {
+
+			create: function (x, y) {
+
+				var location_in = Vectors.create(x, y);
+
+				var result = {
+					location: location_in,
+					radius: 5,
+					path: [],
+					supported: false,
+					freefall: false,
+					paint: function () {
+						ctx.fillStyle = '#FF0000';
 						ctx.beginPath();
-						ctx.arc(parseInt(groupDestination.x), parseInt(groupDestination.y), 5, 0, 2*Math.PI);
-						ctx.stroke();
-						// Label the goal
-						ctx.font = '15px Cambria';
-						ctx.fillText('Goal', parseInt(groupDestination.x) - 15, parseInt(groupDestination.y) - 15);
+						ctx.arc(parseInt(this.location.x), parseInt(this.location.y), this.radius, 0, 2 * Math.PI);
+						ctx.fill();
+					},
+					ambulate: function () {
+						if (this.path.length > 0) {
+							var destination = this.path[0];
+							var toDestination = destination.sub(this.location);
+							this.location.become(this.location.add(toDestination.ofLength(2)));
+							if (this.location.dist(destination) < this.radius && (this.path.length > 1 || satisfied)) { this.path.splice(0, 1); }
+						}
+						if (Math.random() < addPointProb) {
+							this.path.unshift(Vectors.create(Math.random() * c.width, Math.random() * c.height));
+						}
+						if (this.path.length > maxPathPoints || (this.path.length > 1 && Math.random() < refocusProb)) {
+							this.path.splice(0, 1);
+						}
 					}
-				
 				}
-				//------------------------------------------------------------------------------------------------------------------
-				//------------------------------------------------------------------------------------------------------------------
-				
-				
-				//------------------------------------------------------------------------------------------------------------------
-				//------------------------------------------------------------------------------------------------------------------
-				//CLASSES
-				//------------------------------------------------------------------------------------------------------------------
-				//------------------------------------------------------------------------------------------------------------------
-				
-				var Pon = {
-				
-					create: function(x, y){
-					
-						var location_in = Vectors.create(x, y);
 
-						var result = {
-							location: location_in,
-							radius: 5,
-							path: [],
-							supported: false,
-							freefall: false,
-							paint: function(){
-								ctx.fillStyle = '#FF0000';
-								ctx.beginPath();
-								ctx.arc(parseInt(this.location.x), parseInt(this.location.y), this.radius, 0, 2*Math.PI);
-								ctx.fill();
-							},
-							ambulate: function(){
-								if (this.path.length > 0){
-									var destination = this.path[0];
-									var toDestination = destination.sub(this.location);
-									this.location.become(this.location.add(toDestination.ofLength(2)));
-									if (this.location.dist(destination) < this.radius && (this.path.length > 1 || satisfied)){ this.path.splice(0, 1); }
-								}
-								if (Math.random() < addPointProb){
-									this.path.unshift(Vectors.create(Math.random() * c.width, Math.random() * c.height));
-								}
-								if (this.path.length > maxPathPoints || (this.path.length > 1 && Math.random() < refocusProb)){
-									this.path.splice(0, 1);
-								}
-							}
-						}
-						
-						if (groupDestinationActive){
-							result.path.push(groupDestination);
-						}
-						
-						return result;
-					
-					}
-				
+				if (groupDestinationActive) {
+					result.path.push(groupDestination);
 				}
-				
-				//------------------------------------------------------------------------------------------------------------------
-				
-				var Vectors = {
-					
-					create: function(x, y){
-						return {
-							x:x,
-							y:y,
-							mag: function(){ return Math.sqrt(this.x * this.x + this.y * this.y); },
-							add: function(v){ return Vectors.create(v.x + this.x, v.y + this.y); },
-							sub: function(v){ return Vectors.create(this.x - v.x, this.y - v.y); },
-							scale: function(q) { return Vectors.create(this.x * q, this.y * q); },
-							ofLength: function(q){ return this.scale(q / this.mag()); },
-							become: function(v){ this.x = v.x; this.y = v.y; },
-							dist: function(v){ return this.sub(v).mag(); }
-						}
-					}
-					
+
+				return result;
+
+			}
+
+		}
+
+		//------------------------------------------------------------------------------------------------------------------
+
+		var Vectors = {
+
+			create: function (x, y) {
+				return {
+					x: x,
+					y: y,
+					mag: function () { return Math.sqrt(this.x * this.x + this.y * this.y); },
+					add: function (v) { return Vectors.create(v.x + this.x, v.y + this.y); },
+					sub: function (v) { return Vectors.create(this.x - v.x, this.y - v.y); },
+					scale: function (q) { return Vectors.create(this.x * q, this.y * q); },
+					ofLength: function (q) { return this.scale(q / this.mag()); },
+					become: function (v) { this.x = v.x; this.y = v.y; },
+					dist: function (v) { return this.sub(v).mag(); }
 				}
+			}
+
+		}
 				//------------------------------------------------------------------------------------------------------------------
-			</script>
-		<script src="../scripts/procedurals.js"></script>
-		
-	</body>
+	</script>
+
+</body>
+
 </html>
