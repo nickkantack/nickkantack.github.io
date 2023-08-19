@@ -17,7 +17,7 @@ function renderNavBar() {
 		button.id = buttonId;
 		button.classList.add("navButton");
 		button.innerHTML = navBarPage;
-		navBar.appendChild(button);
+		let buttonDestinationPage = `./${navBarPage.substring(0, 1).toLowerCase() + navBarPage.substring(1).replace(/\s/g, "")}.html`;
 		switch (navBarPage) {
 			case "Resume":
 				button.addEventListener("click", () => {
@@ -29,7 +29,9 @@ function renderNavBar() {
 				});
 			break;
 			default:
-				button.addEventListener("click", () => { window.location.href = `./${navBarPage.substring(0, 1).toLowerCase() + navBarPage.substring(1).replace(/\s/g, "")}.html`; });
+				button.addEventListener("click", () => { window.location.href = buttonDestinationPage });
 		}
+		// Consider skipping adding the button if the current page matches the button's destination
+		if (window.location.href.replace(/.*?pages\//, "./") !== buttonDestinationPage) navBar.appendChild(button);
 	}
 }
