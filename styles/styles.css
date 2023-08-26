@@ -189,6 +189,26 @@ p {
 	border-radius: 3px;
 	float: right;
 }
+.popupStorySpan {
+	border-bottom: 2px dotted #0c2245;
+}
+.popupStorySpan:hover {
+	cursor: pointer;
+}
+.popupStoryDiv {
+	display: none;
+	position: fixed;
+	border: 3px solid #0c2245;
+	background: #fff;
+	width: 600px;
+	height: 0;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	transition: 0.5s;
+	overflow-y: scroll;
+	z-index: 2;
+}
 
 .slider {
 	-webkit-appearance: none;

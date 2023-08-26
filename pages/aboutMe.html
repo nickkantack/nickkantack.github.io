@@ -7,16 +7,38 @@
     <script src="../scripts/procedurals.js"></script>
 </head>
 <body>
-
-<div class='mainPanel'>
-
-    <div class='pageTitle'>About Me</div>
-
-    <div id='navBar' class='navBar'><script>renderNavBar()</script></div>
-
-    <div class="text">
-        In the future, this page will contain a short summary of my professional experience.
+    <div id="reverseEngineerDiv" class="popupStoryDiv">
+        <p>
+            This is a more detailed story about reverse engineering. Imagine that this was a pretty 
+            long winded story such that the text on it spanned a few lines.
+        </p>
     </div>
-</div>
+    <div id="productionTrackingSoftwareDiv" class="popupStoryDiv">
+        <p>
+            Talk about production tracking software.
+        </p>
+    </div>
+
+    <div class='mainPanel' style="z-index: 1;">
+
+        <div class='pageTitle'>About Me</div>
+
+        <div id='navBar' class='navBar'><script>renderNavBar()</script></div>
+
+        <div class="text">
+            <p>
+                I was raised in South Dakota and obtained a bachelor's degree in Engineering Physics
+                from the University of Oklahoma and a Masters degree from in Electrical Engineering
+                from the Univeristy of Virginia. My career began at IntriCon, a medical device
+                manufacturer in St Paul, MN. There I designed millimeter-scale electromagnetic coils
+                for use in implantable medical devices. I also developed simulations mostly around
+                the electrical performance of coils and data analytics software for driving 
+                manufacturing process improvements. One of my most proud moments was
+                <span id="reverseEngineerSpan" class="popupStorySpan">reverse engineering an old winding machine controller</span>.
+                and <span id="productionTrackingSoftwareSpan" class="popupStorySpan">writing production data tracking software from scratch</span>.
+            </p>
+        </div>
+    </div>
+    <script src="../scripts/registerPopupDivs.js"></script>
 </body>
 </html>
