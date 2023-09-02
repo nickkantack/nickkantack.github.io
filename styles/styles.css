@@ -198,7 +198,7 @@ p {
 .popupStoryDiv {
 	display: none;
 	position: fixed;
-	border: 3px solid #0c2245;
+	border: 3px solid #5b5b5b;
 	border-radius: 5px;
 	background: #fff;
 	width: 600px;
@@ -302,11 +302,12 @@ p {
 
 }
 
-#mountainKing {
-	float: right;
-	margin: 15px;
-	margin-top: 0px;
-	width: 50%;
+.pianoVideo {
+	display: block;
+	width: 100%;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 20px;
 }
 
 #acrylicPumpVideo {
@@ -326,6 +327,32 @@ p {
 }
 #hiveButton:hover {
 	background: #669cf2;
+}
+#impromptu {
+	max-width: 200px;
+}
+
+::-webkit-scrollbar {
+    -webkit-appearance: none;
+}
+
+::-webkit-scrollbar:vertical {
+    width: 12px;
+}
+
+::-webkit-scrollbar:horizontal {
+    height: 12px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, .5);
+    border-radius: 10px;
+    border: 2px solid #ffffff;
+}
+
+::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background-color: #ffffff;
 }
 
 /* For small displays */
@@ -372,8 +399,12 @@ p {
 		width: 90%;
 		max-width: 90%;
 	}
-	#mountainKing {
-		width: 100%;
+	.headshot {
+		float: none;
+		margin-left: auto;
+		margin-right: auto;
+		display: block;
+		max-width: 50%;
 	}
 	#acrylicPumpVideo {
 		width: 100%;
