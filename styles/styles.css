@@ -205,9 +205,38 @@ p {
 	left: 50%;
 	top: 50%;
 	transform: translate(-50%, -50%);
-	transition: 0.5s;
-	overflow-y: scroll;
+	transition: 0.3s;
+	scrollbar-color: #AAAAAA #FFFFFF;
+	scrollbar-width: narrow;
 	z-index: 2;
+}
+
+.popupStoryDiv button {
+	font-family: sans-serif;
+	font-weight: bold;
+	text-align: center;
+	cursor: pointer;
+	background: #FFFFFF;
+	color: #555555;
+	width: 30px; 
+	height: 30px;
+	border-radius: 5px; 
+	padding-left: 0;
+	padding-right: 0;
+	margin: 5px;
+	position: fixed; 
+	right: 0; 
+	top: 0;
+	transition: 0.25s;
+}
+
+.popupStoryDiv p {
+	opacity: 0; /* This gets overwritten once the popup actually displays */
+	transition: 1s;
+}
+
+.popupStoryDiv button:hover {
+	background: #999999;
 }
 
 .slider {
