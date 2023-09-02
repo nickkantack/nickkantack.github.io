@@ -199,11 +199,13 @@ p {
 	display: none;
 	position: fixed;
 	border: 3px solid #0c2245;
+	border-radius: 5px;
 	background: #fff;
 	width: 600px;
 	height: 0;
 	left: 50%;
 	top: 50%;
+	padding-top: 0;
 	transform: translate(-50%, -50%);
 	transition: 0.3s;
 	scrollbar-color: #AAAAAA #FFFFFF;
@@ -217,15 +219,16 @@ p {
 	text-align: center;
 	cursor: pointer;
 	background: #FFFFFF;
-	color: #555555;
+	color: #777777;
+	opacity: 0; /* This will be changed later */
 	width: 30px; 
 	height: 30px;
 	border-radius: 5px; 
 	padding-left: 0;
 	padding-right: 0;
 	margin: 5px;
-	position: fixed; 
-	right: 0; 
+	position: sticky; 
+	left: 100%;
 	top: 0;
 	transition: 0.25s;
 }
@@ -362,6 +365,10 @@ p {
 		margin-bottom: 15px;
 	}
 	.rightFloatImage {
+		width: 90%;
+		max-width: 90%;
+	}
+	.popupStoryDiv {
 		width: 90%;
 		max-width: 90%;
 	}

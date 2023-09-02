@@ -18,6 +18,7 @@ console.log(document.getElementsByClassName("popupStoryDiv")[0].style);
             popupStoryDiv.style.height = "0";
             popupStoryDiv.style.overflowY = "hidden";
             for (let p of popupStoryDiv.querySelectorAll("p")) p.style.opacity = "0";
+            if (popupStoryDiv.querySelector("button")) popupStoryDiv.querySelector("button").style.opacity = "0";
             document.body.removeEventListener("click", closePopupStoryDivIfBody);
             setTimeout(() => {
                 // Actions to take once the popup has finished disappearing
@@ -35,6 +36,8 @@ console.log(document.getElementsByClassName("popupStoryDiv")[0].style);
         const closeButton = document.createElement("button");
         closeButton.innerHTML = "X";
         popupStoryDiv.insertBefore(closeButton, popupStoryDiv.firstChild);
+        // Help push the start of the text down below the close button so it doesn't block any text
+        if (popupStoryDiv.querySelector("p")) popupStoryDiv.querySelector("p").style.marginTop = "30px";
 		popupStorySpan.addEventListener("click", () => {
 			popupStoryDiv.style.display = "block";
             setTimeout(() => {
@@ -47,6 +50,7 @@ console.log(document.getElementsByClassName("popupStoryDiv")[0].style);
                 // Actions to take once the popup has finished appearing
                 popupStoryDiv.style.overflowY = "auto";
                 for (let p of popupStoryDiv.querySelectorAll("p")) p.style.opacity = "1";
+                closeButton.style.opacity = "1";
             }, POPUP_TRANSITION_TIME_MS);
 		});
         
