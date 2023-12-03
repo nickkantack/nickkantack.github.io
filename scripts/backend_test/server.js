@@ -51,6 +51,7 @@ function getAndSendFile(req, res, filename){
             // application
             case 'json': res.writeHead(200, {'Content-Type': 'application/json'}); break;
             case 'js': res.writeHead(200, {'Content-Type': 'application/javascript'}); break;
+            case 'pdf': res.writeHead(200, {'Content-Type': 'application/pdf'}); break;
 
             // Could add in video if needed...
 

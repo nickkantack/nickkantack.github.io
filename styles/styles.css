@@ -1,6 +1,8 @@
 /*------------------------------------------*/
 /* DEFAULTS */
 /*------------------------------------------*/
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
 html {
 	overflow: scroll;
 	overflow-x: hidden;
@@ -9,7 +11,7 @@ html {
 	width: 0;  /* Remove scrollbar space */
 }
 body {
-	font: 18px Georgia;
+	font: 18px "Roboto";
 	color: #0c2245;
 	text-align: justify;
 	line-height: 145%;
@@ -23,7 +25,7 @@ div {
 button {
 	padding-left: 20px;
 	padding-right: 20px;
-	font: 25px Georgia;
+	font: 25px "Roboto";
 	border-radius: 2px;
 	border: none;
 	background: #0c2245;

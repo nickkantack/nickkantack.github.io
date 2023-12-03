@@ -7,31 +7,45 @@
     <script src="../scripts/procedurals.js"></script>
 </head>
 <body>
+
     <div id="reverseEngineerDiv" class="popupStoryDiv">
         <p>
-            This is a more detailed story about reverse engineering. Imagine that this was a pretty 
-            long winded story such that the text on it spanned a few lines.
-        </p>
-        <p>
-            This is a more detailed story about reverse engineering. Imagine that this was a pretty 
-            long winded story such that the text on it spanned a few lines.
-        </p>
-        <p>
-            This is a more detailed story about reverse engineering. Imagine that this was a pretty 
-            long winded story such that the text on it spanned a few lines.
-        </p>
-        <p>
-            This is a more detailed story about reverse engineering. Imagine that this was a pretty 
-            long winded story such that the text on it spanned a few lines.
-        </p>
-        <p>
-            This is a more detailed story about reverse engineering. Imagine that this was a pretty 
-            long winded story such that the text on it spanned a few lines.
+            IntriCon had some winding machines that were built in the 70s
+            and had controllers that were aging but which could no longer be replaced with newer
+            versions. In my first week of work I accidentally corrupted the software of the last
+            spare controller we had. I told my boss that I was 80% confident I could build a 
+            modern replacement for the controllers in the span of a week. Thus, I spent my entire
+            second week of work poring over the internal workings of the winders, mapping their
+            circuits, probing voltages during their operation, and designing a replacement
+            controller built on an Atmega chip. At the end of the second week, I had successfully
+            built a cheap and reliable replacement controller. I really enjoyed learning
+            how to work with microcontrollers and the challenge of reverse engineering an old
+            and complex machine. This was the first of several projects in automation and machine
+            control that I got to build entirely from scratch.
         </p>
     </div>
     <div id="productionTrackingSoftwareDiv" class="popupStoryDiv">
         <p>
-            Talk about production tracking software.
+            IntriCon had a process for recording daily production numbers from each machine
+            operator that consisted of the operator filling out a paper form with their totals
+            for the day. Later, a shift manager would manually enter these totals into an excel
+            spreadsheet. In this I saw an opportunity for automation that I could not pass up.
+            I build a web application that ran locally on the company's internal network which
+            allowed any operator to load a form and enter their production totals for the day
+            (it was simply a digital version of the original paper form). The data were 
+            curated on the server and shift managers could trade their data entry time for using
+            a sweet of analytic tools I built into the system. Managers could view trends in 
+            different metrics, compare data across shifts and operators. There was even an anomaly
+            detection tool that would automatically send an email report that identified any
+            dramatic changes in data that might need manager investigation. This was my first
+            experience with building a data analytics web application and I enjoyed the challenge
+            of creating intuitive ways for users to get the insights they're looking for in 
+            their data.
+        </p>
+    </div>
+    <div id="localizationDiv" class="popupStoryDiv">
+        <p>
+            Multivariate gaussian localization algorithm
         </p>
     </div>
 
@@ -42,6 +56,7 @@
         <div id='navBar' class='navBar'><script>renderNavBar()</script></div>
 
         <div class="text">
+            <div class="sectionTitle">IntriCon Coporation</div>
             <p>
                 I was raised in South Dakota and obtained a bachelor's degree in Engineering Physics
                 from the University of Oklahoma and a Masters degree from in Electrical Engineering
@@ -49,9 +64,51 @@
                 manufacturer in St Paul, MN. There I designed millimeter-scale electromagnetic coils
                 for use in implantable medical devices. I also developed simulations mostly around
                 the electrical performance of coils and data analytics software for driving 
-                manufacturing process improvements. One of my most proud moments was
-                <span id="reverseEngineerSpan" class="popupStorySpan">reverse engineering an old winding machine controller</span>.
+                manufacturing process improvements. Two of my most proud moments were
+                <span id="reverseEngineerSpan" class="popupStorySpan">reverse engineering an old winding machine controller</span>
                 and <span id="productionTrackingSoftwareSpan" class="popupStorySpan">writing production data tracking software from scratch</span>.
+            </p>
+            <div class="sectionTitle">Johns Hopkins Applied Physics Laboratory</div>
+            <p>
+                In 2018 I moved to Maryland and began working as an electrical engineer for the 
+                <a href="https://www.jhuapl.edu/">Johns Hopkins University Applied Physics Laboratory</a>. 
+                Initially, I worked in the spaceflight hardware assembly group (you can even find my name
+                listed <a href="https://dart.jhuapl.edu/Team/">here</a> among others who help build the
+                spacecraft for NASA's <a href="https://dart.jhuapl.edu/">DART mission</a>). In early 2019
+                I changed groups and began working as a software developer and artificial intelligence 
+                researcher for the lab. My favorite projects there included authoring and coding a 
+                <span id="localizationSpan" class="popupStorySpan">localization algorithm to determine 
+                 angle of arrival of radio signals and present them
+                to the user in augmented reality</span>, a project to enable tactical team members to 
+                <a href="./eyeOnTeam.html">see each other through floors, walls, and obstacles</a>, and 
+                building a competition-winning <a href="./hanabi.html">AI to collaborate with human teammates in the card game Hanabi</a>,
+                and winning a hackathon with a <a href="./robotArm.html">bionically controlled robot arm</a>.
+
+            </p>
+
+            <div class="sectionTitle">Amazon Web Services (Present)</div>
+            <p>
+                I currently work as a level 2 software development engineer for Amazon Web Services. Specifically,
+                I work as a backend engineer supporting two of the microservices that make up
+                <a href="https://aws.amazon.com/pm/connect/">Amazon Connect</a>, AWS's software-as-a-service solution
+                for costumer service contact centers. My team maintains and developes features for a Lambda and a 
+                Fargate web service primarily focused on ensuring connectivity and low latency between clients and
+                our backend services. At Amazon I've learned how to bulid services from the ground up using AWS 
+                infrastructure and core services. I also developed a quantile-based anomaly detection algorithm and
+                authored several anomaly detection tools that are now used by multiple teams within AWS to identify
+                changes in service performance that are often missed by traditional, band-based anomaly detection
+                techniques. I've also developed a Javascript library that enables automation of various DevOps tasks
+                like dynamically measuring the capacity of a web service against a hypothetical traffic load. I'm 
+                also enjoying the opportunity to bring my machine learning experience to internal efforts to add
+                intelligence to Amazon Connect.
+            </p>
+            <p>
+                Presently in my career, I'm aggressively learning as much as I can about modern tools and frameworks for 
+                hosting web services. I'm passionate about applying disciplined mathematics to tackle hard problems in 
+                administering computationally complex services as efficiently as possible. Most recently, I'm exploring
+                how machine learning models and computationally heavy workloads (e.g. predictions by large language models)
+                can be pushed to the edge (e.g. web clients) and orchestrated via peer-to-peer communication to 
+                prevent central service scaling and cost from being a bottleneck to serving data-driven content.
             </p>
         </div>
     </div>
