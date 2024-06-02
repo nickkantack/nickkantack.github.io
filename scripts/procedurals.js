@@ -7,7 +7,7 @@ function E(a){
 // The nav bar automation contract is that for each member of the list below, there exists a page
 // in pages that is the space-removed, camel-cased transformation of the name (unless it has 
 // special handling in the switch below).
-const navBarPages = ["Home", "Projects", "Literature", "About Me", "Resume"];
+const navBarPages = ["Home", "About Me", "Resume"];
 function renderNavBar() {
 	const navBar = E("navBar");
 	for (let navBarPage of navBarPages) {

@@ -12,9 +12,10 @@ html {
 }
 body {
 	font: 18px "Roboto Serif";
-	color: #0c2245;
+	color: #ffffff;
 	text-align: justify;
 	line-height: 145%;
+	background: #222222;
 }
 div {
 	padding: 2%;
@@ -32,7 +33,7 @@ button {
 	color: #FFFFFF;
 }
 a {
-	color: #2a61b8;
+	color: #6da5ff;
 }
 ul {
 	margin-right: 20px;
@@ -133,7 +134,7 @@ p {
 }
 .sectionTitle {
 	font-size: 30px;
-	border-bottom: 5px solid #0c2245;
+	border-bottom: 5px solid #2e5fad;
 	padding-bottom: 2px;
 }
 .sectionSubtitle {
@@ -196,10 +197,11 @@ p {
 	margin: 15px;
 	max-width: 40%;
 	border-radius: 30%;
+	border: 4px solid #313131;
 	float: right;
 }
 .popupStorySpan {
-	border-bottom: 2px dotted #0c2245;
+	border-bottom: 2px dotted #3d69b1;
 }
 .popupStorySpan:hover {
 	cursor: pointer;
@@ -209,7 +211,7 @@ p {
 	position: fixed;
 	border: 3px solid #5b5b5b;
 	border-radius: 5px;
-	background: #fff;
+	background: #222;
 	width: 600px;
 	height: 0;
 	left: 50%;
@@ -227,8 +229,8 @@ p {
 	font-weight: bold;
 	text-align: center;
 	cursor: pointer;
-	background: #FFFFFF;
-	color: #777777;
+	background: #444;
+	color: #fff;
 	opacity: 0; /* This will be changed later */
 	width: 30px; 
 	height: 30px;
@@ -238,7 +240,7 @@ p {
 	margin: 5px;
 	position: sticky; 
 	left: 100%;
-	top: 0;
+	top: 5px;
 	transition: 0.25s;
 }
 
