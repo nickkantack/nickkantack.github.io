@@ -84,13 +84,26 @@ p {
 	background: #669cf2;
 	cursor: pointer;
 }
+.darkPanel {
+	border-radius: 1em;
+}
 .darkPanel:nth-child(odd) {
 	color: #fff;
 	display: inline-block;
 	padding: 15px;
 	margin-top: 20px;
 	transition: 0.50s;
-	max-width: 90%;
+}
+.darkPanel:nth-child(even) {
+	background: #273c5e;
+	color: #fff;
+	display: inline-block;
+	padding: 15px;
+	margin-top: 20px;
+	transition: 0.50s;
+}
+.darkPanelLink {
+	border-radius: 1em;
 }
 .darkPanelLink:nth-child(odd) {
 	color: #fff;
@@ -103,16 +116,7 @@ p {
  }
 
 .darkPanelLink:nth-child(odd):hover {
-	background-color: #273c5e;
-}
-.darkPanel:nth-child(even) {
-	background: #273c5e;
-	color: #fff;
-	display: inline-block;
-	padding: 15px;
-	margin-top: 20px;
-	transition: 0.50s;
-	max-width: 90%;
+	background-color: #1d2d46;
 }
 .darkPanelLink:nth-child(even) {
 	background: #273c5e;
