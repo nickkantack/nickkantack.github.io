@@ -84,18 +84,16 @@ p {
 	background: #669cf2;
 	cursor: pointer;
 }
-.darkPanel {
-	background: #bfd2ff;
-	color: #0c2245;
+.darkPanel:nth-child(odd) {
+	color: #fff;
 	display: inline-block;
 	padding: 15px;
 	margin-top: 20px;
 	transition: 0.50s;
 	max-width: 90%;
 }
-.darkPanelLink {
-	background: #bfd2ff;
-	color: #0c2245;
+.darkPanelLink:nth-child(odd) {
+	color: #fff;
 	display: inline-block;
 	padding: 15px;
 	margin-top: 20px;
@@ -104,24 +102,21 @@ p {
 	max-width: 90%;
  }
 
-.standardPanel {
-	display: inline-block;
-	padding: 15px;
-	margin-top: 20px;
+.darkPanelLink:nth-child(odd):hover {
+	background-color: #273c5e;
 }
-.darkPanelLink:hover {
-	background: #a7bbfa;
-}
-.lightPanel {
-	color: #0c2245;
+.darkPanel:nth-child(even) {
+	background: #273c5e;
+	color: #fff;
 	display: inline-block;
 	padding: 15px;
 	margin-top: 20px;
 	transition: 0.50s;
 	max-width: 90%;
 }
-.lightPanelLink {
-	color: #0c2245;
+.darkPanelLink:nth-child(even) {
+	background: #273c5e;
+	color: #fff;
 	display: inline-block;
 	padding: 15px;
 	margin-top: 20px;
@@ -129,8 +124,8 @@ p {
 	transition: 0.50s;
 	max-width: 90%;
 }
-.lightPanelLink:hover {
-	background: #a7bbfa;
+.darkPanelLink:nth-child(even):hover {
+	background: #324c77;
 }
 .sectionTitle {
 	font-size: 30px;
@@ -151,7 +146,7 @@ p {
 	transition: 0.25s;
 	border-radius: 1em;
 	display: flex;
-	justify-content: space-between;
+	justify-content: space-evenly;
 }
 .navButton {
 	padding-left: 20px;
@@ -171,9 +166,10 @@ p {
 	cursor: pointer;
 }
 .picture {
+	display: block;
 	width: 30%;
 	margin: 15px;
-	border-radius: 3px;
+	border-radius: 1em;
 }
 .centeredImage {
 	display: block;
@@ -407,9 +403,11 @@ p {
 		font-size: 12px;
 	}
 	.picture {
-		width: 100%;
-		margin: auto;
+		width: 70%;
 		margin-bottom: 15px;
+		margin-left: auto;
+		margin-right: auto;
+		float: none;
 	}
 	.rightFloatImage {
 		width: 90%;
