@@ -32,6 +32,6 @@ function renderNavBar() {
 				button.addEventListener("click", () => { window.location.href = buttonDestinationPage });
 		}
 		// Consider skipping adding the button if the current page matches the button's destination
-		if (window.location.href.replace(/.*?pages\//, "./") !== buttonDestinationPage) navBar.appendChild(button);
+		if (window.location.href.replace(/.*?pages\//, "./") !== buttonDestinationPage.replace(/\.html/, "")) navBar.appendChild(button);
 	}
 }
