@@ -1,0 +1,195 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Bedrock web assistant</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../styles/styles.css">
+        <script type="text/javascript" id="MathJax-script" async
+                src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+        </script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+        <script src="../scripts/procedurals.js"></script>
+    </head>
+    <body>
+
+        <div class='mainPanel'>
+
+            <div class='pageTitle'>Bedrock web assistant</div>
+
+            <div id='navBar' class='navBar'><script>renderNavBar()</script></div>
+
+            <div class="centeredContent">
+
+                <div class="darkPanel">
+
+                    <div class="caption">
+                        This page is in progress and incomplete. It is expected to be completed
+                        by 5 June 2024. Apologies for any disappointment and please check back
+                        later if you are interested.
+                    </div>
+
+                    <div class="centeredContent">
+                        <video controls autoplay src="../videos/bedrock_web_assistant_f_test_demo.webm"></video>
+                    </div>
+
+                    <div class="caption">
+                        This video demonstrates the Bedrock web assistant helping answer a question
+                        about an wikipedia article that is difficult to answer by simply searching
+                        for keywords.
+                    </div>
+
+                    <div class="sectionTitle">Overview and installation</div>
+                    <p>
+                        To experiment with Bedrock powered AI tools, I decided to create a web
+                        assistant that could answer questions about content in the browser and
+                        also take actions in the browser on behalf of a user.
+                    </p>
+
+                    <div class="sectionSubtitle">Installing the web assistant</div>
+                    <p>
+                        You can install the script I wrote and use the web assistant out of the box.
+                        There are also instructions below on how to build the system from scratch
+                        on your own.
+                    </p>
+                    <p>
+                        To install the web assistant powered by my AWS account, follow this procedure:
+                    </p>
+                    <ol>
+                        <li>Install <a href="https://www.tampermonkey.net/">Tampermonkey</a> for your preferred browser.</li>
+                        <li>Install my <a href="../scripts/tampermonkey/BedrockWebAssistant.user.js">Bedrock Web Assistant</a> Tampermonkey script.</li>
+                        <li>Navigate to a wikipedia page.</li>
+                        <li>Try it out!</li>
+                    </ol>
+
+                    <div class="sectionTitle">Building the web assistant</div>
+                    <p>
+                        This section outlines the steps needed to build the tool from scratch. You
+                        can follow this section if you want to create the AWS infrastructure required
+                        to power your own version of this tool.
+                    </p>
+
+                    <div class="sectionSubtitle">Writing the Tampermonkey script</div>
+
+                    I began by writing a simple Tampermonkey script that creates a simple chat widget for 
+                    interacting with the assistant. The Tampermonkey script is responsible for invoking
+                    the AWS Lambda that will call the Bedrock agent as well as exposing actions in the browser
+                    (like scraping the page content) that the Bedrock agent can request based on the user's
+                    query.
+
+                    You can check out the Tampermonkey script <a href="../scripts/tampermonkey/BedrockWebAssistant.user.js">here</a>.
+
+                    <div class="sectionSubtitle">Creating the AWS Lambda function to invoke the model</div>
+
+                    Creating an AWS Lambda serves a few purposes. First, it creates a backend 
+                    that can receive requests from the Tampermonkey script. Second, it provides
+                    a system prompt that sets the proper context for the agent and makes the agent
+                    aware of actions that it can take in the browser via the Tampermonkey script.
+
+                    Below is the code for a basic working version of the AWS Lambda.
+
+                    <pre>
+                        <code class="language-python">
+import boto3
+import json
+
+client = boto3.client('bedrock-agent-runtime')
+
+bedrock_runtime = boto3.client(service_name='bedrock-runtime', region_name='us-east-1')
+
+def lambda_handler(event, context):
+    
+    # Parse the input fields
+    conversationHistory = event["conversationHistory"]
+    isOnWikipedia = event["isOnWikipedia"] if "isOnWikipedia" in event else True
+    new_messages = []
+    
+    # Pose the user's questions to the Bedrock agent
+    body = json.dumps({
+        "max_tokens": 1024,
+        "anthropic_version": "bedrock-2023-05-31",
+        "system": get_system_prompt(isOnWikipedia, False),
+        "messages": conversationHistory,
+    })
+    response = bedrock_runtime.invoke_model(
+        body=body,
+        modelId='anthropic.claude-3-sonnet-20240229-v1:0',
+        accept='application/json',
+        contentType='application/json'
+    )
+    response_body = json.loads(response.get('body').read())
+    response_text = response_body['content'][0]['text']
+    new_messages.append({"role": "assistant", "content": response_text})
+    
+    # Loop over all agent responses until it is directed at the user
+    latest_message_text = new_messages[-1]["content"]
+    while not latest_message_text.startswith("!Local App:") and not latest_message_text.startswith("!User:"):
+        
+        # Handle an invalid prefix from the model by letting the model try again
+        new_messages.append({"role": "user", "content": "Your previous message did not begin with \"!Local App:\", or \"!User:\", and therefore it cannot be processed. Please try again."})
+        body = json.dumps({
+            "max_tokens": 1024,
+            "anthropic_version": "bedrock-2023-05-31",
+            "messages": conversationHistory + new_messages,
+        })
+        response = bedrock_runtime.invoke_model(
+            body=body,
+            modelId='anthropic.claude-3-sonnet-20240229-v1:0',
+            accept='application/json',
+            contentType='application/json'
+        )
+        response_body = json.loads(response.get('body').read())
+        response_text = response_body['content'][0]['text']
+        new_messages.append({"role": "assistant", "content": response_text})
+        latest_message_text = new_messages[-1]["content"]
+    
+    return {
+        'statusCode': 200,
+        'new_messages': new_messages,
+    }
+    
+def get_system_prompt(isOnWikipedia, isGetHtmlAllowed):
+    ...
+                        </code>
+                    </pre>
+
+                <div class="sectionSubtitle">The system prompt</div>
+
+                <p>
+                    I wrote a system prompt that establishes the context for the model and lays out
+                    an API that the agent can use to request information from the Tampermonkey script
+                    or to request actions be taken in the browser by the Tampermonkey script.
+                </p>
+
+                <p>
+                    Below is a pastable python method that can be added to the AWS Lambda code
+                    which applies the dynamic system prompt.
+                </p>
+
+                <pre><code>
+def get_system_prompt(isOnWikipedia, isGetHtmlAllowed):
+    return f"""
+You are a language model powered assistant that is embedded as a chat widget in a user's browser. The user can ask for information or for help performing actions in the browser. Your responsibility is to be as helpful as possible in accomplishing the goal of the user.
+
+You will be provided a prompt that is from the user (or from another tool) and your job is to create the most useful response you can. Your response may be the answer to a question, a suggestion as part of a dialog, or a command to be executed on a local application (this will be explained later). Because you will be able to give responses that elicit additional information from several resources, it is important that your final response to the user be clearly indicated by beginning with the prefix "!User: ". This allows the user to know that the response that was received is the final product of your work and not an intermediate request used to build the desired response.
+
+Aside from sending messages to the user, you can also make requests of an application that is running on the user's computer. This is referred to as the local application or "Local App" and is a browser extension that is capable of querying internal company resources and development tools. Requests to the Local App should be carefully formatted using the following syntax. Action,Detail1,Detail2,... etc. Therefore, your request is always a comma-delimited sequence that has at least one member (the Action) and a variable number of follow-on arguments depending on the action taken. If you are going to make a request of the Local App, let your response be of the following format: "!Local App:Action,Detail1,Detail2". Expect that the response you get from the Local App will be formatted as plain text and contain the answer. Here is a list of all the actions you can take:
+{"You can use the action getHtml. This action obtains the html for a url of an internal website. This should be followed by only one detail argument, the url to scrape. For example, \"getHtml,https://google.com\" is a valid version of this command." if isGetHtmlAllowed else ""}
+{"You can use the action getWikipediaText. This command returns all of the text within a wikipedia article that is currently loaded in the user's browser. This command does not take any details, so the only valid syntax for this command is \"getWikipediaText\"." if isOnWikipedia else ""}
+Responses from the Local App will appear to come from the user, but the user is not aware of them. Therefore, do not assume a message immediately after your call to Local App is from the developer; it is not, and the user does not know what the Local App said. Therefore, if the information from the Local App was requested by the user, you will need to send a message to the user with the "!User:" prefix in order to relay the information back to the user.
+The final step is never to call the Local App, even if the user asks you to take an action on their behalf. Always follow up a response from a Local App call with something else, and plan to send a message beginning with "!User:" as soon as you have the necessary information to answer the user's question or satisfy their request.
+
+When you need to call the Local App or respond to the user, do so as individual responses; do not attempt to call the Local App and respond to the user in the same message. If you need to consult multiple sources, always choose a single source to consult in your response (i.e. you can assume that after getting a response from one source you will have the opportunity to consult other sources). Therefore, each response from you should either begin with !Local App:", or "!User:". Do not preface any of these prefixes with any explanations or other text. These two options (!Local App:", and "!User:") are the only permissible starts to any of your responses, and there should only be one of these prefixes per response.
+{'The user is currently on a wikipedia page' if isOnWikipedia else ''}"""
+
+                </code></pre>
+
+                </div>
+
+            </div>
+        </div>
+        <script>hljs.highlightAll();</script>
+    </body>
+</html>
