@@ -74,7 +74,7 @@ p {
 	font-size: 40px;
 	text-align: left;
 	line-height: 145%;
-	border-radius: 1em;
+	border-radius: 0.2em;
 }
 .generalButton {
 	padding: 10px;
@@ -85,7 +85,7 @@ p {
 	cursor: pointer;
 }
 .darkPanel {
-	border-radius: 1em;
+	border-radius: 0.2em;
 }
 .darkPanel:nth-child(odd) {
 	color: #fff;
@@ -103,7 +103,7 @@ p {
 	transition: 0.50s;
 }
 .darkPanelLink {
-	border-radius: 1em;
+	border-radius: 0.2em;
 }
 .darkPanelLink:nth-child(odd) {
 	color: #fff;
@@ -148,7 +148,7 @@ p {
 	color: #FFFFFF;
 	font-size: 30px;
 	transition: 0.25s;
-	border-radius: 1em;
+	border-radius: 0.2em;
 	display: flex;
 	justify-content: space-evenly;
 }
@@ -162,7 +162,7 @@ p {
 	color: #FFFFFF;
 	background-image: linear-gradient(140deg, #5187df 6%, #2a61b8 20%, #2a61b8 80%, #183e7c 100%);
 	border: none;
-	border-radius: 1em;
+	border-radius: 0.2em;
 	transition: 0.25s;
 }
 .navButton:hover {
@@ -173,7 +173,7 @@ p {
 	display: block;
 	width: 30%;
 	margin: 15px;
-	border-radius: 1em;
+	border-radius: 0.2em;
 }
 .centeredImage {
 	display: block;
