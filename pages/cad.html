@@ -1,0 +1,112 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>CAD projects</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../styles/styles.css">
+        <link rel="stylesheet" href="../styles/cad_styles.css">
+        <script type="text/javascript" id="MathJax-script" async
+                src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+        </script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+        <script src="../scripts/procedurals.js"></script>
+    </head>
+    <body>
+
+        <div class='mainPanel'>
+
+            <div class='pageTitle'>CAD projects</div>
+
+            <div id='navBar' class='navBar'><script>renderNavBar()</script></div>
+
+            <div class="centeredContent">
+
+                <div class="darkPanel">
+
+                    <div class="sectionTitle">Overview</div>
+                    <p>
+                        I've done a lot of 3D design work in my career so far. I've come to prefer
+                        procedural CAD and have written lots of code snippets that I can reuse
+                        from project ot project. I've published a library of OpenSCAD scripts
+                        that I wrote to generate a variety of highly reusable shapes and structures.
+                        This page briefly describes a few of them.
+                    </p>
+
+                    <div class="sectionTitle">Material efficiency</div>
+                    <img class="centeredImage cadImage" src="../images/efficientRoundRectangleExample.png" />
+                    
+                    <div class="caption">
+                        An example "efficient" version of the OpenSCAD 
+                        <span class="inlineCode">cube</span> that can dramatically reduce the 
+                        material volume and print time for certain structures
+                    </div>
+                    <p>
+                        I often CAD with 3D printing in mind. I'm very conscious about
+                        minimizing wasted material and minimizing the time it takes for
+                        a design to print. For many applications, solids shapes contain
+                        lots of "low-value" volume; by this I mean volume that doesn't
+                        contribute significantly to the structural integrity of the 
+                        object. 3D printers already factor this in when they print a
+                        lattice as the "infill" for a shape rather than filling the shape
+                        solidly with material. In doing so, 3D printers help reduce 
+                        the material needed for a print from something that scales as
+                        \(r^{3}\) (where \(r\) is the width of the print) to something
+                        that scales with \(r^{2}\).
+                    </p>
+                    <p>
+                        However, a design can still have unnecessary
+                        <i>surface area</i>. To help this, I designed an OpenSCAD class
+                        for <span class="inlineCode">cube</span> which replaces a solid cube with a lattice.
+                        This improves the material scaling from something that scales as
+                        \(r^{2}\) to something that scales as \(r\). This can reduce the 
+                        print time by more than 50% for large prints.
+                    </p>
+
+                    <div class="sectionTitle">Complex mechanical shapes</div>
+                    <p>
+                        OpenSCAD makes it straightforward to translate a lattice of points
+                        in 3D space (and information about which are joined by faces) in order
+                        to produce a solid. I used this to develop several complex but 
+                        commonly used shapes that I've used across several mechanical projects.
+                    </p>
+                    <img class="centeredImage cadImage" src="../images/efficientGearExample.png" />
+                    <div class="caption">
+                        A procedurally generated gear in OpenSCAD. Teeth shape, number, and radius
+                        are all configurable, as well as detais about what material to cut away
+                        in order to reduce the material volume and print time of the gear
+                    </div>
+                    <img class="centeredImage cadImage" src="../images/screwExample.png" />
+                    <div class="caption">
+                        An M4 standard screw helix. I've used printed screws to replace metal
+                        ones on a number of occasions, though this OpenSCAD construct is far
+                        more useful for making screw holes in custom printed parts into which
+                        metal screws can fasten.
+                    </div>
+                    <img class="centeredImage cadImage" src="../images/fiberExample.png" />
+                    <div class="caption">
+                        An example of an over-the-ear anchor for an earbud. The shape was
+                        smoothly interpolated from a list of a few key points and parameters.
+                    </div>
+
+                    <div class="sectionTitle">Pan/Tilt webcam base</div>
+                    <br/>
+                    <img class="centeredImage" src="../images/panTiltCad.png" />
+                    <p>
+                        I designed a pan-tilt base for a webcam using only 3D printed
+                        mechanical parts. The base housed two NEMA 17 stepper motors
+                        which were connected to a Raspberry Pi. I printed an assembled
+                        the base and positioned it near some house plants right before
+                        I left for a few weeks of traveling. By sshing into the Raspberry
+                        Pi I could steer the camera and inspect the inside of my apartment
+                        and check the progress of my fully automated watering system
+                        and the status of my house plants.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </body>
+</html>

@@ -3,6 +3,13 @@
 /*------------------------------------------*/
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Serif:ital,opsz,wght@0,8..144,100..900;1,8..144,100..900&family=Tinos:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 
+:root {
+	--main-style-blue: #315283;
+	--main-style-dark-blue: #16253b;
+	--light-panel-blue: #1b2d49;
+	--panel-link-hover: #20365a;
+}
+
 html {
 	overflow: scroll;
 	overflow-x: hidden;
@@ -58,6 +65,7 @@ iframe {
 .inlineCode {
 	font-family: "monospace";
 	font-weight: bold;
+	font-style: normal;
 }
 .mainPanel {
 	position: relative;
@@ -72,7 +80,8 @@ iframe {
 	text-align: center;
 }
 .pageTitle {
-	background-image: linear-gradient(140deg, #5187df 6%, #2a61b8 20%, #2a61b8 80%, #183e7c 100%);
+	background-image: linear-gradient(140deg, #222222 4%, var(--main-style-dark-blue) 40%, var(--main-style-dark-blue) 60%, #222222 100%);
+	border: 3px solid var(--main-style-blue);
 	color: #FFFFFF;
 	font-size: 40px;
 	text-align: left;
@@ -100,7 +109,7 @@ iframe {
 	transition: 0.50s;
 }
 .darkPanel:nth-child(even) {
-	background: #273c5e;
+	background: var(--light-panel-blue);
 	color: #fff;
 	display: inline-block;
 	padding: 15px;
@@ -122,10 +131,10 @@ iframe {
  }
 
 .darkPanelLink:nth-child(odd):hover {
-	background-color: #1d2d46;
+	background-color: var(--panel-link-hover);
 }
 .darkPanelLink:nth-child(even) {
-	background: #273c5e;
+	background: var(--light-panel-blue);
 	color: #fff;
 	display: inline-block;
 	padding: 15px;
@@ -135,11 +144,11 @@ iframe {
 	max-width: 90%;
 }
 .darkPanelLink:nth-child(even):hover {
-	background: #324c77;
+	background: var(--panel-link-hover);
 }
 .sectionTitle {
 	font-size: 30px;
-	border-bottom: 5px solid #2e5fad;
+	border-bottom: 5px solid var(--main-style-blue);
 	padding-bottom: 2px;
 	margin-top: 1em;
 }
@@ -169,8 +178,8 @@ iframe {
 	margin-top: 0.5em;
 	margin-bottom: 0.5em;
 	color: #FFFFFF;
-	background-image: linear-gradient(140deg, #5187df 6%, #2a61b8 20%, #2a61b8 80%, #183e7c 100%);
-	border: none;
+	background-image: linear-gradient(140deg, #222222 4%, #16253b 40%, #16253b 60%, #222222 100%);
+	border: 3px solid #223758;
 	border-radius: 0.2em;
 	transition: 0.25s;
 }
@@ -208,7 +217,7 @@ iframe {
 	text-align: justify;
 	font-style: italic;
 	font-size: 16px;
-	margin-bottom: 20px;
+	margin-bottom: 2em;
 }
 .headshot {
 	margin: 15px;
