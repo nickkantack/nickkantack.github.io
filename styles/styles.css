@@ -5,6 +5,7 @@
 
 :root {
 	--main-style-blue: #315283;
+	--main-style-medium: #203960;
 	--main-style-dark-blue: #16253b;
 	--light-panel-blue: #1b2d49;
 	--panel-link-hover: #20365a;
@@ -80,7 +81,7 @@ iframe {
 	text-align: center;
 }
 .pageTitle {
-	background-image: linear-gradient(140deg, #222222 4%, var(--main-style-dark-blue) 40%, var(--main-style-dark-blue) 60%, #222222 100%);
+	background: var(--main-style-dark-blue);
 	border: 3px solid var(--main-style-blue);
 	color: #FFFFFF;
 	font-size: 40px;
@@ -94,7 +95,7 @@ iframe {
 	transition: 0.25s;
 }
 .generalButton:hover {
-	background: #669cf2;
+	background: var(--main-style-medium);
 	cursor: pointer;
 }
 .darkPanel {
@@ -178,13 +179,13 @@ iframe {
 	margin-top: 0.5em;
 	margin-bottom: 0.5em;
 	color: #FFFFFF;
-	background-image: linear-gradient(140deg, #222222 4%, #16253b 40%, #16253b 60%, #222222 100%);
+	background: var(--main-style-dark-blue);
 	border: 3px solid #223758;
 	border-radius: 0.2em;
 	transition: 0.25s;
 }
 .navButton:hover {
-	background: #669cf2;
+	background: var(--main-style-medium);
 	cursor: pointer;
 }
 .note {
