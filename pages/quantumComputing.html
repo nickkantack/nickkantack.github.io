@@ -1,0 +1,488 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Quantum computing</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../styles/styles.css">
+        <script type="text/javascript" id="MathJax-script" async
+                src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+        </script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+        <script src="../scripts/quantum_basics.js"></script>
+        <script src="../scripts/procedurals.js"></script>
+    </head>
+    <body>
+
+        <div class='mainPanel'>
+
+            <div class='pageTitle'>Quantum Computing</div>
+
+            <div id='navBar' class='navBar'><script>renderNavBar()</script></div>
+
+            <div class="centeredContent">
+
+                <div class="darkPanel">
+
+                    <div id="demoCircuitDiv" style="position: relative;">
+                        <svg id="demoSvg" class="quantumSvg" style="position: relative; margin: 0; padding: 0;"></svg>
+                        <script>
+                            const demoCircuit = new QuantumDiagram(document.getElementById(`demoSvg`), 7, Array(7).fill(50), `#fff`);
+                            demoCircuit.setWidths(Array(13).fill(Math.min(50, document.getElementById(`demoCircuitDiv`).getBoundingClientRect().width / 13)));
+                            demoCircuit.addGate(new Ry(0, `#fff`, `#222`), 1);
+                            demoCircuit.addGate(new Cnot([0], [0], 1, `#fff`, `#222`), 2);
+                            demoCircuit.addGate(new H(1, `#fff`, `#222`), 2);
+                            demoCircuit.addGate(new Cnot([0, 1], [0, 0], 2, `#fff`, `#222`), 3);
+
+                            demoCircuit.addGate(new Cnot([2], [1], 3, `#fff`, `#222`), 4);
+                            demoCircuit.addGate(new Cnot([1], [1], 4, `#fff`, `#222`), 5);
+                            demoCircuit.addGate(new Cnot([0], [1], 5, `#fff`, `#222`), 6);
+                            demoCircuit.addGate(new Cnot([5], [1], 6, `#fff`, `#222`), 7);
+                            demoCircuit.addGate(new H(6, `#fff`, `#222`), 7);
+
+                            demoCircuit.addGate(new Cswap([3], [1], [0, 2], `#fff`, `#222`), 8);
+                            demoCircuit.addGate(new Cswap([4], [1], [0, 1], `#fff`, `#222`), 9);
+                            demoCircuit.addGate(new Cswap([5, 6], [1, 1], [0, 2], `#fff`, `#222`), 10);
+                            demoCircuit.addGate(new Cswap([5, 6], [1, 0], [0, 1], `#fff`, `#222`), 11);
+                        </script>
+                    </div>
+
+                    <div class="caption">
+                        This is a simple quantum circuit that can compute the win probability of choosing to swap doors in the classic <a href="https://en.wikipedia.org/wiki/Monty_Hall_problem">Monty Hall problem</a>.
+                    </div>
+
+                    <br/>
+
+                    <div class="sectionTitle">Solving the Monty Hall problem with a real quantum computer</div>
+                    <p>
+                        This page was a starting point for a learning series talk I gave at AWS to illustrate how to use a lesser-known AWS service to experiment with quantum computing.
+                    </p>
+
+                    <h2>Using AWS Braket</h2>
+
+                    <p>
+                        AWS Braket is a service that abstracts away most of the work needed to run a quantum circuit on a simulated or real quantum computer. All you need to do is translate your quantum circuit schematic into function calls in the AWS Braket SDK and you can visualize and run your circuit.
+                    </p>
+
+                    <p>
+                        Suppose I designed the following simple circuit that tests the strategy of "sticking with your first pick" in the classic <a href="https://en.wikipedia.org/wiki/Monty_Hall_problem">Monty Hall problem</a> (I'll explain this circuit later).
+                    </p>
+
+                    <div id="diagramContainer" style="position: relative;">
+                        <svg id="circuitSvg" class="quantumSvg" style="position: relative; margin: 0; padding: 0;"></svg>
+                        <script>
+                            const circuit = new QuantumDiagram(document.getElementById(`circuitSvg`), 3, Array(3).fill(50), `#fff`);
+                            circuit.setWidths(Array(5).fill(Math.min(50, document.getElementById(`diagramContainer`).getBoundingClientRect().width / 5)));
+                            circuit.addGate(new Ry(0, `#fff`, `#222`), 1);
+                            circuit.addGate(new Cnot([0], [0], 1, `#fff`, `#222`), 2);
+                            circuit.addGate(new H(1, `#fff`, `#222`), 2);
+                            circuit.addGate(new Cnot([0, 1], [0, 0], 2, `#fff`, `#222`), 3);
+                        </script>
+                    </div>
+
+                    <div class="blockOfWhitespace showForPresentation"></div>
+
+                    <p>
+                        where \(R_{y}^{\alpha}\) is a block sphere rotation about the \(y\) axis by an angle \(\alpha\). To run this circuit, I can simply install the AWS Braket SDK and execute a short Python script.
+                    </p>
+
+                    <pre>
+                        <code class="language-shell" style="padding-top: 0; padding-bottom: 0;">
+        pip install amazon-braket-sdk
+                        </code>
+                    </pre>
+                        
+                    <pre>
+                        <code class="language-python" style="line-height: 1.2em">
+        from braket.aws import AwsDevice
+        from braket.circuits import Circuit
+        from braket.devices import LocalSimulator
+        import math
+
+        # Pick a device, real or simulated
+        device = LocalSimulator()
+        # device = AwsDevice(
+        #   'arn:aws:braket:eu-north-1::device/qpu/iqm/Garnet', 
+        #   aws_session=aws_session)
+
+        # Define the circuit
+        quantum_circuit = (
+            Circuit().ry(0, 2 * math.acos((2 / 3)**.5)).x(0)
+            .ry(1, math.pi / 4).cz(0, 1).ry(1, -math.pi/4).x(1)
+            .ccnot(0, 1, 2).x(0).x(1)
+        )
+        # Show the circuit schematic
+        print(quantum_circuit)
+
+        # Run the circuit
+        shots = 1000
+        output = device.run(quantum_circuit, shots=shots)
+
+        # Process the results
+        counts = output.result().measurement_counts
+        win_count = 0
+        for outcome, frequency in zip(counts.keys(), counts.values()):
+            if outcome[0] == "1":
+                win_count += frequency
+        print(f"The strategy won {win_count / shots * 100:.1f}% of the time.")
+                        </code>
+                    </pre>
+
+                    <p>
+                        The code above produced the following output.
+                    </p>
+
+                    <pre>
+        The strategy won 34.3% of the time.
+                    </pre>
+
+                    <div class="sectionTitle">Designing the circuit</div>
+
+                    <p>
+                        We need to prepare a set of qubits to represent the starting state of the Monty Hall problem. In the classic Monty Hall problem, a prize sits behind one of three doors. Let's start our circuit by creating a qubit for each door. In general, qubits can carry a superposition of two basis states, \(|0\rangle\) and \(|1\rangle\). Let the state \(|0\rangle\) represent the absence of a prize and the state \(|1\rangle\) represent the presence of a prize.
+                    </p>
+                    <p>
+                        We need to prepare a register of three qubits to represent the superposition of all possible states. Importantly, we need to entagle these qubits so that the prize is always found behind exactly one door (i.e. we should never observe <i>no</i> prize and we should never observe prizes behind more than one door simultaneously). We will achieve this using control gates.
+                    </p>
+                    <p>
+                        The circuit below takes as input a register of three qubits in the \(|0\rangle\) state and outputs a register of three qubits that has an equal probability of being in the \(|100\rangle\), \(|010\rangle\), and \(|001\rangle\) states.
+                    </p>
+
+                    <div id="montyHallAlwaysStayDiv3" style="position: relative;">
+                        <svg id="montyHallAlwaysStayCircuitSvg3" class="quantumSvg" style="position: relative; margin: 0; padding: 0;"></svg>
+                        <script>
+                            const montyHallAlwaysStayCircuit3 = new QuantumDiagram(document.getElementById(`montyHallAlwaysStayCircuitSvg3`), 3, Array(3).fill(50), `#fff`);
+                            montyHallAlwaysStayCircuit3.setWidths(Array(5).fill(Math.min(50, document.getElementById(`montyHallAlwaysStayDiv3`).getBoundingClientRect().width / 5)));
+                            montyHallAlwaysStayCircuit3.addGate(new Ry(0, `#fff`, `#222`), 1);
+                            montyHallAlwaysStayCircuit3.addGate(new Cnot([0], [0], 1, `#fff`, `#222`), 2);
+                            montyHallAlwaysStayCircuit3.addGate(new H(1, `#fff`, `#222`), 2);
+                            montyHallAlwaysStayCircuit3.addGate(new Cnot([0, 1], [0, 0], 2, `#fff`, `#222`), 3);
+
+                        </script>
+                    </div>
+
+                    <p>
+                        The first gate (notated by \(R_{y}^{\alpha}\)) is a rotation about the \(y\) axis on the Bloch sphere by an amount \(\alpha\) given by
+                        $$
+                        \alpha = 2\cos^{-1}\left(\sqrt{\frac{2}{3}}\right)
+                        $$
+                        This puts the first qubit in the superposition
+                        $$
+                        |\psi\rangle = \sqrt{\frac{2}{3}}|0\rangle + \sqrt{\frac{1}{3}}|1\rangle
+                        $$
+                        If we were to make many observations of this qubit immediately after the \(R_{y}^{\alpha}\) gate, we'd observe \(|0\rangle\) (no prize) two thirds of the time and \(|1\rangle\) (a prize) one third of the time.
+                    </p>
+                    <p>
+                        We could do the same to the second qubit, but then the two qubits would be <i>independent</i> of one another, and the outcome \(|11\rangle\) would be observed sometimes, but this violates the Monty Hall problem. To avoid this, we'll use a controlled Hadamard gate which allows <i>only</i> the \(|0\rangle\) state flip to apply the Hadamard operation to the second qubit. 
+                    </p>
+                    <div id="montyHallAlwaysStayDiv" style="position: relative;">
+                        <svg id="montyHallAlwaysStayCircuitSvg" class="quantumSvg" style="position: relative; margin: 0; padding: 0;"></svg>
+                        <script>
+                            const montyHallAlwaysStayCircuit = new QuantumDiagram(document.getElementById(`montyHallAlwaysStayCircuitSvg`), 3, Array(3).fill(50), `#fff`);
+                            montyHallAlwaysStayCircuit.setWidths(Array(5).fill(Math.min(50, document.getElementById(`montyHallAlwaysStayDiv`).getBoundingClientRect().width / 5)));
+                            montyHallAlwaysStayCircuit.addGate(new Ry(0, `#fff`, `#222`), 1);
+                            montyHallAlwaysStayCircuit.addGate(new Cnot([0], [0], 1, `#fff`, `#222`), 2);
+                            montyHallAlwaysStayCircuit.addGate(new H(1, `#fff`, `#777`), 2);
+                            montyHallAlwaysStayCircuit.addGate(new Cnot([0, 1], [0, 0], 2, `#fff`, `#222`), 3);
+
+                            montyHallAlwaysStayCircuit.addBox(2, 2, 0, 1, "", `#9995`);
+                        </script>
+                    </div>
+                    <p>
+                        If the relative, complex amplitudes of the \(|0\rangle\) and \(|1\rangle\) basis states are stacked in a vector \(\left[\begin{matrix}1 \\ 0\end{matrix}\right]\) then the Hadamard operation produces
+                        $$
+                        \sqrt{\frac{1}{2}}\left[\begin{matrix}\ 1 & 1 \\ \ 1 & -1\end{matrix}\right]\left[\begin{matrix}\ 1 \ \\ \ 0 \ \end{matrix}\right]=\sqrt{\frac{1}{2}}\left[\begin{matrix} \ 1 \ \\ \ 1 \ \end{matrix}\right]
+                        $$
+                        This produces the following possible observations of the two qubits together:
+                        $$
+                        \begin{matrix}
+                        |01\rangle \text{ with probability }\frac{1}{3} \\
+                        |10\rangle \text{ with probability }\frac{1}{3} \\
+                        |00\rangle \text{ with probability }\frac{1}{3} \\
+                        \end{matrix}
+                        $$
+                        We can finish the preparation of our 3 qubit register by adding a Tofolli gate that flips the third qubit only if the first two are in the combined \(|00\rangle\) state.
+                    </p>
+                    <div id="montyHallAlwaysStayDiv2" style="position: relative;">
+                        <svg id="montyHallAlwaysStayCircuitSvg2" class="quantumSvg" style="position: relative; margin: 0; padding: 0;"></svg>
+                        <script>
+                            const montyHallAlwaysStayCircuit2 = new QuantumDiagram(document.getElementById(`montyHallAlwaysStayCircuitSvg2`), 3, Array(3).fill(50), `#fff`);
+                            montyHallAlwaysStayCircuit2.setWidths(Array(5).fill(Math.min(50, document.getElementById(`montyHallAlwaysStayDiv2`).getBoundingClientRect().width / 5)));
+                            montyHallAlwaysStayCircuit2.addGate(new Ry(0, `#fff`, `#222`), 1);
+                            montyHallAlwaysStayCircuit2.addGate(new Cnot([0], [0], 1, `#fff`, `#222`), 2);
+                            montyHallAlwaysStayCircuit2.addGate(new H(1, `#fff`, `#222`), 2);
+                            montyHallAlwaysStayCircuit2.addGate(new Cnot([0, 1], [0, 0], 2, `#fff`, `#222`), 3);
+
+                            montyHallAlwaysStayCircuit2.addBox(3, 3, 0, 2, "", `#9995`);
+                        </script>
+                    </div>
+                    <p>
+                        This gives us the desired initial state of the Monty Hall problem:
+                        $$
+                        \begin{matrix}
+                        |100\rangle \text{ with probability }\frac{1}{3} \\
+                        |010\rangle \text{ with probability }\frac{1}{3} \\
+                        |001\rangle \text{ with probability }\frac{1}{3} \\
+                        \end{matrix}
+                        $$
+
+                        We can use this qubit register as input to two quantum circuits, one that tests the strategy of keeping one's original choice of door and another that tests the strategy of swapping doors after the host opens a door.
+                    </p>
+
+                    <div class="sectionSubtitle">The "stay" circuit</div>
+
+                    <p>
+                        The circuit above actually only needs some interpretation and it can serve as our circuit to test the strategy of sticking with one's original choice even after the host opens a door. We'll assume that we always pick the door corresponding to the first qubit as our guess (I'll leave it to you to argue from symmetry that choosing any other door at that start doesn't alter our outlook on the problem). All we need to do is run our quantum circuit a substantial number of times (e.g. 1000) and observe the output state; any time we observe the first qubit in the \(|1\rangle\) state, we win the prize, and anytime we observe the first qubit in the \(|0\rangle\) state we missed the prize. As was demonstrated earlier in this article, experiments showed a win rate of about 34%, and in theory we would expect to win only when we observe the \(|100\rangle\) state, which should happen \(\frac{1}{3}\) of the time (in the limit that we play the problem and infinite number of times).
+                    </p>
+
+                    <div class="sectionSubtitle">The "swap doors" circuit</div>
+
+                    <p>
+
+                    </p>
+
+                    <div id="montyHallSwapDiv" style="position: relative;">
+                        <svg id="montyHallAlwaysSwapSvg" class="quantumSvg" style="position: relative; margin: 0; padding: 0;"></svg>
+                        <script>
+                            const montyHallAlwaysSwapCircuit = new QuantumDiagram(document.getElementById(`montyHallAlwaysSwapSvg`), 7, Array(7).fill(50), `#fff`);
+                            montyHallAlwaysSwapCircuit.setWidths(Array(13).fill(Math.min(50, document.getElementById(`montyHallSwapDiv`).getBoundingClientRect().width / 13)));
+                            montyHallAlwaysSwapCircuit.addGate(new Ry(0, `#fff`, `#222`), 1);
+                            montyHallAlwaysSwapCircuit.addGate(new Cnot([0], [0], 1, `#fff`, `#222`), 2);
+                            montyHallAlwaysSwapCircuit.addGate(new H(1, `#fff`, `#222`), 2);
+                            montyHallAlwaysSwapCircuit.addGate(new Cnot([0, 1], [0, 0], 2, `#fff`, `#222`), 3);
+
+                            montyHallAlwaysSwapCircuit.addGate(new Cnot([2], [1], 3, `#fff`, `#222`), 4);
+                            montyHallAlwaysSwapCircuit.addGate(new Cnot([1], [1], 4, `#fff`, `#222`), 5);
+                            montyHallAlwaysSwapCircuit.addGate(new Cnot([0], [1], 5, `#fff`, `#222`), 6);
+                            montyHallAlwaysSwapCircuit.addGate(new Cnot([5], [1], 6, `#fff`, `#222`), 7);
+                            montyHallAlwaysSwapCircuit.addGate(new H(6, `#fff`, `#222`), 7);
+
+                            montyHallAlwaysSwapCircuit.addGate(new Cswap([3], [1], [0, 2], `#fff`, `#222`), 8);
+                            montyHallAlwaysSwapCircuit.addGate(new Cswap([4], [1], [0, 1], `#fff`, `#222`), 9);
+                            montyHallAlwaysSwapCircuit.addGate(new Cswap([5, 6], [1, 1], [0, 2], `#fff`, `#222`), 10);
+                            montyHallAlwaysSwapCircuit.addGate(new Cswap([5, 6], [1, 0], [0, 1], `#fff`, `#222`), 11);
+                        </script>
+                    </div>
+
+                    <div class="note">
+                        There is a pretty nifty simulator I found online for small quantum circuits.
+                        <a href="https://algassert.com/quirk#circuit=%7B%22cols%22:[[%7B%22id%22:%22Ryft%22,%22arg%22:%221.23%22%7D],[%22%E2%97%A6%22,%22H%22],[%22%E2%97%A6%22,%22%E2%97%A6%22,%22X%22],[1,1,%22%E2%80%A2%22,%22X%22],[1,%22%E2%80%A2%22,1,1,%22X%22],[%22%E2%80%A2%22,1,1,1,1,%22X%22],[1,1,1,1,1,%22%E2%80%A2%22,%22H%22],[%22Swap%22,1,%22Swap%22,%22%E2%80%A2%22],[%22Swap%22,%22Swap%22,1,1,%22%E2%80%A2%22],[%22Swap%22,1,%22Swap%22,1,1,%22%E2%80%A2%22,%22%E2%80%A2%22],[%22Swap%22,%22Swap%22,1,1,1,%22%E2%80%A2%22,%22%E2%97%A6%22]],%22gates%22:[%7B%22id%22:%22~5kpj%22,%22name%22:%22Create%20%7Cs%E2%9F%A9%22,%22matrix%22:%22%7B%7B1,0%7D,%7B0,1%7D%7D%22%7D,%7B%22id%22:%22~q1m2%22,%22name%22:%22Create%20%7C-%E2%9F%A9%22,%22matrix%22:%22%7B%7B1,0%7D,%7B0,1%7D%7D%22%7D,%7B%22id%22:%22~lba%22,%22name%22:%22Oracle%22,%22matrix%22:%22%7B%7B1,0%7D,%7B0,1%7D%7D%22%7D,%7B%22id%22:%22~7b6l%22,%22name%22:%22Diffusion%20Operator%22,%22matrix%22:%22%7B%7B1,0%7D,%7B0,1%7D%7D%22%7D,%7B%22id%22:%22~iaka%22,%22name%22:%22Diffuser%22,%22matrix%22:%22%7B%7B1,0%7D,%7B0,1%7D%7D%22%7D,%7B%22id%22:%22~j4g%22,%22name%22:%22%E2%8C%90%22,%22matrix%22:%22%7B%7B1,0%7D,%7B0,1%7D%7D%22%7D,%7B%22id%22:%22~3bl0%22,%22name%22:%22%C2%AC%22,%22matrix%22:%22%7B%7B1,0%7D,%7B0,1%7D%7D%22%7D]%7D">
+                            This link
+                        </a>
+                        will open the "swap" circuit above and show you the relative frequency of different outcomes.
+                    </div>
+
+                    <p>
+                        Let me break down this circuit into its parts.
+                    </p>
+
+                    <div id="montyHallSwapDiv5" style="position: relative;">
+                        <svg id="montyHallAlwaysSwapSvg5" class="quantumSvg" style="position: relative; margin: 0; padding: 0;"></svg>
+                        <script>
+                            const montyHallAlwaysSwapCircuit5 = new QuantumDiagram(document.getElementById(`montyHallAlwaysSwapSvg5`), 7, Array(7).fill(50), `#fff`);
+                            montyHallAlwaysSwapCircuit5.setWidths(Array(13).fill(Math.min(50, document.getElementById(`montyHallSwapDiv5`).getBoundingClientRect().width / 13)));
+                            montyHallAlwaysSwapCircuit5.addGate(new Ry(0, `#fff`, `#777`), 1);
+                            montyHallAlwaysSwapCircuit5.addGate(new Cnot([0], [0], 1, `#fff`, `#222`), 2);
+                            montyHallAlwaysSwapCircuit5.addGate(new H(1, `#fff`, `#777`), 2);
+                            montyHallAlwaysSwapCircuit5.addGate(new Cnot([0, 1], [0, 0], 2, `#fff`, `#222`), 3);
+
+                            montyHallAlwaysSwapCircuit5.addGate(new Cnot([2], [1], 3, `#fff`, `#222`), 4);
+                            montyHallAlwaysSwapCircuit5.addGate(new Cnot([1], [1], 4, `#fff`, `#222`), 5);
+                            montyHallAlwaysSwapCircuit5.addGate(new Cnot([0], [1], 5, `#fff`, `#222`), 6);
+                            montyHallAlwaysSwapCircuit5.addGate(new Cnot([5], [1], 6, `#fff`, `#222`), 7);
+                            montyHallAlwaysSwapCircuit5.addGate(new H(6, `#fff`, `#222`), 7);
+
+                            montyHallAlwaysSwapCircuit5.addGate(new Cswap([3], [1], [0, 2], `#fff`, `#222`), 8);
+                            montyHallAlwaysSwapCircuit5.addGate(new Cswap([4], [1], [0, 1], `#fff`, `#222`), 9);
+                            montyHallAlwaysSwapCircuit5.addGate(new Cswap([5, 6], [1, 1], [0, 2], `#fff`, `#222`), 10);
+                            montyHallAlwaysSwapCircuit5.addGate(new Cswap([5, 6], [1, 0], [0, 1], `#fff`, `#222`), 11);
+
+                            montyHallAlwaysSwapCircuit5.addBox(1, 3, 0, 2, "", `#9995`);
+                        </script>
+                    </div>
+
+                    <p>
+                        The highlighted portion of the circuit above is our three-door qubit register we created before. The purpose of this register is to properly represent the combined state of all three doors at the start of the Monty Hall problem as a quantum superposition. The downstream parts of the circuit will compute the changes on the problem state based on the host's (and our) actions. As before, the top qubit represents the door that we initially picked.
+                    </p>
+
+                    <div id="montyHallSwapDiv2" style="position: relative;">
+                        <svg id="montyHallAlwaysSwapSvg2" class="quantumSvg" style="position: relative; margin: 0; padding: 0;"></svg>
+                        <script>
+                            const montyHallAlwaysSwapCircuit2 = new QuantumDiagram(document.getElementById(`montyHallAlwaysSwapSvg2`), 7, Array(7).fill(50), `#fff`);
+                            montyHallAlwaysSwapCircuit2.setWidths(Array(13).fill(Math.min(50, document.getElementById(`montyHallSwapDiv2`).getBoundingClientRect().width / 13)));
+                            montyHallAlwaysSwapCircuit2.addGate(new Ry(0, `#fff`, `#222`), 1);
+                            montyHallAlwaysSwapCircuit2.addGate(new Cnot([0], [0], 1, `#fff`, `#222`), 2);
+                            montyHallAlwaysSwapCircuit2.addGate(new H(1, `#fff`, `#222`), 2);
+                            montyHallAlwaysSwapCircuit2.addGate(new Cnot([0, 1], [0, 0], 2, `#fff`, `#222`), 3);
+
+                            montyHallAlwaysSwapCircuit2.addGate(new Cnot([2], [1], 3, `#fff`, `#222`), 4);
+                            montyHallAlwaysSwapCircuit2.addGate(new Cnot([1], [1], 4, `#fff`, `#222`), 5);
+                            montyHallAlwaysSwapCircuit2.addGate(new Cnot([0], [1], 5, `#fff`, `#222`), 6);
+                            montyHallAlwaysSwapCircuit2.addGate(new Cnot([5], [1], 6, `#fff`, `#222`), 7);
+                            montyHallAlwaysSwapCircuit2.addGate(new H(6, `#fff`, `#222`), 7);
+
+                            montyHallAlwaysSwapCircuit2.addGate(new Cswap([3], [1], [0, 2], `#fff`, `#222`), 8);
+                            montyHallAlwaysSwapCircuit2.addGate(new Cswap([4], [1], [0, 1], `#fff`, `#222`), 9);
+                            montyHallAlwaysSwapCircuit2.addGate(new Cswap([5, 6], [1, 1], [0, 2], `#fff`, `#222`), 10);
+                            montyHallAlwaysSwapCircuit2.addGate(new Cswap([5, 6], [1, 0], [0, 1], `#fff`, `#222`), 11);
+
+                            montyHallAlwaysSwapCircuit2.addBox(4, 4, 2, 3, "", `#9995`);
+                            montyHallAlwaysSwapCircuit2.addBox(5, 7, 3, 3, "", `#9995`);
+                            montyHallAlwaysSwapCircuit2.addBox(8, 8, 0, 3, "", `#9995`);
+                        </script>
+                    </div>
+
+                    <p>
+                        The highlighted portion evolves the superposition to handle actions that would occur if the prize is behind the third door. We entangle an ancillary qubit (just an extra qubit to help store information above the problem state) with the \(|1\rangle\) state of the third door. When the ancillary qubit is in the \(|1\rangle\) state, the host will open door two. This might not be obvious at first, but it's clearly the only option available to the host (the host cannot open door one because we've picked it and cannot open door three because the prize is behind it). Then we swap our first door qubit with the second door qubit. This represents our decision to switch to door two once the host has opened door three.
+                    </p>
+
+                    <div id="montyHallSwapDiv3" style="position: relative;">
+                        <svg id="montyHallAlwaysSwapSvg3" class="quantumSvg" style="position: relative; margin: 0; padding: 0;"></svg>
+                        <script>
+                            const montyHallAlwaysSwapCircuit3 = new QuantumDiagram(document.getElementById(`montyHallAlwaysSwapSvg3`), 7, Array(7).fill(50), `#fff`);
+                            montyHallAlwaysSwapCircuit3.setWidths(Array(13).fill(Math.min(50, document.getElementById(`montyHallSwapDiv3`).getBoundingClientRect().width / 13)));
+                            montyHallAlwaysSwapCircuit3.addGate(new Ry(0, `#fff`, `#222`), 1);
+                            montyHallAlwaysSwapCircuit3.addGate(new Cnot([0], [0], 1, `#fff`, `#222`), 2);
+                            montyHallAlwaysSwapCircuit3.addGate(new H(1, `#fff`, `#222`), 2);
+                            montyHallAlwaysSwapCircuit3.addGate(new Cnot([0, 1], [0, 0], 2, `#fff`, `#222`), 3);
+
+                            montyHallAlwaysSwapCircuit3.addGate(new Cnot([2], [1], 3, `#fff`, `#222`), 4);
+                            montyHallAlwaysSwapCircuit3.addGate(new Cnot([1], [1], 4, `#fff`, `#222`), 5);
+                            montyHallAlwaysSwapCircuit3.addGate(new Cnot([0], [1], 5, `#fff`, `#222`), 6);
+                            montyHallAlwaysSwapCircuit3.addGate(new Cnot([5], [1], 6, `#fff`, `#222`), 7);
+                            montyHallAlwaysSwapCircuit3.addGate(new H(6, `#fff`, `#222`), 7);
+
+                            montyHallAlwaysSwapCircuit3.addGate(new Cswap([3], [1], [0, 2], `#fff`, `#222`), 8);
+                            montyHallAlwaysSwapCircuit3.addGate(new Cswap([4], [1], [0, 1], `#fff`, `#222`), 9);
+                            montyHallAlwaysSwapCircuit3.addGate(new Cswap([5, 6], [1, 1], [0, 2], `#fff`, `#222`), 10);
+                            montyHallAlwaysSwapCircuit3.addGate(new Cswap([5, 6], [1, 0], [0, 1], `#fff`, `#222`), 11);
+
+                            montyHallAlwaysSwapCircuit3.addBox(5, 5, 1, 4, "", `#9995`);
+                            montyHallAlwaysSwapCircuit3.addBox(6, 8, 4, 4, "", `#9995`);
+                            montyHallAlwaysSwapCircuit3.addBox(9, 9, 0, 4, "", `#9995`);
+                        </script>
+                    </div>
+
+                    <p>
+                        The highlighted portion above does the same thing as before but in the case that door two hides the prize, not door three. In this case, the host must open door three and we will switch to door two.
+                    </p>
+
+                    <div id="montyHallSwapDiv4" style="position: relative;">
+                        <svg id="montyHallAlwaysSwapSvg4" class="quantumSvg" style="position: relative; margin: 0; padding: 0;"></svg>
+                        <script>
+                            const montyHallAlwaysSwapCircuit4 = new QuantumDiagram(document.getElementById(`montyHallAlwaysSwapSvg4`), 7, Array(7).fill(50), `#fff`);
+                            montyHallAlwaysSwapCircuit4.setWidths(Array(13).fill(Math.min(50, document.getElementById(`montyHallSwapDiv4`).getBoundingClientRect().width / 13)));
+                            montyHallAlwaysSwapCircuit4.addGate(new Ry(0, `#fff`, `#222`), 1);
+                            montyHallAlwaysSwapCircuit4.addGate(new Cnot([0], [0], 1, `#fff`, `#222`), 2);
+                            montyHallAlwaysSwapCircuit4.addGate(new H(1, `#fff`, `#222`), 2);
+                            montyHallAlwaysSwapCircuit4.addGate(new Cnot([0, 1], [0, 0], 2, `#fff`, `#222`), 3);
+
+                            montyHallAlwaysSwapCircuit4.addGate(new Cnot([2], [1], 3, `#fff`, `#222`), 4);
+                            montyHallAlwaysSwapCircuit4.addGate(new Cnot([1], [1], 4, `#fff`, `#222`), 5);
+                            montyHallAlwaysSwapCircuit4.addGate(new Cnot([0], [1], 5, `#fff`, `#222`), 6);
+                            montyHallAlwaysSwapCircuit4.addGate(new Cnot([5], [1], 6, `#fff`, `#222`), 7);
+                            montyHallAlwaysSwapCircuit4.addGate(new H(6, `#fff`, `#777`), 7);
+
+                            montyHallAlwaysSwapCircuit4.addGate(new Cswap([3], [1], [0, 2], `#fff`, `#222`), 8);
+                            montyHallAlwaysSwapCircuit4.addGate(new Cswap([4], [1], [0, 1], `#fff`, `#222`), 9);
+                            montyHallAlwaysSwapCircuit4.addGate(new Cswap([5, 6], [1, 1], [0, 2], `#fff`, `#222`), 10);
+                            montyHallAlwaysSwapCircuit4.addGate(new Cswap([5, 6], [1, 0], [0, 1], `#fff`, `#222`), 11);
+
+                            montyHallAlwaysSwapCircuit4.addBox(6, 6, 0, 5, "", `#9995`);
+                            montyHallAlwaysSwapCircuit4.addBox(7, 9, 5, 6, "", `#9995`);
+                            montyHallAlwaysSwapCircuit4.addBox(10, 11, 0, 6, "", `#9995`);
+                        </script>
+                    </div>
+
+                    <p>
+                        This last portions is the most complex and handles the case where the prize is behind door one. In this situation the host will have a choice of which door to open. Therefore, we will set one ancillary qubit in the \(|1\rangle\) state which represents the logical outcome that "the host will open door two or three" and this qubit will put another ancillary qubit (the logical outcome "the host chose to open door two") in an equal superposition of the \(|0\rangle\) and \(|1\rangle\) states (representing the host having no bias towards opening door two over door three). The two ancillary qubits are in the \(|11\rangle\) and \(|10\rangle\) with equal probability and we let the first state mean the host chose to open door two and the second state mean the host chose to open door three. In each case we swap with the other (prize-less) door.
+                    </p>
+
+                    <p>
+                        The following code implements the "swap" circuit. Note that we have to replace some of the gates above with an equivalent circuit of simpler gates if we want to run on the IQM Garnet computer (since it cannot automatically implement some of the more complicated circuits we used above). For instance, we implement the controlled Hadamard with a combination of \(R_{y}\), \(\text{CNOT}\), and \(Z\) gates, and multiple Tofolli gates are needed to create the equivalent of a many-input Tofolli.
+                    </p>
+
+                    <pre>
+                        <code class="language-python" style="line-height: 1.2em">
+        from braket.aws import AwsDevice
+        from braket.circuits import Circuit
+        from braket.devices import LocalSimulator
+        import math
+
+        # Pick a device, real or simulated
+        device = LocalSimulator()
+        # device = AwsDevice(
+        #   'arn:aws:braket:eu-north-1::device/qpu/iqm/Garnet', 
+        #   aws_session=aws_session)
+
+        # Define the circuit
+        quantum_circuit = (
+                Circuit()
+                .ry(0, 2 * math.acos((2 / 3)**.5))
+                # Controlled Hadamard
+                .x(0).ry(1, math.pi / 4).cz(0, 1).ry(1, -math.pi / 4)
+                # Not not Tofolli
+                .x(1).ccnot(0, 1, 2).x(1).x(0).cnot(2, 3).cnot(1, 4).cnot(0, 5)
+                # Controlled Hadamard
+                .ry(6, math.pi / 4).cz(5, 6).ry(6, -math.pi / 4)
+
+                .ccnot(1, 3, 7)
+                .cswap(3, 2, 0)
+                .ccnot(2, 4, 8)
+                .cswap(4, 1, 0)
+                # 3 input Tofolli
+                .ccnot(1, 5, 11).ccnot(6, 11, 9).ccnot(1, 5, 11)
+                # 3 input Tofolli
+                .ccnot(2, 5, 11).x(6).ccnot(6, 11, 10).x(6).ccnot(2, 5, 11)
+                # 2 input cswap
+                .ccnot(5, 6, 11).cswap(11, 0, 2).ccnot(5, 6, 11)
+                # 2 input cswap
+                .x(6).ccnot(5, 6, 11).cswap(11, 0, 1)
+            )
+        # Show the circuit schematic
+        print(quantum_circuit)
+
+        # Run the circuit
+        shots = 1000
+        output = device.run(quantum_circuit, shots=shots)
+
+        # Process the results
+        counts = output.result().measurement_counts
+        win_count = 0
+        for outcome, frequency in zip(counts.keys(), counts.values()):
+            if outcome[0] == "1":
+                win_count += frequency
+        print(f"The strategy won {win_count / shots * 100:.1f}% of the time.")
+                        </code>
+                    </pre>
+
+                    <p>
+                        The code above produced the following output.
+                    </p>
+
+                    <pre>
+The strategy won 66.7% of the time.
+                    </pre>
+
+                    <p>
+                        I sent this request to the IQM Garnet computer using the AWS Braket SDK. My task had to wait a while in the queue (about 8 hours) but once it ran it produced a satisfying 67% chance of winning the Monty Hall problem when choosing to swap doors. Compared to the strategy of sticking with one's original pick (with a win rate of 33%) the "swap" strategy wins twice as often.
+                    </p>
+
+                    <div class="sectionTitle">Conclusion</div>
+
+                    <p>
+                        The main purpose of this article was to illustrate how to use the AWS Braket SDK on a simple toy problem. However, testing strategies in a simulated environment like this is a pretty unusual application of quantum computing. The main advantage of quantum computers is the ability to run computations on the entire space of possible inputs simultaneously. For instance, <a href="https://en.wikipedia.org/wiki/Grover%27s_algorithm">Grover's algorithm</a> can search many database keys at the same time in an index search. In our Monty Hall circuits, we only perform computation on three input states and we have to test each strategy <i>with it's own circuit</i>. While this technically worked, it's hard to imagine a quantum computer <i>ever</i> doing this faster than a GPU. Trying out a strategy in a simulation is usually a computationally fast operation (compared to searching through a large state of possible stratgies), and in the Monty Hall problem the space of all possible strategies is extremely small. Nonetheless, the compatibility between qubits and how doors behave in the Monty Hall problem are quaint and serve as a nice starting circuit for gaining experience using the AWS Braket SDK.
+                    </p>
+
+                    <script type="text/javascript" id="MathJax-script" async
+                        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+                </div>
+
+            </div>
+        </div>
+        <script>hljs.highlightAll();</script>
+    </body>
+</html>

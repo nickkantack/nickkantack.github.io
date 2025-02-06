@@ -1,0 +1,131 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Serif:opsz@8..144&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:ital,wght@0,400..800;1,400..800&display=swap');
+
+::-webkit-scrollbar {
+	width: 0;  /* Remove scrollbar space */
+}
+body {
+	font: 18px "Roboto Serif";
+	color: #222222;
+	text-align: justify;
+	line-height: 200%;
+}
+h1 {
+    font-weight: bold;
+    margin-top: 3em;
+}
+h2 {
+    font-weight: bold;
+    text-decoration: underline;
+    margin-top: 2em;
+}
+h3 {
+    font-weight: bold;
+    text-decoration: underline;
+}
+img {
+    position: relative;
+    left: 50%;
+    transform: translate(-50%, 0);
+    max-width: 40em;
+    border-radius: 5px;
+}
+li {
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+pre {
+    margin: 0;
+}
+svg {
+    position: relative;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    left: 50%;
+    transform: translate(-50%, 0);
+}
+
+.abstract {
+    font-style: italic;
+}
+.blockOfWhitespace {
+    height: 18em;
+}
+.caption {
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 2em;
+    margin-bottom: 3em;
+    font-style: italic;
+    max-width: 30em;
+    padding-left: 3em;
+    padding-right: 3em;
+    text-align: center;
+}
+.code {
+    border-radius: 5px;
+    background: #DDD;
+    font-family: 'Courier New', Courier, monospace;
+    line-height: 1em;
+    padding: 1em;
+}
+.mainPanel {
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 40em;
+}
+.mathBlock {
+    margin-top: 2.5em;
+    margin-bottom: 2.5em;
+}
+.note {
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 30em;
+    background: #FFFCCC;
+    color: #444400;
+    border-radius: 5px;
+    border: 3px solid #CCCC99;
+    padding-left: 3em;
+    padding-right: 3em;
+    padding-top: 2em;
+    padding-bottom: 2em;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+.showForPresentation {
+    display: none;
+}
+.svgContainer {
+    position: relative;
+    margin-top: 1em;
+}
+.svgContainer svg {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+.svgText {
+    position: absolute;
+    display: block;
+    line-height: 1.1;
+    text-align: center;
+    left: 0;
+    top: 0;
+    z-index: 9;
+}
+.svgText mjx-container {
+    display: block;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+.transcript {
+    background: #DDD;
+    padding: 1em;
+    margin: 1em;
+    border-radius: 1em;
+    line-height: 1.1;
+}

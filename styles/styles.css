@@ -280,6 +280,14 @@ iframe {
 	background: #999999;
 }
 
+.quantumSvg {
+    position: relative;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    left: 50%;
+    transform: translate(-50%, 0);
+}
+
 .slider {
 	-webkit-appearance: none;
 	appearance: none;
